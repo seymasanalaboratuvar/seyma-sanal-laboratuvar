@@ -6,10 +6,11 @@
 <meta name="description" content="Şeyma Hocanın Sanal Laboratuvarı - Biyolojiyi keşfet, deney yap, öğren.">
 <title>Şeyma Hocanın Sanal Laboratuvarı</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="#" aria-label="Ana sayfa"><span class="brand-icon">🧬</span><span><b>Şeyma Hocanın</b><small>Sanal Laboratuvarı</small></span></a>
+  <a class="brand" href="#"><span class="brand-icon">🧬</span><span><b>Şeyma Hocanın</b><small>Sanal Laboratuvarı</small></span></a>
   <nav><a href="#siniflar" data-tr="Sınıflar" data-en="Grades">Sınıflar</a><a href="#laboratuvar" data-tr="Laboratuvar" data-en="Laboratory">Laboratuvar</a><a href="#hakkinda" data-tr="Hakkında" data-en="About">Hakkında</a></nav>
   <button id="langBtn" class="lang" type="button">EN</button>
 </header>
@@ -21,7 +22,7 @@
     <p data-tr="Hücreleri keşfet, deneyler yap ve bilimi yaşayarak öğren. Sanal laboratuvarında keşif seni bekliyor!" data-en="Explore cells, conduct experiments and learn science by doing. Your virtual laboratory is waiting!">Hücreleri keşfet, deneyler yap ve bilimi yaşayarak öğren. Sanal laboratuvarında keşif seni bekliyor!</p>
     <a class="primary-btn" href="#laboratuvar" data-tr="Laboratuvara gir →" data-en="Enter the lab →">Laboratuvara gir →</a>
   </div>
-  <div class="hero-art" aria-label="Biyoloji illüstrasyonu"><div class="orbit orbit1"></div><div class="orbit orbit2"></div><div class="cell">🧫</div><span class="float f1">🧬</span><span class="float f2">🔬</span><span class="float f3">🦠</span><span class="float f4">✨</span></div>
+  <div class="hero-art"><div class="orbit orbit1"></div><div class="orbit orbit2"></div><div class="cell">🧫</div><span class="float f1">🧬</span><span class="float f2">🔬</span><span class="float f3">🦠</span><span class="float f4">✨</span></div>
 </section>
 
 <section id="siniflar" class="section">
@@ -36,18 +37,29 @@
 </section>
 
 <section id="laboratuvar" class="section lab-section">
-  <div class="section-heading"><span class="eyebrow" data-tr="ETKİLEŞİMLİ ÖĞRENME" data-en="INTERACTIVE LEARNING">ETKİLEŞİMLİ ÖĞRENME</span><h2 data-tr="Hücre laboratuvarı" data-en="Cell laboratory">Hücre laboratuvarı</h2><p data-tr="Organelleri seç, görevlerini öğren ve mini testi çöz." data-en="Select organelles, learn their functions and take the quick quiz.">Organelleri seç, görevlerini öğren ve mini testi çöz.</p></div>
+  <div class="section-heading"><span class="eyebrow" data-tr="ETKİLEŞİMLİ ÖĞRENME" data-en="INTERACTIVE LEARNING">ETKİLEŞİMLİ ÖĞRENME</span><h2 data-tr="3B hücre laboratuvarı" data-en="3D cell laboratory">3B hücre laboratuvarı</h2><p data-tr="Hücreyi döndür, yakınlaştır ve organelleri seçerek keşfet." data-en="Rotate and zoom the cell, then select organelles to explore.">Hücreyi döndür, yakınlaştır ve organelleri seçerek keşfet.</p></div>
   <div class="lab-layout">
     <div class="cell-card">
-      <div class="cell-illustration">
-        <div class="cell-membrane"><div class="nucleus">🟣<small>Çekirdek</small></div><div class="mito">🫘</div><div class="golgi">〰️</div><div class="ribosome">• • •</div><div class="vacuole">💧</div><div class="er">〰️</div></div>
+      <div id="cell3d" class="cell3d" aria-label="Etkileşimli üç boyutlu hayvan hücresi">
+        <div class="loading3d" id="loading3d">3B hücre hazırlanıyor…</div>
       </div>
-      <p class="hint" data-tr="İpucu: Sağdaki organel kartlarına dokunarak bilgi al." data-en="Tip: Tap an organelle card to learn more.">İpucu: Sağdaki organel kartlarına dokunarak bilgi al.</p>
+      <div class="model-controls">
+        <button id="rotateBtn" class="control-btn">⟳ Otomatik döndür</button>
+        <button id="resetBtn" class="control-btn">↺ Görünümü sıfırla</button>
+      </div>
+      <p class="hint" data-tr="Fareyle veya parmağınla sürükleyerek döndür. Yakınlaştırmak için iki parmağını kullan." data-en="Drag with your mouse or finger to rotate. Pinch to zoom.">Fareyle veya parmağınla sürükleyerek döndür. Yakınlaştırmak için iki parmağını kullan.</p>
+      <p class="model-note">Model şematik ve öğretim amaçlıdır; organellerin boyutları ve konumları gerçek hücre ölçeğini temsil etmez.</p>
     </div>
     <div class="organelles">
       <h3 data-tr="Organelleri keşfet" data-en="Explore organelles">Organelleri keşfet</h3>
       <div class="org-grid" id="orgGrid"></div>
       <div class="info-panel" aria-live="polite"><span id="orgEmoji">🟣</span><div><b id="orgName">Çekirdek</b><p id="orgDesc">Hücrenin yönetim merkezidir. DNA'yı bulundurur.</p></div></div>
+      <div class="quiz-inline">
+        <b data-tr="Keşif görevi" data-en="Discovery task">Keşif görevi</b>
+        <p data-tr="Mitokondriyi seç ve hücredeki görevini açıkla." data-en="Select the mitochondrion and describe its role in the cell.">Mitokondriyi seç ve hücredeki görevini açıkla.</p>
+        <button id="mitoTask" class="task-btn" type="button" data-tr="Mitokondriyi bul" data-en="Find mitochondrion">Mitokondriyi bul</button>
+        <span id="taskResult" class="task-result" aria-live="polite"></span>
+      </div>
     </div>
   </div>
 </section>
@@ -55,13 +67,10 @@
 <section class="quiz-section">
   <div class="quiz-card">
     <div><span class="eyebrow" data-tr="KENDİNİ DENE" data-en="TEST YOURSELF">KENDİNİ DENE</span><h2 data-tr="Mini biyoloji testi" data-en="Quick biology quiz">Mini biyoloji testi</h2><p data-tr="Hücrede ATP üretiminde temel görevli organel hangisidir?" data-en="Which organelle is primarily responsible for ATP production?">Hücrede ATP üretiminde temel görevli organel hangisidir?</p></div>
-    <div class="answers" id="answers">
-      <button data-answer="Çekirdek">Çekirdek</button><button data-answer="Mitokondri">Mitokondri</button><button data-answer="Golgi aygıtı">Golgi aygıtı</button>
-    </div>
+    <div class="answers" id="answers"><button data-answer="Çekirdek">Çekirdek</button><button data-answer="Mitokondri">Mitokondri</button><button data-answer="Golgi aygıtı">Golgi aygıtı</button></div>
     <p id="quizResult" class="quiz-result" aria-live="polite"></p>
   </div>
 </section>
-
 <section id="hakkinda" class="about section"><div class="about-icon">👩‍🔬</div><div><h2 data-tr="Şeyma Hocanın laboratuvarı" data-en="Teacher Şeyma's laboratory">Şeyma Hocanın laboratuvarı</h2><p data-tr="Biyolojiyi merakla, deneyerek ve keşfederek öğrenmek için hazırlanmış dijital bir öğrenme alanı. İçerikler eğitim amacıyla geliştirilir ve bilimsel doğruluk gözetilir." data-en="A digital learning space designed to explore biology through curiosity and experiments. Content is developed for educational purposes with scientific accuracy in mind.">Biyolojiyi merakla, deneyerek ve keşfederek öğrenmek için hazırlanmış dijital bir öğrenme alanı. İçerikler eğitim amacıyla geliştirilir ve bilimsel doğruluk gözetilir.</p></div></section>
 </main>
 <footer><b>Şeyma Hocanın Sanal Laboratuvarı</b><span>🔬 Keşfet • Dene • Öğren</span><small>© 2026 • Eğitim amaçlı prototip</small></footer>
