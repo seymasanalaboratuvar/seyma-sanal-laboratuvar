@@ -1,6 +1,5 @@
 import * as THREE from 'https://esm.sh/three@0.152.2';
 import { GLTFLoader } from 'https://esm.sh/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
-
 const organs=[
 {id:'nucleus',name:'Çekirdek',en:'Nucleus',emoji:'🧬',chip:'#eee3ff',desc:'Hücrenin DNA’sını barındıran ve gen ifadesinin düzenlenmesinde rol oynayan organeldir.',edesc:'The organelle that houses the cell’s DNA and helps regulate gene expression.',structure:'Çift katlı çekirdek zarı, çekirdek porları, kromatin ve çekirdekçik.',estructure:'Double nuclear envelope, nuclear pores, chromatin and nucleolus.',function:'Kalıtsal bilgiyi korur; hücresel etkinliklerin düzenlenmesine katkı sağlar.',efunction:'Stores hereditary information and helps regulate cellular activities.'},
 {id:'mito',name:'Mitokondri',en:'Mitochondrion',emoji:'🔶',chip:'#ffe7d7',desc:'Çift zarlı organeldir. İç zar kıvrımları olan kristalar, matriksin çevresinde uzanır.',edesc:'A double-membraned organelle. Its inner membrane folds, called cristae, extend into the matrix.',structure:'Dış zar, kristaları oluşturan kıvrımlı iç zar, zarlar arası boşluk ve matriks.',estructure:'Outer membrane, folded inner membrane forming cristae, intermembrane space and matrix.',function:'Hücresel solunum basamaklarında ATP üretiminde görev alır.',efunction:'Participates in ATP production during cellular respiration.'},
