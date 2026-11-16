@@ -1,5 +1,5 @@
-import * as THREE from 'https://esm.sh/three@0.152.2';';
-import { GLTFLoader } from 'https://esm.sh/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';';
+import * as THREE from 'https://esm.sh/three@0.152.2';
+import { GLTFLoader } from 'https://esm.sh/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
 
 const organs=[
 {id:'nucleus',name:'Çekirdek',en:'Nucleus',emoji:'🧬',chip:'#eee3ff',desc:'Hücrenin DNA’sını barındıran ve gen ifadesinin düzenlenmesinde rol oynayan organeldir.',edesc:'The organelle that houses the cell’s DNA and helps regulate gene expression.',structure:'Çift katlı çekirdek zarı, çekirdek porları, kromatin ve çekirdekçik.',estructure:'Double nuclear envelope, nuclear pores, chromatin and nucleolus.',function:'Kalıtsal bilgiyi korur; hücresel etkinliklerin düzenlenmesine katkı sağlar.',efunction:'Stores hereditary information and helps regulate cellular activities.'},
