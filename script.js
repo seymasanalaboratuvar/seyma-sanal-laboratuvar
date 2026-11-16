@@ -1,3 +1,6 @@
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
+
 const organs=[
 {id:'nucleus',name:'Çekirdek',en:'Nucleus',emoji:'🧬',chip:'#eee3ff',desc:'Hücrenin DNA’sını barındıran ve gen ifadesinin düzenlenmesinde rol oynayan organeldir.',edesc:'The organelle that houses the cell’s DNA and helps regulate gene expression.',structure:'Çift katlı çekirdek zarı, çekirdek porları, kromatin ve çekirdekçik.',estructure:'Double nuclear envelope, nuclear pores, chromatin and nucleolus.',function:'Kalıtsal bilgiyi korur; hücresel etkinliklerin düzenlenmesine katkı sağlar.',efunction:'Stores hereditary information and helps regulate cellular activities.'},
 {id:'mito',name:'Mitokondri',en:'Mitochondrion',emoji:'🔶',chip:'#ffe7d7',desc:'Çift zarlı organeldir. İç zar kıvrımları olan kristalar, matriksin çevresinde uzanır.',edesc:'A double-membraned organelle. Its inner membrane folds, called cristae, extend into the matrix.',structure:'Dış zar, kristaları oluşturan kıvrımlı iç zar, zarlar arası boşluk ve matriks.',estructure:'Outer membrane, folded inner membrane forming cristae, intermembrane space and matrix.',function:'Hücresel solunum basamaklarında ATP üretiminde görev alır.',efunction:'Participates in ATP production during cellular respiration.'},
@@ -20,7 +23,7 @@ $('langBtn').onclick=()=>{lang=lang==='tr'?'en':'tr';document.documentElement.la
 document.querySelectorAll('.grade').forEach(b=>b.onclick=()=>{document.querySelectorAll('.grade').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('gradeMessage').textContent=t(`${b.dataset.grade}. sınıf laboratuvar modülü seçildi.`,`Grade ${b.dataset.grade} laboratory module selected.`)});
 function init(){
  const host=$('cell3d');
- if(!window.THREE || !THREE.GLTFLoader){
+ if(!THREE || !GLTFLoader){
   $('loading3d').innerHTML='<b>3B model kütüphanesi yüklenemedi.</b><small>İnternet bağlantısını kontrol edip sayfayı yenileyin.</small>';return;
  }
  const T=THREE;scene=new T.Scene();scene.background=new T.Color(0xf0eaff);
@@ -42,7 +45,7 @@ function init(){
   if(n.includes('membrane')||n.includes('cytoplasm')||n.includes('cytoskeleton'))return 'membrane';
   return null;
  };
- const loader=new T.GLTFLoader();
+ const loader=new GLTFLoader();
  loader.load('animal_cell_cutaway.glb',gltf=>{
   const model=gltf.scene;model.scale.setScalar(1);model.position.set(0,0,0);
   model.traverse(o=>{
