@@ -18,41 +18,63 @@ function selectOrgan(id,focus){selected=id;const o=organs.find(x=>x.id===id);ren
 renderOrgans();showDetail(organs[0]);
 $('langBtn').onclick=()=>{lang=lang==='tr'?'en':'tr';document.documentElement.lang=lang;$('langBtn').textContent=lang==='tr'?'EN':'TR';document.querySelectorAll('[data-tr]').forEach(el=>el.textContent=el.dataset[lang]);renderOrgans();showDetail(organs.find(o=>o.id===selected));};
 document.querySelectorAll('.grade').forEach(b=>b.onclick=()=>{document.querySelectorAll('.grade').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('gradeMessage').textContent=t(`${b.dataset.grade}. sınıf laboratuvar modülü seçildi.`,`Grade ${b.dataset.grade} laboratory module selected.`)});
-function init(){const host=$('cell3d');if(!window.THREE){$('loading3d').innerHTML='<b>3B model yüklenemedi.</b><small>İnternet bağlantısını kontrol edip sayfayı yenile.</small>';return}const T=THREE;scene=new T.Scene();scene.background=new T.Color(0xf0eaff);camera=new T.PerspectiveCamera(37,host.clientWidth/host.clientHeight,.1,100);camera.position.set(0,.25,10.5);renderer=new T.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(host.clientWidth,host.clientHeight);renderer.outputEncoding=T.sRGBEncoding;host.appendChild(renderer.domElement);scene.add(new T.HemisphereLight(0xffffff,0x6b5c94,1.7));const key=new T.DirectionalLight(0xffffff,2.1);key.position.set(4,6,8);scene.add(key);const rim=new T.DirectionalLight(0xb7dfff,1.2);rim.position.set(-5,1,-5);scene.add(rim);root=new T.Group();scene.add(root);raycaster=new T.Raycaster();mouse=new T.Vector2();
-const mat=(color,rough=.5,metal=0,transparent=false,opacity=1)=>new T.MeshStandardMaterial({color,roughness:rough,metalness:metal,transparent,opacity,side:T.DoubleSide,depthWrite:!transparent});
-function mesh(geo,material,id,pos=[0,0,0],scale=[1,1,1],parent=root){const m=new T.Mesh(geo,material);m.position.set(...pos);m.scale.set(...scale);m.userData.org=id;m.userData.baseScale=m.scale.clone();m.userData.focus=new T.Vector3(...pos);parent.add(m);targets.push(m);return m}
-function group(id,pos=[0,0,0]){const g=new T.Group();g.position.set(...pos);g.userData.org=id;g.userData.focus=new T.Vector3(...pos);root.add(g);targets.push(g);return g}
-function tube(points,r,color,id,parent=root){const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));return mesh(new T.TubeGeometry(curve,48,r,8,false),mat(color,.4),id,[0,0,0],[1,1,1],parent)}
-// Ellipsoidal cytoplasm and cutaway cell membrane shell. A large front opening exposes internal structures.
-mesh(new T.SphereGeometry(2.75,64,48),new T.MeshPhysicalMaterial({color:0x9bdde3,roughness:.38,transparent:true,opacity:.24,side:T.DoubleSide,depthWrite:false,clearcoat:.5}),'membrane',[0,0,0],[1.35,.91,.76]);
-// Rear half membrane shell with a cutaway sector toward viewer.
-const shellGeo=new T.SphereGeometry(2.82,72,56,Math.PI*.08,Math.PI*.84,0,Math.PI);
-mesh(shellGeo,new T.MeshPhysicalMaterial({color:0x9b6be2,roughness:.28,transparent:true,opacity:.38,side:T.DoubleSide,depthWrite:false,clearcoat:1}),'membrane',[0,0,0],[1.35,.91,.76]);
-// Membrane bilayer bead hints along the cut edge.
-for(let i=0;i<42;i++){const a=-1.48+i/41*2.96;const x=3.72*Math.cos(a),y=2.5*Math.sin(a);mesh(new T.SphereGeometry(.035,10,8),mat(0x7d50c5,.35),'membrane',[x,y,.05],[1,1,1])}
-// Nucleus with partial cutaway, double envelope, pores, nucleolus and chromatin.
-const nuc=group('nucleus',[-.48,.18,.25]);mesh(new T.SphereGeometry(.92,48,36),mat(0x9e61d3,.3),'nucleus',[0,0,0],[1, .93,.82],nuc);mesh(new T.SphereGeometry(.84,48,36,0,Math.PI*1.55,0,Math.PI),new T.MeshPhysicalMaterial({color:0xd18bea,roughness:.28,metalness:.05,side:T.DoubleSide,transparent:true,opacity:.82}),'nucleus',[0,0,.08],[1,.93,.82],nuc);
-for(let i=0;i<16;i++){let a=i/16*Math.PI*2;mesh(new T.TorusGeometry(.055,.016,8,14),mat(0x653b9b),'nucleus',[.84*Math.cos(a),.78*Math.sin(a),.45],[1,1,.5],nuc)}
-mesh(new T.SphereGeometry(.24,32,24),mat(0x642b9c,.25),'nucleus',[.13,-.05,.65],[1,1,.8],nuc);
-for(let j=0;j<7;j++){let pts=[];for(let k=0;k<24;k++){let a=k/23*Math.PI*3.2+j*.8;pts.push([Math.cos(a)*(.22+j*.055),Math.sin(a)*(.20+j*.05),.54+Math.sin(a*1.7)*.08])}tube(pts,.012,0x693b9e,'nucleus',nuc)}
-// Mitochondria: curved capsule with outer and inner membranes plus repeated crista folds.
-function mitochondrion(pos,rot,sc=1){const g=group('mito',pos);g.rotation.z=rot;g.scale.setScalar(sc);mesh(new T.SphereGeometry(1,40,28),mat(0xe96f35,.3),'mito',[0,0,0],[.83,.42,.31],g);mesh(new T.SphereGeometry(1,40,28),mat(0xffb16e,.38),'mito',[0,0,.05],[.72,.32,.25],g);for(let i=0;i<7;i++){const x=-.51+i*.17;const pts=[[x,-.16,.24],[x-.07,-.06,.26],[x+.06,.03,.26],[x-.02,.14,.24]];tube(pts,.025,0xb74d35,'mito',g)}}mitochondrion([1.38,.68,.48],-.42,1);mitochondrion([-1.48,-.83,.3],.5,.82);
-// Rough ER stacks around nucleus with visible ribosome dots.
-const rough=group('rough',[0,0,0]);for(let j=0;j<6;j++){let y=1.12-j*.17;let pts=[];for(let k=0;k<20;k++){let x=-1.72+k*.17;pts.push([x,y+Math.sin(k*.7+j*.5)*.07,.05+j*.012])}tube(pts,.052,0x3d83c8,'rough',rough);for(let k=1;k<19;k+=2){let p=pts[k];mesh(new T.SphereGeometry(.035,10,8),mat(0x254e92),'ribosome',[p[0],p[1]+.06,p[2]+.02])}}
-// Smooth ER tubular network.
-const smooth=group('smooth',[0,0,0]);for(let j=0;j<4;j++){let pts=[];for(let k=0;k<18;k++){let a=k/17*Math.PI*1.25+j*.7;pts.push([-.65+Math.cos(a)*(.65+j*.1),-.75+Math.sin(a)*(.35+j*.07),-.2-j*.04])}tube(pts,.055,0x54b8d0,'smooth',smooth)}
-// Golgi apparatus: curved flattened cisternae, separate stacks and budding vesicles.
-const golgi=group('golgi',[1.02,-.82,.34]);for(let j=0;j<6;j++){let pts=[];for(let k=0;k<19;k++){let x=-.67+k*.075;let y=(j-2.5)*.13+.18*(x*x);pts.push([x,y,Math.sin(k/18*Math.PI)*.025])}tube(pts,.065,j%2?0xf19ab9:0xffc0d1,'golgi',golgi)}for(let i=0;i<7;i++){let a=i/7*Math.PI*2;mesh(new T.SphereGeometry(.075,14,10),mat(0xf7a6c3),'golgi',[.82*Math.cos(a),.43*Math.sin(a),.08])}
-// Free ribosomes and lysosomes.
-for(let i=0;i<42;i++){let a=i*2.399,r=.8+(i%7)*.22;mesh(new T.SphereGeometry(.035,10,8),mat(0x377bb8),'ribosome',[Math.cos(a)*r,Math.sin(a)*r*.62,(i%5-2)*.12])}
-for(const p of [[-1.35,.95,.4],[1.75,.08,.3],[.38,-1.2,.52]]){mesh(new T.SphereGeometry(.19,24,18),mat(0x9b59c9,.32),'lysosome',p);mesh(new T.SphereGeometry(.11,18,14),mat(0xdca9f1,.3),'lysosome',[p[0]+.04,p[1]-.02,p[2]+.08])}
-// Centrosome: paired centrioles with microtubule triplet-like lines.
-const cent=group('centrosome',[-1.62,-.08,.72]);for(let j=0;j<2;j++){const c=group('centrosome',[j*.22-.11,0,0]);c.rotation.z=j?Math.PI/2:0;mesh(new T.CylinderGeometry(.11,.11,.58,18),mat(0xf0b52e),'centrosome',[0,0,0],[1,1,1],c);for(let i=0;i<9;i++){let a=i/9*Math.PI*2;mesh(new T.CylinderGeometry(.012,.012,.52,6),mat(0x9b6b1d),'centrosome',[Math.cos(a)*.075,0,Math.sin(a)*.075],[1,1,1],c)}}
-// Scattered cytoskeletal filaments.
-for(let i=0;i<9;i++){let a=i*Math.PI/4.5;let pts=[[Math.cos(a)*.5,Math.sin(a)*.4,-.48],[Math.cos(a)*1.1,Math.sin(a)*.7,-.42],[Math.cos(a)*1.7,Math.sin(a)*.86,-.32]];tube(pts,.012,0x8e82b9,'membrane')}
-$('loading3d').remove();
-// Direct pointer controls, including mobile touch. Tap selects only when not dragging.
-let down=null;renderer.domElement.addEventListener('pointerdown',e=>{drag=true;prev={x:e.clientX,y:e.clientY};down={x:e.clientX,y:e.clientY};renderer.domElement.setPointerCapture?.(e.pointerId)});renderer.domElement.addEventListener('pointermove',e=>{if(drag){let dx=e.clientX-prev.x,dy=e.clientY-prev.y;root.rotation.y+=dx*.006;root.rotation.x+=dy*.006;prev={x:e.clientX,y:e.clientY}}});renderer.domElement.addEventListener('pointerup',e=>{drag=false;if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<7){const r=renderer.domElement.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObjects(targets,true);if(hits.length){let o=hits[0].object;while(o&&!o.userData.org)o=o.parent;if(o?.userData.org&&organs.some(x=>x.id===o.userData.org))selectOrgan(o.userData.org,false)}}down=null});renderer.domElement.addEventListener('pointercancel',()=>{drag=false;down=null});host.addEventListener('wheel',e=>{camera.position.z=Math.max(6.4,Math.min(15,camera.position.z+e.deltaY*.008))},{passive:true});
-function animate(){requestAnimationFrame(animate);if(auto&&!drag)root.rotation.y+=.0018;renderer.render(scene,camera)}animate();window.addEventListener('resize',()=>{camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight)})}
-$('rotateBtn').onclick=()=>{auto=!auto;$('rotateBtn').classList.toggle('active',auto);$('rotateBtn').querySelector('span').textContent=t(auto?'Otomatik döndür':'Döndürmeyi durdur',auto?'Auto rotate':'Pause rotation')};$('resetBtn').onclick=()=>{if(root)root.rotation.set(0,0,0);if(camera)camera.position.set(0,.25,10.5)};$('zoomIn').onclick=()=>{if(camera)camera.position.z=Math.max(6.4,camera.position.z-.7)};$('zoomOut').onclick=()=>{if(camera)camera.position.z=Math.min(15,camera.position.z+.7)};
+function init(){
+ const host=$('cell3d');
+ if(!window.THREE || !THREE.GLTFLoader){
+  $('loading3d').innerHTML='<b>3B model kütüphanesi yüklenemedi.</b><small>İnternet bağlantısını kontrol edip sayfayı yenileyin.</small>';return;
+ }
+ const T=THREE;scene=new T.Scene();scene.background=new T.Color(0xf0eaff);
+ camera=new T.PerspectiveCamera(37,host.clientWidth/host.clientHeight,.1,100);camera.position.set(0,.15,10.2);
+ renderer=new T.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(host.clientWidth,host.clientHeight);renderer.outputEncoding=T.sRGBEncoding;host.appendChild(renderer.domElement);
+ scene.add(new T.HemisphereLight(0xffffff,0x6b5c94,1.65));
+ const key=new T.DirectionalLight(0xffffff,2.15);key.position.set(4,6,8);scene.add(key);
+ const rim=new T.DirectionalLight(0xb7dfff,1.15);rim.position.set(-5,1,-5);scene.add(rim);
+ root=new T.Group();scene.add(root);raycaster=new T.Raycaster();mouse=new T.Vector2();
+ const mapName=(n)=>{
+  if(n.includes('nucleus'))return 'nucleus';
+  if(n.includes('mito'))return 'mito';
+  if(n.includes('rough_er'))return 'rough';
+  if(n.includes('smooth_er'))return 'smooth';
+  if(n.includes('golgi'))return 'golgi';
+  if(n.includes('ribosome'))return 'ribosome';
+  if(n.includes('lysosome'))return 'lysosome';
+  if(n.includes('centrosome'))return 'centrosome';
+  if(n.includes('membrane')||n.includes('cytoplasm')||n.includes('cytoskeleton'))return 'membrane';
+  return null;
+ };
+ const loader=new T.GLTFLoader();
+ loader.load('animal_cell_cutaway.glb',gltf=>{
+  const model=gltf.scene;model.scale.setScalar(1);model.position.set(0,0,0);
+  model.traverse(o=>{
+   if(o.isMesh){
+    const id=mapName(o.name||'');
+    if(id){o.userData.org=id;o.userData.baseScale=o.scale.clone();o.userData.focus=o.getWorldPosition(new T.Vector3());targets.push(o);}
+    if(o.material){o.material.side=T.DoubleSide;if(o.material.transparent)o.material.depthWrite=false;}
+   }
+  });
+  root.add(model);$('loading3d').remove();
+ },xhr=>{
+  if(xhr.total){const pct=Math.round(xhr.loaded/xhr.total*100);const sm=$('loading3d')?.querySelector('small');if(sm)sm.textContent=`3B model yükleniyor… %${pct}`;}
+ },err=>{
+  console.error('GLB load error',err);
+  $('loading3d').innerHTML='<b>3B hücre dosyası yüklenemedi.</b><small>animal_cell_cutaway.glb dosyasının ana klasörde olduğunu kontrol edin.</small>';
+ });
+ let down=null;
+ renderer.domElement.addEventListener('pointerdown',e=>{drag=true;prev={x:e.clientX,y:e.clientY};down={x:e.clientX,y:e.clientY};renderer.domElement.setPointerCapture?.(e.pointerId)});
+ renderer.domElement.addEventListener('pointermove',e=>{if(drag){root.rotation.y+=(e.clientX-prev.x)*.006;root.rotation.x+=(e.clientY-prev.y)*.006;prev={x:e.clientX,y:e.clientY}}});
+ renderer.domElement.addEventListener('pointerup',e=>{
+  drag=false;
+  if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<7){
+   const r=renderer.domElement.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;
+   raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObjects(targets,false);
+   if(hits.length){const id=hits[0].object.userData.org;if(id&&organs.some(x=>x.id===id))selectOrgan(id,false);}
+  }
+  down=null;
+ });
+ renderer.domElement.addEventListener('pointercancel',()=>{drag=false;down=null});
+ host.addEventListener('wheel',e=>{camera.position.z=Math.max(6.4,Math.min(15,camera.position.z+e.deltaY*.008))},{passive:true});
+ function animate(){requestAnimationFrame(animate);if(auto&&!drag)root.rotation.y+=.0016;renderer.render(scene,camera)}animate();
+ window.addEventListener('resize',()=>{camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight)});
+}
+$('rotateBtn').onclick=()=>{auto=!auto;$('rotateBtn').classList.toggle('active',auto);$('rotateBtn').querySelector('span').textContent=t(auto?'Otomatik döndür':'Döndürmeyi durdur',auto?'Auto rotate':'Pause rotation')};$('resetBtn').onclick=()=>{if(root)root.rotation.set(0,0,0);if(camera)camera.position.set(0,.15,10.2)};$('zoomIn').onclick=()=>{if(camera)camera.position.z=Math.max(6.4,camera.position.z-.7)};$('zoomOut').onclick=()=>{if(camera)camera.position.z=Math.min(15,camera.position.z+.7)};
 window.addEventListener('load',()=>{if(window.THREE)init();else setTimeout(()=>{if(window.THREE)init();else $('loading3d').innerHTML='<b>3B kütüphane yüklenemedi.</b><small>Bağlantıyı kontrol edip sayfayı yenileyin.</small>'},1200)});
