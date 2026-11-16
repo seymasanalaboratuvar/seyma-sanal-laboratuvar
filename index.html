@@ -1,78 +1,13 @@
 <!doctype html>
-<html lang="tr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Şeyma Hocanın Sanal Laboratuvarı - Biyolojiyi keşfet, deney yap, öğren.">
-<title>Şeyma Hocanın Sanal Laboratuvarı</title>
-<link rel="stylesheet" href="style.css?v=4">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.min.js"></script>
-</head>
-<body>
-<header class="topbar">
-  <a class="brand" href="#"><span class="brand-icon">🧬</span><span><b>Şeyma Hocanın</b><small>Sanal Laboratuvarı</small></span></a>
-  <nav><a href="#siniflar" data-tr="Sınıflar" data-en="Grades">Sınıflar</a><a href="#laboratuvar" data-tr="Laboratuvar" data-en="Laboratory">Laboratuvar</a><a href="#hakkinda" data-tr="Hakkında" data-en="About">Hakkında</a></nav>
-  <button id="langBtn" class="lang" type="button">EN</button>
-</header>
-<main>
-<section class="hero">
-  <div class="hero-copy">
-    <span class="eyebrow" data-tr="BİLİMİ KEŞFET • DENEY YAP • ÖĞREN" data-en="EXPLORE SCIENCE • EXPERIMENT • LEARN">BİLİMİ KEŞFET • DENEY YAP • ÖĞREN</span>
-    <h1 data-tr="Biyolojinin renkli dünyasına hoş geldin!" data-en="Welcome to the colorful world of biology!">Biyolojinin renkli dünyasına hoş geldin!</h1>
-    <p data-tr="Hücreleri keşfet, deneyler yap ve bilimi yaşayarak öğren. Sanal laboratuvarında keşif seni bekliyor!" data-en="Explore cells, conduct experiments and learn science by doing. Your virtual laboratory is waiting!">Hücreleri keşfet, deneyler yap ve bilimi yaşayarak öğren. Sanal laboratuvarında keşif seni bekliyor!</p>
-    <a class="primary-btn" href="#laboratuvar" data-tr="Laboratuvara gir →" data-en="Enter the lab →">Laboratuvara gir →</a>
-  </div>
-  <div class="hero-art"><div class="orbit orbit1"></div><div class="orbit orbit2"></div><div class="cell">🧫</div><span class="float f1">🧬</span><span class="float f2">🔬</span><span class="float f3">🦠</span><span class="float f4">✨</span></div>
-</section>
-
-<section id="siniflar" class="section">
-  <div class="section-heading"><span class="eyebrow">LEARN BY DISCOVERY</span><h2 data-tr="Sınıfını seç" data-en="Choose your grade">Sınıfını seç</h2><p data-tr="Kendi sınıfının biyoloji dünyasına adım at." data-en="Step into the biology world of your grade.">Kendi sınıfının biyoloji dünyasına adım at.</p></div>
-  <div class="grade-grid">
-    <button class="grade-card g9 active" data-grade="9"><span>🌱</span><b>9. Sınıf</b><small>Grade 9</small></button>
-    <button class="grade-card g10" data-grade="10"><span>🧪</span><b>10. Sınıf</b><small>Grade 10</small></button>
-    <button class="grade-card g11" data-grade="11"><span>🫀</span><b>11. Sınıf</b><small>Grade 11</small></button>
-    <button class="grade-card g12" data-grade="12"><span>🧬</span><b>12. Sınıf</b><small>Grade 12</small></button>
-  </div>
-  <p id="gradeMessage" class="grade-message">9. sınıf içerikleri seçildi. İlk laboratuvar modülünü keşfet!</p>
-</section>
-
-<section id="laboratuvar" class="section lab-section">
-  <div class="section-heading"><span class="eyebrow" data-tr="ETKİLEŞİMLİ ÖĞRENME" data-en="INTERACTIVE LEARNING">ETKİLEŞİMLİ ÖĞRENME</span><h2 data-tr="Kesit alınmış 3B hayvan hücresi" data-en="3D animal cell cross-section">Kesit alınmış 3B hayvan hücresi</h2><p data-tr="Hücrenin kesitini incele, döndür ve organelleri seçerek keşfet." data-en="Explore the cell cross-section, rotate it and select organelles.">Hücrenin kesitini incele, döndür ve organelleri seçerek keşfet.</p></div>
-  <div class="lab-layout">
-    <div class="cell-card">
-      <div id="cell3d" class="cell3d" aria-label="Etkileşimli üç boyutlu hayvan hücresi">
-        <div class="loading3d" id="loading3d">3B hücre hazırlanıyor…</div>
-      </div>
-      <div class="model-controls">
-        <button id="rotateBtn" class="control-btn">⟳ Otomatik döndür</button>
-        <button id="resetBtn" class="control-btn">↺ Görünümü sıfırla</button>
-      </div>
-      <p class="hint" data-tr="Fareyle veya parmağınla sürükleyerek döndür. Yakınlaştırmak için iki parmağını kullan." data-en="Drag with your mouse or finger to rotate. Pinch to zoom.">Fareyle veya parmağınla sürükleyerek döndür. Yakınlaştırmak için iki parmağını kullan.</p>
-      <p class="model-note">Model şematik ve öğretim amaçlıdır; organellerin boyutları ve konumları gerçek hücre ölçeğini temsil etmez.</p>
-    </div>
-    <div class="organelles">
-      <h3 data-tr="Organelleri keşfet" data-en="Explore organelles">Organelleri keşfet</h3>
-      <div class="org-grid" id="orgGrid"></div>
-      <div class="info-panel" aria-live="polite"><span id="orgEmoji">🟣</span><div><b id="orgName">Çekirdek</b><p id="orgDesc">Hücrenin yönetim merkezidir. DNA'yı bulundurur.</p></div></div>
-      <div class="quiz-inline">
-        <b data-tr="Keşif görevi" data-en="Discovery task">Keşif görevi</b>
-        <p data-tr="Mitokondriyi seç ve hücredeki görevini açıkla." data-en="Select the mitochondrion and describe its role in the cell.">Mitokondriyi seç ve hücredeki görevini açıkla.</p>
-        <button id="mitoTask" class="task-btn" type="button" data-tr="Mitokondriyi bul" data-en="Find mitochondrion">Mitokondriyi bul</button>
-        <span id="taskResult" class="task-result" aria-live="polite"></span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="quiz-section">
-  <div class="quiz-card">
-    <div><span class="eyebrow" data-tr="KENDİNİ DENE" data-en="TEST YOURSELF">KENDİNİ DENE</span><h2 data-tr="Mini biyoloji testi" data-en="Quick biology quiz">Mini biyoloji testi</h2><p data-tr="Hücrede ATP üretiminde temel görevli organel hangisidir?" data-en="Which organelle is primarily responsible for ATP production?">Hücrede ATP üretiminde temel görevli organel hangisidir?</p></div>
-    <div class="answers" id="answers"><button data-answer="Çekirdek">Çekirdek</button><button data-answer="Mitokondri">Mitokondri</button><button data-answer="Golgi aygıtı">Golgi aygıtı</button></div>
-    <p id="quizResult" class="quiz-result" aria-live="polite"></p>
-  </div>
-</section>
-<section id="hakkinda" class="about section"><div class="about-icon">👩‍🔬</div><div><h2 data-tr="Şeyma Hocanın laboratuvarı" data-en="Teacher Şeyma's laboratory">Şeyma Hocanın laboratuvarı</h2><p data-tr="Biyolojiyi merakla, deneyerek ve keşfederek öğrenmek için hazırlanmış dijital bir öğrenme alanı. İçerikler eğitim amacıyla geliştirilir ve bilimsel doğruluk gözetilir." data-en="A digital learning space designed to explore biology through curiosity and experiments. Content is developed for educational purposes with scientific accuracy in mind.">Biyolojiyi merakla, deneyerek ve keşfederek öğrenmek için hazırlanmış dijital bir öğrenme alanı. İçerikler eğitim amacıyla geliştirilir ve bilimsel doğruluk gözetilir.</p></div></section>
-</main>
-<footer><b>Şeyma Hocanın Sanal Laboratuvarı</b><span>🔬 Keşfet • Dene • Öğren</span><small>© 2026 • Eğitim amaçlı prototip</small></footer>
-<script src="script.js?v=4"></script>
-</body></html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f5f0ff"><meta name="description" content="Şeyma Hocanın Sanal Laboratuvarı: etkileşimli 3B hücre keşfi"><title>Şeyma Hocanın Sanal Laboratuvarı | Hücre Laboratuvarı</title><link rel="stylesheet" href="style.css?v=5"><script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.min.js"></script><script defer src="script.js?v=5"></script></head>
+<body><header class="header"><a class="brand" href="#top"><span class="brand-mark">🧬</span><span><b>Şeyma Hocanın</b><strong>Sanal Laboratuvarı</strong></span></a><nav><a href="#siniflar" data-tr="Sınıflar" data-en="Grades">Sınıflar</a><a class="selected" href="#laboratuvar" data-tr="Laboratuvar" data-en="Laboratory">Laboratuvar</a><a href="#hakkinda" data-tr="Hakkında" data-en="About">Hakkında</a></nav><button id="langBtn" class="language">EN</button></header>
+<main id="top"><section class="intro"><span class="eyebrow" data-tr="ETKİLEŞİMLİ BİYOLOJİ DENEYİMİ" data-en="INTERACTIVE BIOLOGY EXPERIENCE">ETKİLEŞİMLİ BİYOLOJİ DENEYİMİ</span><h1 data-tr="Hayvan hücresini içeriden keşfet" data-en="Explore an animal cell from within">Hayvan hücresini içeriden keşfet</h1><p data-tr="Kesit görünümünü döndür, organelleri seç ve hücrenin yapılarını yakından incele." data-en="Rotate the cutaway view, select organelles and inspect cell structures up close.">Kesit görünümünü döndür, organelleri seç ve hücrenin yapılarını yakından incele.</p></section>
+<section id="laboratuvar" class="lab-wrap"><div class="lab-top"><div><span class="live-dot"></span><b data-tr="3B HÜCRE MODELİ" data-en="3D CELL MODEL">3B HÜCRE MODELİ</b><small data-tr="Kesit alınmış hayvan hücresi" data-en="Animal cell cross-section">Kesit alınmış hayvan hücresi</small></div><span class="model-tag">BIOLOGY · 01</span></div>
+<div class="viewer"><div id="cell3d" class="canvas-host"><div id="loading3d" class="loading"><span class="loader"></span><b data-tr="Hücre modeli hazırlanıyor" data-en="Preparing cell model">Hücre modeli hazırlanıyor</b><small data-tr="3B laboratuvar yükleniyor…" data-en="Loading 3D laboratory…">3B laboratuvar yükleniyor…</small></div></div><div class="viewer-caption"><span><i></i><span data-tr="Modeli sürükleyerek döndür" data-en="Drag to rotate the model">Modeli sürükleyerek döndür</span></span><span data-tr="Yakınlaştırmak için kaydır veya iki parmağını kullan" data-en="Scroll or pinch to zoom">Yakınlaştırmak için kaydır veya iki parmağını kullan</span></div></div>
+<div class="toolbar"><button id="rotateBtn" class="tool active">⟳ <span data-tr="Otomatik döndür" data-en="Auto rotate">Otomatik döndür</span></button><button id="zoomIn" class="tool">＋ <span data-tr="Yakınlaştır" data-en="Zoom in">Yakınlaştır</span></button><button id="zoomOut" class="tool">－ <span data-tr="Uzaklaştır" data-en="Zoom out">Uzaklaştır</span></button><button id="resetBtn" class="tool">↺ <span data-tr="Görünümü sıfırla" data-en="Reset view">Görünümü sıfırla</span></button></div>
+<div class="explore-head"><div><span class="eyebrow" data-tr="YAKINDAN İNCELE" data-en="TAKE A CLOSER LOOK">YAKINDAN İNCELE</span><h2 data-tr="Bir organel seç" data-en="Select an organelle">Bir organel seç</h2><p data-tr="İsme veya hücredeki yapıya dokun. Etiketler yalnızca seçim yaptığında görünür." data-en="Tap a name or a structure in the cell. Labels appear only after you select one.">İsme veya hücredeki yapıya dokun. Etiketler yalnızca seçim yaptığında görünür.</p></div><span class="count">08 <small data-tr="YAPI" data-en="STRUCTURES">YAPI</small></span></div>
+<div id="orgGrid" class="org-grid"></div>
+<article id="detailCard" class="detail-card" aria-live="polite"><div class="detail-visual" id="detailVisual"><span id="detailEmoji">🧬</span><small data-tr="SEÇİLİ ORGANEL" data-en="SELECTED ORGANEL">SEÇİLİ ORGANEL</small></div><div class="detail-copy"><span class="eyebrow" data-tr="ORGANEL KARTI" data-en="ORGANEL PROFILE">ORGANEL KARTI</span><h3 id="orgName">Çekirdek</h3><p id="orgDesc">Hücrenin kalıtsal materyalini taşıyan ve gen ifadesinin düzenlenmesinde rol oynayan yapıdır.</p><div class="fact"><b data-tr="Yapısı" data-en="Structure">Yapısı</b><span id="orgStructure">Çift katlı çekirdek zarı, porlar, kromatin ve çekirdekçik.</span></div><div class="fact"><b data-tr="Görevi" data-en="Function">Görevi</b><span id="orgFunction">DNA'yı korur; hücresel etkinliklerin düzenlenmesine katkı sağlar.</span></div><span class="tap-hint" data-tr="Başka bir organel seçerek keşfetmeye devam et." data-en="Choose another organelle to continue exploring.">Başka bir organel seçerek keşfetmeye devam et.</span></div></article>
+<p class="science-note" data-tr="Bilimsel not: Görsel, hücre yapılarını anlaşılır kılmak için hazırlanmış şematik bir 3B modeldir. Organellerin boyutları, sayıları ve konumları gerçek hücre ölçeğini birebir yansıtmaz." data-en="Scientific note: This is a schematic 3D model designed to make cell structures understandable. Organelle sizes, numbers and positions are not to scale.">Bilimsel not: Görsel, hücre yapılarını anlaşılır kılmak için hazırlanmış şematik bir 3B modeldir. Organellerin boyutları, sayıları ve konumları gerçek hücre ölçeğini birebir yansıtmaz.</p></section>
+<section id="siniflar" class="grades"><div><span class="eyebrow" data-tr="ÖĞRENME YOLCULUĞUN" data-en="YOUR LEARNING PATH">ÖĞRENME YOLCULUĞUN</span><h2 data-tr="Sınıfını seç" data-en="Choose your grade">Sınıfını seç</h2></div><div class="grade-list"><button class="grade active" data-grade="9">9. Sınıf</button><button class="grade" data-grade="10">10. Sınıf</button><button class="grade" data-grade="11">11. Sınıf</button><button class="grade" data-grade="12">12. Sınıf</button></div><p id="gradeMessage" data-tr="9. sınıf laboratuvar modülü seçildi." data-en="Grade 9 laboratory module selected.">9. sınıf laboratuvar modülü seçildi.</p></section>
+<section id="hakkinda" class="about"><div class="about-icon">🔬</div><div><span class="eyebrow" data-tr="BİLİMİ DENEYİMLE" data-en="EXPERIENCE SCIENCE">BİLİMİ DENEYİMLE</span><h2 data-tr="Şeyma Hocanın Sanal Laboratuvarı" data-en="Teacher Şeyma's Virtual Laboratory">Şeyma Hocanın Sanal Laboratuvarı</h2><p data-tr="Biyolojiyi yalnızca okumak için değil, keşfetmek ve anlamak için tasarlanmış dijital öğrenme alanı." data-en="A digital learning space designed not only to read biology, but to explore and understand it.">Biyolojiyi yalnızca okumak için değil, keşfetmek ve anlamak için tasarlanmış dijital öğrenme alanı.</p></div></section></main><footer><b>🧬 Şeyma Hocanın Sanal Laboratuvarı</b><span>KEŞFET · İNCELE · ÖĞREN</span><small>© 2026</small></footer></body></html>
