@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Şeyma Hocanın Sanal Laboratuvarı - Biyolojiyi keşfet, deney yap, öğren.">
+<title>Şeyma Hocanın Sanal Laboratuvarı</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#" aria-label="Ana sayfa"><span class="brand-icon">🧬</span><span><b>Şeyma Hocanın</b><small>Sanal Laboratuvarı</small></span></a>
+  <nav><a href="#siniflar" data-tr="Sınıflar" data-en="Grades">Sınıflar</a><a href="#laboratuvar" data-tr="Laboratuvar" data-en="Laboratory">Laboratuvar</a><a href="#hakkinda" data-tr="Hakkında" data-en="About">Hakkında</a></nav>
+  <button id="langBtn" class="lang" type="button">EN</button>
+</header>
+<main>
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow" data-tr="BİLİMİ KEŞFET • DENEY YAP • ÖĞREN" data-en="EXPLORE SCIENCE • EXPERIMENT • LEARN">BİLİMİ KEŞFET • DENEY YAP • ÖĞREN</span>
+    <h1 data-tr="Biyolojinin renkli dünyasına hoş geldin!" data-en="Welcome to the colorful world of biology!">Biyolojinin renkli dünyasına hoş geldin!</h1>
+    <p data-tr="Hücreleri keşfet, deneyler yap ve bilimi yaşayarak öğren. Sanal laboratuvarında keşif seni bekliyor!" data-en="Explore cells, conduct experiments and learn science by doing. Your virtual laboratory is waiting!">Hücreleri keşfet, deneyler yap ve bilimi yaşayarak öğren. Sanal laboratuvarında keşif seni bekliyor!</p>
+    <a class="primary-btn" href="#laboratuvar" data-tr="Laboratuvara gir →" data-en="Enter the lab →">Laboratuvara gir →</a>
+  </div>
+  <div class="hero-art" aria-label="Biyoloji illüstrasyonu"><div class="orbit orbit1"></div><div class="orbit orbit2"></div><div class="cell">🧫</div><span class="float f1">🧬</span><span class="float f2">🔬</span><span class="float f3">🦠</span><span class="float f4">✨</span></div>
+</section>
+
+<section id="siniflar" class="section">
+  <div class="section-heading"><span class="eyebrow">LEARN BY DISCOVERY</span><h2 data-tr="Sınıfını seç" data-en="Choose your grade">Sınıfını seç</h2><p data-tr="Kendi sınıfının biyoloji dünyasına adım at." data-en="Step into the biology world of your grade.">Kendi sınıfının biyoloji dünyasına adım at.</p></div>
+  <div class="grade-grid">
+    <button class="grade-card g9 active" data-grade="9"><span>🌱</span><b>9. Sınıf</b><small>Grade 9</small></button>
+    <button class="grade-card g10" data-grade="10"><span>🧪</span><b>10. Sınıf</b><small>Grade 10</small></button>
+    <button class="grade-card g11" data-grade="11"><span>🫀</span><b>11. Sınıf</b><small>Grade 11</small></button>
+    <button class="grade-card g12" data-grade="12"><span>🧬</span><b>12. Sınıf</b><small>Grade 12</small></button>
+  </div>
+  <p id="gradeMessage" class="grade-message">9. sınıf içerikleri seçildi. İlk laboratuvar modülünü keşfet!</p>
+</section>
+
+<section id="laboratuvar" class="section lab-section">
+  <div class="section-heading"><span class="eyebrow" data-tr="ETKİLEŞİMLİ ÖĞRENME" data-en="INTERACTIVE LEARNING">ETKİLEŞİMLİ ÖĞRENME</span><h2 data-tr="Hücre laboratuvarı" data-en="Cell laboratory">Hücre laboratuvarı</h2><p data-tr="Organelleri seç, görevlerini öğren ve mini testi çöz." data-en="Select organelles, learn their functions and take the quick quiz.">Organelleri seç, görevlerini öğren ve mini testi çöz.</p></div>
+  <div class="lab-layout">
+    <div class="cell-card">
+      <div class="cell-illustration">
+        <div class="cell-membrane"><div class="nucleus">🟣<small>Çekirdek</small></div><div class="mito">🫘</div><div class="golgi">〰️</div><div class="ribosome">• • •</div><div class="vacuole">💧</div><div class="er">〰️</div></div>
+      </div>
+      <p class="hint" data-tr="İpucu: Sağdaki organel kartlarına dokunarak bilgi al." data-en="Tip: Tap an organelle card to learn more.">İpucu: Sağdaki organel kartlarına dokunarak bilgi al.</p>
+    </div>
+    <div class="organelles">
+      <h3 data-tr="Organelleri keşfet" data-en="Explore organelles">Organelleri keşfet</h3>
+      <div class="org-grid" id="orgGrid"></div>
+      <div class="info-panel" aria-live="polite"><span id="orgEmoji">🟣</span><div><b id="orgName">Çekirdek</b><p id="orgDesc">Hücrenin yönetim merkezidir. DNA'yı bulundurur.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="quiz-section">
+  <div class="quiz-card">
+    <div><span class="eyebrow" data-tr="KENDİNİ DENE" data-en="TEST YOURSELF">KENDİNİ DENE</span><h2 data-tr="Mini biyoloji testi" data-en="Quick biology quiz">Mini biyoloji testi</h2><p data-tr="Hücrede ATP üretiminde temel görevli organel hangisidir?" data-en="Which organelle is primarily responsible for ATP production?">Hücrede ATP üretiminde temel görevli organel hangisidir?</p></div>
+    <div class="answers" id="answers">
+      <button data-answer="Çekirdek">Çekirdek</button><button data-answer="Mitokondri">Mitokondri</button><button data-answer="Golgi aygıtı">Golgi aygıtı</button>
+    </div>
+    <p id="quizResult" class="quiz-result" aria-live="polite"></p>
+  </div>
+</section>
+
+<section id="hakkinda" class="about section"><div class="about-icon">👩‍🔬</div><div><h2 data-tr="Şeyma Hocanın laboratuvarı" data-en="Teacher Şeyma's laboratory">Şeyma Hocanın laboratuvarı</h2><p data-tr="Biyolojiyi merakla, deneyerek ve keşfederek öğrenmek için hazırlanmış dijital bir öğrenme alanı. İçerikler eğitim amacıyla geliştirilir ve bilimsel doğruluk gözetilir." data-en="A digital learning space designed to explore biology through curiosity and experiments. Content is developed for educational purposes with scientific accuracy in mind.">Biyolojiyi merakla, deneyerek ve keşfederek öğrenmek için hazırlanmış dijital bir öğrenme alanı. İçerikler eğitim amacıyla geliştirilir ve bilimsel doğruluk gözetilir.</p></div></section>
+</main>
+<footer><b>Şeyma Hocanın Sanal Laboratuvarı</b><span>🔬 Keşfet • Dene • Öğren</span><small>© 2026 • Eğitim amaçlı prototip</small></footer>
+<script src="script.js"></script>
+</body></html>
