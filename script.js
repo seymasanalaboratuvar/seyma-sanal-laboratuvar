@@ -1,22 +1,24 @@
-const data=[
-{name:"Çekirdek",en:"Nucleus",emoji:"🟣",desc:"Çift katlı çekirdek zarıyla çevrilidir; DNA'yı taşır ve hücresel etkinlikleri yönetir.",edesc:"Surrounded by a double nuclear envelope, it contains DNA and helps regulate cell activities."},
-{name:"Mitokondri",en:"Mitochondrion",emoji:"🫘",desc:"İç zar kıvrımları (krista) bulunur. Hücresel solunumla ATP üretiminde görevlidir.",edesc:"Its inner membrane forms cristae. It produces ATP during cellular respiration."},
-{name:"Ribozom",en:"Ribosome",emoji:"🔵",desc:"Protein sentezinin gerçekleştiği, zarsız hücresel yapıdır.",edesc:"A non-membranous structure where proteins are synthesized."},
-{name:"Golgi aygıtı",en:"Golgi apparatus",emoji:"📦",desc:"Yassılaşmış keseciklerden oluşur; protein ve lipitleri işler, sınıflandırır ve paketler.",edesc:"Made of flattened sacs; it modifies, sorts and packages proteins and lipids."},
-{name:"Hücre zarı",en:"Cell membrane",emoji:"🫧",desc:"Fosfolipit çift tabaka ve proteinlerden oluşan seçici geçirgen sınırdır.",edesc:"A selectively permeable boundary made of a phospholipid bilayer and proteins."},
-{name:"Endoplazmik retikulum",en:"Endoplasmic reticulum",emoji:"〰️",desc:"Granüllü ER ribozom taşır ve protein işlenmesinde; granülsüz ER lipit sentezi ve başka görevlerde rol alır.",edesc:"Rough ER bears ribosomes and helps process proteins; smooth ER has roles including lipid synthesis."},
-{name:"Lizozom",en:"Lysosome",emoji:"🟠",desc:"Hücre içi sindirimde görev alan enzimli zarlı keseciktir.",edesc:"A membrane-bound vesicle containing enzymes for intracellular digestion."},
-{name:"Sentrozom",en:"Centrosome",emoji:"🧭",desc:"Hayvan hücrelerinde mikrotübüllerin organizasyonunda ve hücre bölünmesinde görev alır.",edesc:"In animal cells, it organizes microtubules and contributes to cell division."}
+// Şeyma Hocanın Sanal Laboratuvarı - Kesit alınmış hayvan hücresi
+// Eğitim amaçlı şematik modeldir; gerçek ölçek ve organel sayıları temsil edilmez.
+const organelles=[
+{name:"Çekirdek",en:"Nucleus",emoji:"🟣",desc:"Çift katlı çekirdek zarı, çekirdek porları, kromatin ve çekirdekçik içerir. DNA'yı taşır ve hücresel etkinliklerin düzenlenmesinde rol oynar.",edesc:"Contains a double nuclear envelope, nuclear pores, chromatin and a nucleolus. It houses DNA and helps regulate cell activities."},
+{name:"Mitokondri",en:"Mitochondrion",emoji:"🫘",desc:"Çift zarlıdır. İç zar kıvrımları olan kristalar, matriksin çevresinde uzanır. Hücresel solunumda ATP üretiminde görevlidir.",edesc:"Has two membranes. Inner-membrane folds called cristae extend into the matrix. It is involved in ATP production during cellular respiration."},
+{name:"Ribozom",en:"Ribosome",emoji:"🔵",desc:"Büyük ve küçük alt birimlerden oluşan zarsız yapıdır. Protein sentezini gerçekleştirir; sitoplazmada serbest veya granüllü ER üzerinde bulunabilir.",edesc:"A non-membranous structure made of large and small subunits. It synthesizes proteins and may be free in the cytoplasm or attached to rough ER."},
+{name:"Golgi aygıtı",en:"Golgi apparatus",emoji:"📦",desc:"Üst üste dizilmiş yassı sisternalardan oluşur. Protein ve lipitleri işler, sınıflandırır ve veziküllerle paketler.",edesc:"Made of stacked flattened cisternae. It modifies, sorts and packages proteins and lipids into vesicles."},
+{name:"Hücre zarı",en:"Cell membrane",emoji:"🫧",desc:"Fosfolipit çift tabakadan oluşan seçici geçirgen sınırdır. Zar proteinleri madde taşınması ve hücresel iletişimde görev alır.",edesc:"A selectively permeable boundary made of a phospholipid bilayer. Membrane proteins support transport and cell signaling."},
+{name:"Endoplazmik retikulum",en:"Endoplasmic reticulum",emoji:"〰️",desc:"Granüllü ER yüzeyinde ribozom taşır ve proteinlerin işlenmesine katkı sağlar. Granülsüz ER lipit sentezi ve başka işlevlerde rol alır.",edesc:"Rough ER bears ribosomes and helps process proteins. Smooth ER contributes to lipid synthesis and other functions."},
+{name:"Lizozom",en:"Lysosome",emoji:"🟠",desc:"Hücre içi sindirimde görev alan, sindirim enzimleri içeren zarlı keseciktir.",edesc:"A membrane-bound vesicle containing digestive enzymes for intracellular digestion."},
+{name:"Sentrozom",en:"Centrosome",emoji:"🧭",desc:"Hayvan hücrelerinde mikrotübüllerin organizasyon merkezidir. Hücre bölünmesinde iğ ipliklerinin düzenlenmesine katkı sağlar.",edesc:"The microtubule-organizing center in animal cells; it contributes to organizing the spindle during cell division."}
 ];
-let lang="tr",selected=data[0],scene,camera,renderer,cellGroup,raycaster,pointer,autoRotate=true,clickable=[];
+let lang="tr",selected=organelles[0],scene,camera,renderer,cellRoot,raycaster,pointer,autoRotate=true,hitTargets=[];
 const grid=document.getElementById("orgGrid");
-function renderOrg(){
+function renderInfo(){
  grid.innerHTML="";
- data.forEach(item=>{
+ organelles.forEach(item=>{
   const b=document.createElement("button");
   b.className="org-btn"+(item===selected?" active":"");
   b.textContent=item.emoji+" "+(lang==="tr"?item.name:item.en);
-  b.onclick=()=>selectOrg(item);
+  b.addEventListener("click",()=>selectOrg(item));
   grid.appendChild(b);
  });
  document.getElementById("orgEmoji").textContent=selected.emoji;
@@ -24,23 +26,21 @@ function renderOrg(){
  document.getElementById("orgDesc").textContent=lang==="tr"?selected.desc:selected.edesc;
 }
 function selectOrg(item){
- selected=item;renderOrg();
- if(cellGroup){
-  cellGroup.traverse(o=>{
-   if(o.userData.org===item.name && o.userData.pulse){
-    const original=o.scale.clone();o.scale.multiplyScalar(1.12);
-    setTimeout(()=>o.scale.copy(original),420);
-   }
-  });
- }
+ selected=item;renderInfo();
+ if(cellRoot) cellRoot.traverse(o=>{
+  if(o.userData.org===item.name && o.userData.highlight){
+   const old=o.scale.clone();o.scale.multiplyScalar(1.1);
+   setTimeout(()=>o.scale.copy(old),380);
+  }
+ });
 }
-renderOrg();
+renderInfo();
 
 document.getElementById("langBtn").addEventListener("click",()=>{
  lang=lang==="tr"?"en":"tr";document.documentElement.lang=lang;
  document.getElementById("langBtn").textContent=lang==="tr"?"EN":"TR";
  document.querySelectorAll("[data-tr]").forEach(el=>{el.textContent=el.dataset[lang];});
- renderOrg();
+ renderInfo();
  document.querySelectorAll("#answers button").forEach((b,i)=>b.textContent=lang==="tr"?["Çekirdek","Mitokondri","Golgi aygıtı"][i]:["Nucleus","Mitochondrion","Golgi apparatus"][i]);
  document.querySelector(".quiz-card .eyebrow").textContent=lang==="tr"?"KENDİNİ DENE":"TEST YOURSELF";
 });
@@ -54,103 +54,144 @@ document.querySelectorAll("#answers button").forEach(btn=>btn.addEventListener("
  document.getElementById("quizResult").style.color=ok?"#16856b":"#a15b38";
 }));
 document.getElementById("mitoTask").addEventListener("click",()=>{
- selectOrg(data[1]);document.getElementById("taskResult").textContent=lang==="tr"?"Mitokondriyi buldun! Kristaları iç zarın yüzey alanını artırır; ATP üretiminde rol oynar.":"You found it! Cristae increase inner membrane surface area and are involved in ATP production.";
+ selectOrg(organelles[1]);
+ document.getElementById("taskResult").textContent=lang==="tr"?"Mitokondriyi buldun! Kristalar iç zarın yüzey alanını artırır.":"You found it! Cristae increase the surface area of the inner membrane.";
 });
 
-function init3D(){
+function initCell(){
  const host=document.getElementById("cell3d");
- if(!window.THREE){document.getElementById("loading3d").textContent="3B model için internet bağlantısı gerekli.";return;}
- scene=new THREE.Scene();scene.background=new THREE.Color(0xece8ff);
- camera=new THREE.PerspectiveCamera(40,host.clientWidth/host.clientHeight,.1,100);camera.position.set(0,0,9.2);
- renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
+ if(!window.THREE){document.getElementById("loading3d").textContent="3B model yüklenemedi. İnternet bağlantısını kontrol edip sayfayı yenile.";return;}
+ const T=THREE;
+ scene=new T.Scene();scene.background=new T.Color(0xece8ff);
+ camera=new T.PerspectiveCamera(38,host.clientWidth/host.clientHeight,.1,100);camera.position.set(0,0,10.5);
+ renderer=new T.WebGLRenderer({antialias:true,alpha:false});
  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(host.clientWidth,host.clientHeight);
- renderer.outputEncoding=THREE.sRGBEncoding;host.appendChild(renderer.domElement);
- scene.add(new THREE.HemisphereLight(0xffffff,0x8a83b4,1.45));
- const key=new THREE.DirectionalLight(0xffffff,2.1);key.position.set(4,6,8);scene.add(key);
- const fill=new THREE.PointLight(0xb9e8ff,.8);fill.position.set(-5,-2,4);scene.add(fill);
- cellGroup=new THREE.Group();scene.add(cellGroup);
- const mat=(color,rough=.48,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
- function addMesh(mesh,name,pulse=true){mesh.userData.org=name;mesh.userData.pulse=pulse;cellGroup.add(mesh);clickable.push(mesh);return mesh;}
- function sphere(name,color,pos,scale,detail=32){
-  const m=new THREE.Mesh(new THREE.SphereGeometry(1,detail,24),mat(color));
-  m.position.set(...pos);m.scale.set(...scale);return addMesh(m,name);
+ renderer.outputEncoding=T.sRGBEncoding;host.appendChild(renderer.domElement);
+ scene.add(new T.HemisphereLight(0xffffff,0x756a9b,1.6));
+ const key=new T.DirectionalLight(0xffffff,2.2);key.position.set(4,6,9);scene.add(key);
+ const fill=new T.DirectionalLight(0xb4e8ff,.8);fill.position.set(-5,-3,5);scene.add(fill);
+ cellRoot=new T.Group();scene.add(cellRoot);
+ const material=(color,rough=.5,transparent=false,opacity=1)=>new T.MeshStandardMaterial({color,roughness:rough,transparent,opacity,side:T.DoubleSide,depthWrite:!transparent});
+ function add(mesh,name,highlight=true){mesh.userData.org=name;mesh.userData.highlight=highlight;cellRoot.add(mesh);hitTargets.push(mesh);return mesh;}
+ function sphere(name,color,pos,scale,segments=32,highlight=true){
+  const m=new T.Mesh(new T.SphereGeometry(1,segments,24),material(color));
+  m.position.set(...pos);m.scale.set(...scale);return add(m,name,highlight);
  }
- // Cytoplasm and softly transparent plasma membrane, with a distinct phospholipid-like rim.
- const cyt=new THREE.Mesh(new THREE.SphereGeometry(2.7,56,40),new THREE.MeshPhysicalMaterial({color:0xc9e8ed,transparent:true,opacity:.24,roughness:.65,side:THREE.DoubleSide,depthWrite:false}));
- cyt.scale.set(1.25,.88,.78);cellGroup.add(cyt);
- const membrane=new THREE.Mesh(new THREE.SphereGeometry(2.78,56,40),new THREE.MeshPhysicalMaterial({color:0x55bda9,transparent:true,opacity:.24,roughness:.28,clearcoat:.8,side:THREE.DoubleSide,depthWrite:false}));
- membrane.scale.set(1.25,.88,.78);addMesh(membrane,"Hücre zarı",false);
- // Nuclear envelope, nucleoplasm and nucleolus.
- sphere("Çekirdek",0x9b79cf,[-.35,.05,.15],[.77,.72,.66]);
- const nucRim=new THREE.Mesh(new THREE.SphereGeometry(.79,36,28),new THREE.MeshStandardMaterial({color:0x6d4aa9,transparent:true,opacity:.7,wireframe:true}));
- nucRim.position.set(-.35,.05,.15);addMesh(nucRim,"Çekirdek",false);
- sphere("Çekirdek",0x6c4b9e,[-.1,.22,.68],[.23,.22,.16]);
- // Mitochondria: capsule-shaped outer membranes and visible folded cristae.
- function mitochondrion(pos,rot=0){
-  const g=new THREE.Group();g.position.set(...pos);g.rotation.z=rot;
-  const outer=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),mat(0xe58b63));outer.scale.set(.72,.34,.28);g.add(outer);
-  const inner=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),new THREE.MeshStandardMaterial({color:0xffc18c,roughness:.55}));inner.scale.set(.61,.25,.22);g.add(inner);
-  for(let i=0;i<5;i++){
-   const curve=new THREE.Mesh(new THREE.TorusGeometry(.13,.025,8,24,Math.PI*1.45),mat(0xb95f49));
-   curve.position.set(-.36+i*.17,Math.sin(i*1.3)*.055,.19);curve.rotation.y=.35;g.add(curve);
+ function tube(name,points,r,color,highlight=true){
+  const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));
+  return add(new T.Mesh(new T.TubeGeometry(curve,64,r,9,false),material(color)),name,highlight);
+ }
+ // Cell body: an elliptical translucent cytoplasm plus a broad membrane shell with a deliberate cutaway opening.
+ const cyt=new T.Mesh(new T.SphereGeometry(2.8,64,48),material(0xc7e9ed,.75,true,.26));
+ cyt.scale.set(1.3,.9,.78);cellRoot.add(cyt);
+ const shellGeo=new T.SphereGeometry(2.86,72,52,0,Math.PI*1.72,0,Math.PI);
+ const shell=new T.Mesh(shellGeo,new T.MeshPhysicalMaterial({color:0x62c6b2,roughness:.3,transparent:true,opacity:.38,side:T.DoubleSide,clearcoat:.8,depthWrite:false}));
+ shell.scale.set(1.3,.9,.78);shell.rotation.y=-.25;add(shell,"Hücre zarı",false);
+ // Small membrane protein channels and phospholipid heads along the exposed rim.
+ for(let i=0;i<18;i++){
+  const a=-1.25+(i/17)*2.5;
+  const x=3.70*Math.cos(a),y=2.55*Math.sin(a),z=.1;
+  sphere("Hücre zarı",0x2c9e91,[x,y,z],[.075,.075,.075],12,false);
+ }
+ // Nucleus: two envelopes, visible pores, chromatin strands and nucleolus.
+ sphere("Çekirdek",0x9271c7,[-.35,.12,.15],[.82,.76,.68],48);
+ const envelope=new T.Mesh(new T.SphereGeometry(1,48,32),new T.MeshStandardMaterial({color:0x674a9d,wireframe:true,transparent:true,opacity:.42}));
+ envelope.position.set(-.35,.12,.15);envelope.scale.set(.86,.80,.72);add(envelope,"Çekirdek",false);
+ // Nuclear pores arranged on visible front hemisphere.
+ for(let i=0;i<14;i++){
+  const a=(i/14)*Math.PI*2, x=-.35+.83*Math.cos(a), y=.12+.72*Math.sin(a);
+  sphere("Çekirdek",0x493675,[x,y,.68],[.045,.045,.035],10,false);
+ }
+ sphere("Çekirdek",0x5d3e91,[-.12,.28,.78],[.22,.20,.13],28,false);
+ // Chromatin: thin winding strands inside the nucleus.
+ for(let j=0;j<5;j++){
+  const pts=[];
+  for(let k=0;k<18;k++){
+   const t=k/17, a=t*Math.PI*2*(1+j*.16);
+   pts.push([-.35+Math.cos(a)*(.22+j*.07),.12+Math.sin(a)*(.20+j*.055),.52+Math.sin(a*1.7+j)*.09]);
   }
-  addMesh(g,"Mitokondri");
+  tube("Çekirdek",pts,.014,0x553d86,false);
  }
- mitochondrion([1.28,.72,.5],-.35);mitochondrion([-1.35,-.83,.35],.55);
- // Rough and smooth ER: folded tubules around the nucleus; rough ER has ribosome beads.
- function tube(points,radius,color,name){
-  const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
-  const mesh=new THREE.Mesh(new THREE.TubeGeometry(curve,48,radius,8,false),mat(color));
-  return addMesh(mesh,name);
+ // Mitochondria with outer membrane, inner matrix and folded cristae.
+ function makeMito(pos,rot,scale=1){
+  const g=new T.Group();g.position.set(...pos);g.rotation.z=rot;g.scale.setScalar(scale);
+  const outer=new T.Mesh(new T.SphereGeometry(1,40,28),material(0xd98258));outer.scale.set(.78,.39,.30);g.add(outer);
+  const inner=new T.Mesh(new T.SphereGeometry(1,40,28),material(0xf3b17e));inner.scale.set(.67,.29,.23);g.add(inner);
+  for(let i=0;i<6;i++){
+   const x=-.48+i*.19;
+   const crista=new T.Mesh(new T.TorusGeometry(.12,.022,8,24,Math.PI*1.45),material(0xa94e42));
+   crista.position.set(x,Math.sin(i*1.4)*.045,.19);crista.rotation.y=.35;g.add(crista);
+  }
+  add(g,"Mitokondri");
  }
- tube([[-1.1,.85,.05],[-.85,1.05,.05],[-.45,.95,.05],[-.15,.82,.05],[.18,.94,.05]],.09,0x5c9ec9,"Endoplazmik retikulum");
- tube([[-1.25,.62,-.05],[-.85,.7,-.05],[-.5,.58,-.05],[-.15,.62,-.05],[.18,.72,-.05]],.07,0x6fb5d5,"Endoplazmik retikulum");
- tube([[-1.25,-.05,-.25],[-.95,-.28,-.25],[-.65,-.18,-.25],[-.4,-.38,-.25]],.055,0x6fb5d5,"Endoplazmik retikulum");
- // Golgi stack: curved flattened cisternae with budding vesicles.
- const golgiGroup=new THREE.Group();golgiGroup.position.set(.95,-.9,.25);
- for(let i=0;i<5;i++){
-  const geo=new THREE.SphereGeometry(1,32,20);
-  const mesh=new THREE.Mesh(geo,mat(i%2?0xf4c65d:0xeab64d));
-  mesh.scale.set(.58,.075,.18);mesh.position.set(Math.sin(i*.35)*.07,(i-2)*.14,0);golgiGroup.add(mesh);
+ makeMito([1.38,.78,.48],-.42,1.0);makeMito([-1.45,-.82,.25],.55,.86);
+ // Endoplasmic reticulum around nucleus; rough ER has ribosome granules, smooth ER is a separate tubular network.
+ const roughPaths=[
+ [[-1.15,.85,.05],[-.92,1.08,.05],[-.55,1.02,.05],[-.2,.91,.05],[.15,1.0,.05]],
+ [[-1.28,.55,-.08],[-.95,.68,-.08],[-.58,.57,-.08],[-.25,.67,-.08],[.12,.72,-.08]],
+ [[-1.05,.25,-.18],[-.78,.38,-.18],[-.48,.29,-.18],[-.18,.4,-.18]]
+ ];
+ roughPaths.forEach(p=>tube("Endoplazmik retikulum",p,.065,0x4f91c5));
+ const smoothPaths=[
+ [[-.95,-.55,-.32],[-.65,-.75,-.32],[-.28,-.68,-.32],[.05,-.82,-.32],[.36,-.72,-.32]],
+ [[-.75,-.95,-.38],[-.38,-1.1,-.38],[.0,-.98,-.38],[.3,-1.1,-.38],[.62,-.95,-.38]]
+ ];
+ smoothPaths.forEach(p=>tube("Endoplazmik retikulum",p,.052,0x75b7d5));
+ // Ribosomes on rough ER and free in cytoplasm.
+ roughPaths.forEach(path=>{
+  for(let i=0;i<22;i++){
+   const p=path[Math.floor(Math.random()*path.length)];
+   sphere("Ribozom",0x315f9e,[p[0]+(Math.random()-.5)*.22,p[1]+(Math.random()-.5)*.16,p[2]+.09],[.035,.035,.035],10);
+  }
+ });
+ for(let i=0;i<26;i++){
+  const a=Math.random()*Math.PI*2,r=.7+Math.random()*1.65;
+  sphere("Ribozom",0x3978b7,[Math.cos(a)*r,Math.sin(a)*r*.65,(Math.random()-.5)*.65],[.038,.038,.038],10);
  }
- addMesh(golgiGroup,"Golgi aygıtı");
- sphere("Golgi aygıtı",0xf8d989,[1.62,-.63,.33],[.11,.11,.11]);
- sphere("Golgi aygıtı",0xf8d989,[1.55,-1.2,.32],[.09,.09,.09]);
+ // Golgi stack: curved flattened cisternae made from bent flattened tubes with vesicles budding nearby.
+ const golgi=new T.Group();golgi.position.set(.95,-.88,.3);
+ for(let i=0;i<6;i++){
+  const pts=[];
+  for(let k=0;k<=16;k++){
+   const t=-1+k/8;
+   pts.push([t*.48,(i-2.5)*.13+.10*t*t,Math.sin(t*Math.PI/2)*.06]);
+  }
+  const curve=new T.CatmullRomCurve3(pts.map(p=>new T.Vector3(...p)));
+  const geo=new T.TubeGeometry(curve,40,.045,8,false);
+  const cis=new T.Mesh(geo,material(i%2?0xe9ae4e:0xf4c96a));golgi.add(cis);
+ }
+ add(golgi,"Golgi aygıtı");
+ sphere("Golgi aygıtı",0xf5d27e,[1.62,-.58,.42],[.10,.10,.10],16);
+ sphere("Golgi aygıtı",0xf5d27e,[1.55,-1.23,.42],[.085,.085,.085],16);
  // Lysosomes and transport vesicles.
- for(const p of [[-.95,-1.15,.55],[1.7,.05,.25],[.25,1.25,-.2]]) sphere("Lizozom",0xe99b58,p,[.17,.17,.17]);
- // Ribosomes, both free and attached to rough ER.
- for(let i=0;i<34;i++){
-  const a=Math.random()*Math.PI*2,r=.6+Math.random()*1.45;
-  const x=Math.cos(a)*r,y=Math.sin(a)*r*.65,z=(Math.random()-.5)*.75;
-  sphere("Ribozom",0x356fb3,[x,y,z],[.045,.045,.045],12);
+ [[-1.05,-1.18,.48],[1.72,.05,.22],[.35,1.28,-.22]].forEach(p=>sphere("Lizozom",0xe59a5b,p,[.16,.16,.16],24));
+ // Centrosome with two perpendicular centrioles.
+ const centro=new T.Group();centro.position.set(-1.45,-.12,.78);
+ for(let i=0;i<2;i++){
+  const c=new T.Mesh(new T.CylinderGeometry(.075,.075,.5,16),material(0x9a76bd));
+  c.rotation.z=i===0?Math.PI/2:0;c.position.x=(i-.5)*.18;centro.add(c);
  }
- // Centrosome pair, stylized centrioles.
- const centro=new THREE.Group();centro.position.set(-1.35,-.1,.75);
- for(let j=0;j<2;j++){
-  const c=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.52,16),mat(0x9b78bd));
-  c.rotation.z=Math.PI/2+(j*.85);c.position.x=(j-.5)*.22;centro.add(c);
- }
- addMesh(centro,"Sentrozom");
- // Cytoskeletal filaments as thin strands.
- for(let i=0;i<7;i++){
-  const a=i*Math.PI/3.5;
-  tube([[Math.cos(a)*.3,Math.sin(a)*.2,-.55],[Math.cos(a)*1.0,Math.sin(a)*.65,-.45],[Math.cos(a)*1.65,Math.sin(a)*.85,-.3]],.012,0x91a2c5,"Hücre zarı");
- }
- raycaster=new THREE.Raycaster();pointer=new THREE.Vector2();
+ add(centro,"Sentrozom");
+ // Cut face edge accents: a thin curved line along the open cutaway to emphasize the section.
+ tube("Hücre zarı",[[-2.9,-.7,.25],[-2.65,0,.35],[-2.2,.85,.35],[-1.35,1.55,.25],[0,1.95,.15],[1.5,1.55,.15],[2.55,.65,.15]],.025,0x399f91,false);
+
+ raycaster=new T.Raycaster();pointer=new T.Vector2();
  let dragging=false,lastX=0,lastY=0;
  renderer.domElement.addEventListener("pointerdown",e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;});
  window.addEventListener("pointerup",()=>dragging=false);
- renderer.domElement.addEventListener("pointermove",e=>{if(dragging){cellGroup.rotation.y+=(e.clientX-lastX)*.008;cellGroup.rotation.x+=(e.clientY-lastY)*.008;lastX=e.clientX;lastY=e.clientY;}});
+ renderer.domElement.addEventListener("pointermove",e=>{
+  if(dragging){cellRoot.rotation.y+=(e.clientX-lastX)*.008;cellRoot.rotation.x+=(e.clientY-lastY)*.008;lastX=e.clientX;lastY=e.clientY;}
+ });
  renderer.domElement.addEventListener("click",e=>{
   const r=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-r.left)/r.width)*2-1;pointer.y=-((e.clientY-r.top)/r.height)*2+1;
-  raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(clickable,true);
-  if(hits.length){let obj=hits[0].object;while(obj&&!obj.userData.org)obj=obj.parent;const n=obj&&obj.userData.org;const found=data.find(x=>x.name===n);if(found)selectOrg(found);}
+  raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(hitTargets,true);
+  if(hits.length){let obj=hits[0].object;while(obj&&!obj.userData.org)obj=obj.parent;const found=organelles.find(x=>x.name===(obj&&obj.userData.org));if(found)selectOrg(found);}
  });
- host.addEventListener("wheel",e=>{camera.position.z=Math.max(6.5,Math.min(13,camera.position.z+e.deltaY*.008));},{passive:true});
+ host.addEventListener("wheel",e=>{camera.position.z=Math.max(7.5,Math.min(14,camera.position.z+e.deltaY*.008));},{passive:true});
  const loading=document.getElementById("loading3d");if(loading)loading.remove();
- function animate(){requestAnimationFrame(animate);if(autoRotate&&!dragging)cellGroup.rotation.y+=.0025;renderer.render(scene,camera);}animate();
- window.addEventListener("resize",()=>{if(!renderer)return;camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight);});
+ function animate(){requestAnimationFrame(animate);if(autoRotate&&!dragging)cellRoot.rotation.y+=.002;renderer.render(scene,camera);}animate();
+ window.addEventListener("resize",()=>{camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight);});
 }
 document.getElementById("rotateBtn").addEventListener("click",e=>{autoRotate=!autoRotate;e.currentTarget.textContent=autoRotate?"⟳ Otomatik döndür":"Ⅱ Döndürmeyi durdur";});
-document.getElementById("resetBtn").addEventListener("click",()=>{if(cellGroup){cellGroup.rotation.set(0,0,0);camera.position.set(0,0,9.2);}});
-init3D();
+document.getElementById("resetBtn").addEventListener("click",()=>{if(cellRoot){cellRoot.rotation.set(0,0,0);camera.position.set(0,0,10.5);}});
+initCell();
