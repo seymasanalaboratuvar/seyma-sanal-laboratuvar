@@ -80,4 +80,4 @@ function init(){
  window.addEventListener('resize',()=>{camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight)});
 }
 $('rotateBtn').onclick=()=>{auto=!auto;$('rotateBtn').classList.toggle('active',auto);$('rotateBtn').querySelector('span').textContent=t(auto?'Otomatik döndür':'Döndürmeyi durdur',auto?'Auto rotate':'Pause rotation')};$('resetBtn').onclick=()=>{if(root)root.rotation.set(0,0,0);if(camera)camera.position.set(0,.15,10.2)};$('zoomIn').onclick=()=>{if(camera)camera.position.z=Math.max(6.4,camera.position.z-.7)};$('zoomOut').onclick=()=>{if(camera)camera.position.z=Math.min(15,camera.position.z+.7)};
-window.addEventListener('load',()=>{if(window.THREE)init();else setTimeout(()=>{if(window.THREE)init();else $('loading3d').innerHTML='<b>3B kütüphane yüklenemedi.</b><small>Bağlantıyı kontrol edip sayfayı yenileyin.</small>'},1200)});
+init();
