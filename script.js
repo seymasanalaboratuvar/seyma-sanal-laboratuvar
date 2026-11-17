@@ -15,7 +15,7 @@ const organs = [
 ];
 
 let lang='tr', selected='nucleus', auto=true, scene,camera,renderer,root,host,raycaster,mouse,cellLabel;
-let camZ=13, dragging=false, down=null, previous={x:0,y:0}, focusOn=false;
+let camZ=10.8, dragging=false, down=null, previous={x:0,y:0}, focusOn=false;
 const pickables=[], meshesById={}, focusPoints={};
 const $=id=>document.getElementById(id);
 const tr=(a,b)=>lang==='tr'?a:b;
@@ -85,7 +85,7 @@ function prepareModel(gltf){
  const box=new THREE.Box3().setFromObject(root),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
  root.position.sub(center);
  const maxDim=Math.max(size.x,size.y,size.z);
- const scale=8.8/maxDim;root.scale.setScalar(scale);
+ const scale=9.6/maxDim;root.scale.setScalar(scale);
  root.traverse(obj=>{
   if(!obj.isMesh)return;
   const id=idFor(obj.name);
@@ -93,16 +93,24 @@ function prepareModel(gltf){
    obj.userData.organelle=id;pickables.push(obj);(meshesById[id] ||= []).push(obj);
    const color=colorFor(id,obj.name);
    if(color!==null){obj.material=obj.material.clone();obj.material.color.setHex(color);obj.material.needsUpdate=true;}
-   if(id==='membrane'){obj.material.transparent=true;obj.material.opacity=.42;obj.material.side=THREE.DoubleSide;obj.material.depthWrite=false;}
-   if(id==='nucleus'&&obj.name.includes('nucleus_core')){obj.material.emissive?.setHex(0x26003f);}
-   if(id==='mito'&&obj.name.includes('cristae')){obj.material.emissive?.setHex(0x713500);}
+   if(id==='membrane'){obj.material.transparent=true;obj.material.opacity=.22;obj.material.side=THREE.DoubleSide;obj.material.depthWrite=false;}
+   if(id==='nucleus'&&obj.name.includes('nucleus_core')){obj.material.emissive?.setHex(0x4b006e);}
+   if(id==='mito'&&obj.name.includes('cristae')){obj.material.emissive?.setHex(0x9a4300);}
+  }
+  if(obj.name==='cytoplasm_body'){
+   obj.material=obj.material.clone();
+   obj.material.color.setHex(0x167b78);
+   obj.material.transparent=true;
+   obj.material.opacity=.10;
+   obj.material.depthWrite=false;
+   obj.material.needsUpdate=true;
   }
  });
  for(const id of Object.keys(meshesById)){
   const arr=meshesById[id];const b=new THREE.Box3();
   arr.forEach(m=>b.expandByObject(m));focusPoints[id]=b.getCenter(new THREE.Vector3());
  }
- camZ=13;camera.position.set(0,0,camZ);
+ camZ=10.8;camera.position.set(0,0,camZ);
  $('loading3d')?.remove();
 }
 function init(){
@@ -132,14 +140,14 @@ function init(){
  $('rotateBtn')?.addEventListener('click',()=>{auto=!auto;$('rotateBtn').classList.toggle('active',auto);const span=$('rotateBtn').querySelector('span');if(span)span.textContent=tr(auto?'Otomatik döndür':'Döndürme durdu',auto?'Auto rotate':'Auto rotate paused');});
  $('zoomIn')?.addEventListener('click',()=>camZ=Math.max(8,camZ-1.5));
  $('zoomOut')?.addEventListener('click',()=>camZ=Math.min(25,camZ+1.5));
- $('resetBtn')?.addEventListener('click',()=>{if(root)root.rotation.set(0,0,0);camZ=13;focusOn=false;if(cellLabel)cellLabel.style.display='none';});
+ $('resetBtn')?.addEventListener('click',()=>{if(root)root.rotation.set(0,0,0);camZ=10.8;focusOn=false;if(cellLabel)cellLabel.style.display='none';});
  const resize=()=>{if(!host.clientWidth||!host.clientHeight)return;camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight,false);};
  new ResizeObserver(resize).observe(host);
  cellLabel=document.createElement('div');cellLabel.style.cssText='position:absolute;display:none;pointer-events:none;white-space:nowrap;padding:5px 12px;border-radius:999px;font:600 13px system-ui;color:white;background:#061519d9;border:1.5px solid #7fe0cf';host.appendChild(cellLabel);
  let lastSelected='';
  function animate(){requestAnimationFrame(animate);if(!renderer)return;
   if(auto&&!dragging&&root)root.rotation.y+=.0012;
-  if(selected!==lastSelected){lastSelected=selected;if(root&&focusPoints[selected]){focusOn=true;camZ=selected==='nucleus'?10:selected==='mito'?10:12;}}
+  if(selected!==lastSelected){lastSelected=selected;if(root&&focusPoints[selected]){focusOn=true;camZ=selected==='nucleus'?8.8:selected==='mito'?8.8:10;}}
   
   camera.position.z+=(camZ-camera.position.z)*.08;
   if(focusOn&&root&&focusPoints[selected]){const p=(meshesById[selected]||[])[0]?.getWorldPosition(new THREE.Vector3())||new THREE.Vector3();p.project(camera);const o=organs.find(x=>x.id===selected);cellLabel.textContent=o?tr(o.name,o.en):'';cellLabel.style.display='block';cellLabel.style.transform=`translate(${(p.x*.5+.5)*host.clientWidth}px,${(-p.y*.5+.5)*host.clientHeight}px) translate(-50%,-170%)`;cellLabel.style.borderColor=o?o.chip:'#7fe0cf';}
