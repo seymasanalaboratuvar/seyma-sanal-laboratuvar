@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3B Hücre Mikroskobu</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#091014;color:#e6f0ee;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 14px 32px}
+h1{margin:0;font-size:1.3rem;font-weight:650;text-align:center}
+h1 small{display:block;margin-top:3px;font-size:.82rem;font-weight:400;color:#8fb5b1}
+#scope{position:relative;width:min(94vw,62vh,560px);aspect-ratio:1;border-radius:50%;overflow:hidden;border:9px solid #161d22;box-shadow:0 0 0 3px #3b474f,0 18px 50px #000,inset 0 0 50px #000;background:radial-gradient(circle,#215860 0%,#0f2f36 55%,#071519 100%);touch-action:none}
+#scope canvas{display:block;width:100%;height:100%;cursor:grab}
+#scope::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle,transparent 55%,rgba(0,0,0,.6) 100%)}
+#rot,.chip{font:inherit;color:#d4e6e3;background:#12222a;border:1px solid #2a4249;border-radius:999px;padding:7px 14px;cursor:pointer}
+#rot{font-size:.85rem}
+#chips{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;max-width:560px}
+.chip{font-size:.85rem;display:inline-flex;align-items:center;gap:7px}
+.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.chip[aria-pressed="true"]{background:#1d3a44;border-color:#7fe0cf;color:#fff}
+#rot:focus-visible,.chip:focus-visible{outline:2px solid #7fe0cf;outline-offset:2px}
+#info{width:min(94vw,560px);background:#0f1b21;border:1px solid #23383f;border-radius:14px;padding:16px 18px}
+#info h2{margin:0 0 10px;font-size:1.2rem;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+#info h2 i{width:12px;height:12px;border-radius:50%;flex:none}
+#info h2 span{font-size:.85rem;font-weight:400;color:#8fb5b1;font-style:italic}
+#info h3{margin:14px 0 5px;font-size:.95rem;color:#9fd8cf}
+#info p,#info li{line-height:1.55;font-size:.95rem;margin:0}
+#info ul{margin:0;padding-left:20px;display:grid;gap:6px}
+#info .tip{margin-top:14px;padding:10px 12px;background:#14272e;border-radius:10px;color:#cfe6e2}
+</style>
+</head>
+<body>
+<h1>Hayvan Hücresi 3B Mikroskop<small>Organellere tıkla, adını ve görevini öğren</small></h1>
+<div id="scope"></div>
+<button id="rot" type="button" aria-pressed="true">⟳ Otomatik dönüş: Açık</button>
+<div id="chips"></div>
+<section id="info" aria-live="polite"></section>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const DATA={
+zar:{name:'Hücre Zarı',en:'Cell membrane',color:'#7fe0cf',
+where:'Fosfolipit çift tabaka ve içine gömülü proteinlerden oluşur (akıcı mozaik model).',
+duties:['Hücreyi dış ortamdan ayırır ve hücrenin bütünlüğünü korur.','Seçici geçirgendir: hangi maddenin girip çıkacağına o karar verir.','Madde alışverişi yapılır: difüzyon, kolaylaştırılmış difüzyon, osmoz, aktif taşıma, endositoz ve ekzositoz.','Yüzeyindeki reseptör proteinler sayesinde hücreler arası iletişimi sağlar.'],
+tip:'Bitki hücresinde zarın dışında selülozdan yapılmış bir hücre duvarı da bulunur; hayvan hücresinde yoktur.'},
+cekirdek:{name:'Çekirdek',en:'Nucleus',color:'#5b6ee1',
+where:'Çift katlı çekirdek zarıyla çevrilidir; zarda çekirdek gözenekleri bulunur. İçinde DNA’dan oluşan kromatin iplikleri vardır.',
+duties:['Kalıtsal maddeyi (DNA) barındırır; hücrenin yönetim merkezidir.','Hangi proteinlerin üretileceğini belirler: DNA’dan mRNA sentezlenir (transkripsiyon).','mRNA, çekirdek gözeneklerinden sitoplazmaya geçip ribozomlara ulaşır.','Hücre bölünmesinde kromatin iplikleri kısalıp kalınlaşarak kromozomları oluşturur.'],
+tip:'Bakteri gibi prokaryot hücrelerde zarla çevrili gerçek bir çekirdek bulunmaz.'},
+cekirdekcik:{name:'Çekirdekçik',en:'Nucleolus',color:'#ffd36e',
+where:'Çekirdeğin içinde bulunan, zarsız ve yoğun bir bölgedir.',
+duties:['rRNA sentezlenir.','rRNA ile proteinler birleşerek ribozomların alt birimlerini oluşturur.','Protein sentezi yoğun olan hücrelerde çekirdekçik daha büyüktür.','Hücre bölünmesi sırasında kaybolur, bölünme bitince yeniden oluşur.'],
+tip:'Bir çekirdekte birden fazla çekirdekçik bulunabilir.'},
+mito:{name:'Mitokondri',en:'Mitochondrion',color:'#e8643c',
+where:'Çift zarlıdır; iç zar kıvrılarak kristaları oluşturur. İçinde kendi DNA’sı ve ribozomları bulunur.',
+duties:['Hücresel solunumla besinlerdeki enerjiyi ATP’ye çevirir; bu yüzden “hücrenin enerji santrali” denir.','Özet denklem: glikoz + O₂ → CO₂ + H₂O + ATP.','Krebs döngüsü matriks adı verilen iç sıvıda, elektron taşıma sistemi (ATP’nin büyük kısmı) kristalarda gerçekleşir.','Kendi DNA’sı sayesinde kendini eşleyebilir.'],
+tip:'Kas ve karaciğer gibi enerji ihtiyacı yüksek hücrelerde mitokondri sayısı daha fazladır.'},
+ger:{name:'Granüllü Endoplazmik Retikulum',en:'Rough ER',color:'#e27fb3',
+where:'Zarla çevrili, birbirine bağlı kanal ve keselerden oluşur. Dış yüzeyi ribozomlarla kaplıdır ve çekirdek zarıyla süreklidir.',
+duties:['Yüzeyindeki ribozomlarda üretilen proteinleri içine alır, katlar ve işler.','Proteinleri keseciklerle Golgi’ye taşır.','Hücre içinde madde taşınmasını sağlayan bir kanal ağı görevi görür.','Salgı yapan hücrelerde (örneğin enzim üreten pankreas hücrelerinde) çok gelişmiştir.'],
+tip:'Üzerindeki ribozomlar yüzünden mikroskopta “granüllü” (taneli) görünür.'},
+der:{name:'Düz Endoplazmik Retikulum',en:'Smooth ER',color:'#f0a8d6',
+where:'Yüzeyinde ribozom bulunmayan, borucuk biçimli bir zar sistemidir.',
+duties:['Lipit (yağ) ve steroid hormonların sentezini yapar.','Karaciğer hücrelerinde ilaç ve zehirli maddeleri zararsız hale getirir (detoksifikasyon).','Kas hücrelerinde kalsiyum iyonlarını depolar; kasların kasılmasında rol oynar.','Hücre içi madde taşınmasına katkıda bulunur.'],
+tip:'Karaciğer ve üreme bezi hücrelerinde düz ER daha boldur.'},
+golgi:{name:'Golgi Cisimciği',en:'Golgi apparatus',color:'#f2c14e',
+where:'Üst üste dizilmiş yassı ve kıvrık zar keseciklerinden (sisternalardan) oluşur.',
+duties:['ER’den gelen proteinleri ve lipitleri olgunlaştırır, paketler ve etiketler.','Salgı keseciklerini oluşturur; bu keseciklerdeki maddeler ekzositozla hücre dışına atılır (hormon, sindirim enzimi gibi).','Lizozomların oluşumuna katkıda bulunur.','Bitki hücrelerinde hücre duvarı maddelerinin yapımına yardım eder.'],
+tip:'Golgi, hücrenin “paketleme ve kargo merkezi” gibidir. Salgı yapan hücrelerde çok gelişmiştir.'},
+ribozom:{name:'Ribozom',en:'Ribosome',color:'#d8f3ff',
+where:'Zarsız, çok küçük bir organeldir; rRNA ve proteinden oluşur ve büyük ile küçük olmak üzere iki alt birimi vardır. Sitoplazmada serbest ya da granüllü ER üzerinde bulunur.',
+duties:['Protein sentezi (translasyon) burada yapılır: mRNA’daki şifre okunur ve amino asitler birleştirilir.','Serbest ribozomlar hücre içinde kullanılacak proteinleri, ER’ye bağlı olanlar ise salgılanacak veya zar proteinlerini üretir.','Zarsız olduğu için tüm canlı hücrelerde (prokaryot ve ökaryot) bulunur.'],
+tip:'Mitokondri ve kloroplastın içinde de kendi ribozomları vardır.'},
+lizozom:{name:'Lizozom',en:'Lysosome',color:'#6fcf7f',
+where:'Tek zarlı, içi sindirim enzimleriyle dolu küçük keseciklerdir; Golgi tarafından oluşturulur.',
+duties:['Hücre içi sindirim yapar: besinleri, bakterileri ve virüsleri parçalar.','Yaşlı veya hasarlı organelleri parçalayıp geri dönüştürür (otofaji).','Akyuvarlarda fagositozla alınan mikropları yok eder.','Enzimler hücreye zarar vermesin diye zarla çevrilidir.'],
+tip:'Lizozom zarı yırtılırsa enzimler hücrenin kendisini sindirebilir (otoliz).'},
+sentrozom:{name:'Sentrozom (Sentriyoller)',en:'Centrosome',color:'#ff6f91',
+where:'Birbirine dik duran iki sentriyolden oluşur; her biri mikrotübüllerden yapılmış silindirik bir yapıdır. Hayvan hücrelerinde bulunur.',
+duties:['Hücre bölünmesinde (mitoz ve mayoz) iğ ipliklerini oluşturur.','İğ iplikleri kromozomların kutuplara çekilmesini sağlar.','Kamçı ve kirpiklerin taban yapılarının oluşumunda rol oynar.'],
+tip:'Bitki hücrelerinde sentriyol bulunmaz.'}
+};
+
+const scope=document.getElementById('scope'),info=document.getElementById('info'),chips=document.getElementById('chips'),rotBtn=document.getElementById('rot');
+
+/* ---------- 3B sahne ---------- */
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x0f2f36,16,28);
+const camera=new THREE.PerspectiveCamera(42,1,0.1,100);
+camera.position.set(2,3,13.5);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+scope.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,.65));
+const dl=new THREE.DirectionalLight(0xffffff,.8);dl.position.set(5,8,10);scene.add(dl);
+const pl=new THREE.PointLight(0x66ffee,.6,40);pl.position.set(-8,-4,6);scene.add(pl);
+
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.enablePan=false;
+controls.minDistance=6;controls.maxDistance=20;
+controls.autoRotate=true;controls.autoRotateSpeed=.8;
+
+const world=new THREE.Group();scene.add(world);
+const pick=[],byKey={};
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+function mat(c,o){return new THREE.MeshPhongMaterial(Object.assign({color:c,shininess:60,specular:0x444444},o||{}));}
+function add(parent,mesh,key,hex){mesh.userData.key=key;mesh.userData.c=new THREE.Color(hex);(byKey[key]=byKey[key]||[]).push(mesh);pick.push(mesh);parent.add(mesh);return mesh;}
+function proxy(parent,key,r){const m=new THREE.Mesh(new THREE.SphereGeometry(r,8,8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));m.userData.key=key;pick.push(m);parent.add(m);}
+
+/* hücre zarı */
+const memb=new THREE.Mesh(new THREE.SphereGeometry(1,64,48),mat(0x7fe0cf,{transparent:true,opacity:.13,side:THREE.DoubleSide,depthWrite:false,shininess:120}));
+memb.scale.set(5.3,4.6,4.4);add(world,memb,'zar','#7fe0cf');
+const rim=new THREE.Mesh(new THREE.SphereGeometry(1,48,32),new THREE.MeshBasicMaterial({color:0x66ffee,transparent:true,opacity:.07,side:THREE.BackSide,depthWrite:false}));
+rim.scale.set(5.4,4.7,4.5);world.add(rim);
+
+/* çekirdek, kromatin, çekirdekçik */
+const NP=V(-.6,.3,0);
+const nuc=new THREE.Mesh(new THREE.SphereGeometry(1.4,40,32),mat(0x5b6ee1,{transparent:true,opacity:.45,depthWrite:false}));
+nuc.position.copy(NP);add(world,nuc,'cekirdek','#5b6ee1');
+const knot=new THREE.Mesh(new THREE.TorusKnotGeometry(.55,.09,90,8,2,3),mat(0xb7c0ff));
+knot.position.copy(NP);add(world,knot,'cekirdek','#b7c0ff');
+const nl=new THREE.Mesh(new THREE.SphereGeometry(.42,24,20),mat(0xffd36e));
+nl.position.set(-.1,.4,.3);add(world,nl,'cekirdekcik','#ffd36e');
+
+/* ribozom ortak geometri */
+const rg=new THREE.SphereGeometry(.07,8,6),rm=mat(0xd8f3ff,{shininess:30});
+function ribo(p){const m=new THREE.Mesh(rg,rm);m.position.copy(p);add(world,m,'ribozom','#d8f3ff');}
+
+/* granüllü ER (çekirdeği saran kıvrımlı borucuklar) + üzerindeki ribozomlar */
+const pts=[];
+for(let i=0;i<=70;i++){const a=i/70*Math.PI*3,r=2.1+.25*Math.sin(5*a);
+  pts.push(V(NP.x+r*Math.cos(a),NP.y+.9*Math.sin(a*.7)+.3*Math.cos(3*a),r*Math.sin(a)*.9));}
+const rc=new THREE.CatmullRomCurve3(pts),rtube=new THREE.TubeGeometry(rc,200,.12,8,false),rmat=mat(0xe27fb3);
+[-.26,0,.26].forEach(dy=>{const m=new THREE.Mesh(rtube,rmat);m.position.y=dy;add(world,m,'ger','#e27fb3');});
+for(let i=0;i<60;i++){const p=rc.getPoint(i/60);ribo(V(p.x+(i%3-1)*.05,p.y+((i*7)%3-1)*.2,p.z+.13));}
+
+/* düz ER */
+const smat=mat(0xf0a8d6);
+[[[2,2.2,.8],[3.2,1.6,-.6],[3.6,.5,.7],[2.9,-.4,-.7],[3.4,-1.3,.6]],
+ [[3.2,1.6,-.6],[4.1,2,.2],[4.3,.6,-.8]],
+ [[2.9,-.4,-.7],[1.9,-1,-1.5],[2.4,-2,-.6]]].forEach(c=>{
+  const cur=new THREE.CatmullRomCurve3(c.map(p=>V(p[0],p[1],p[2])));
+  add(world,new THREE.Mesh(new THREE.TubeGeometry(cur,60,.13,8,false),smat),'der','#f0a8d6');});
+
+/* Golgi */
+const gg=new THREE.Group();gg.position.set(-3.2,-1.8,.6);gg.rotation.set(.3,.4,.5);world.add(gg);
+for(let i=0;i<5;i++){
+  const t=new THREE.Mesh(new THREE.TorusGeometry(1-.06*Math.abs(i-2),.09,8,28,Math.PI*.9),mat(0xf2c14e));
+  t.rotation.x=Math.PI/2;t.position.y=(i-2)*.3;add(gg,t,'golgi','#f2c14e');}
+[[1,.6,.2],[-.9,-.5,.3],[.2,.8,.9],[-.3,-.7,.8]].forEach(p=>{
+  const v=new THREE.Mesh(new THREE.SphereGeometry(.15,12,10),mat(0xffe08a));v.position.set(p[0],p[1],p[2]);add(gg,v,'golgi','#ffe08a');});
+proxy(gg,'golgi',1.1);
+
+/* mitokondri */
+function mito(x,y,z,ry,rz){
+  const g=new THREE.Group();g.position.set(x,y,z);g.rotation.set(0,ry,rz);world.add(g);
+  const o=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),mat(0xe8643c,{transparent:true,opacity:.7,depthWrite:false}));
+  o.scale.set(.95,.42,.42);add(g,o,'mito','#e8643c');
+  for(let i=-2;i<=2;i++){const c=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.04,16),mat(0xffb36b));
+    c.rotation.z=Math.PI/2;c.position.x=i*.28;add(g,c,'mito','#ffb36b');}
+  proxy(g,'mito',.6);}
+[[.8,-2.6,.8,.4,.3],[-3.6,.9,-1.2,1.1,-.4],[1.9,.8,-2.8,2.2,.2],[.4,3.1,-1.2,.7,-.3],[3.2,-2.4,1,1.8,.5]].forEach(a=>mito(...a));
+
+/* lizozom */
+[[-1.4,2.6,1.4],[-2.2,-.6,2.5],[1.2,-1.4,2.8],[3.6,2.2,1],[-1,-3.4,1.6]].forEach(p=>{
+  const g=new THREE.Group();g.position.set(p[0],p[1],p[2]);world.add(g);
+  add(g,new THREE.Mesh(new THREE.SphereGeometry(.28,20,16),mat(0x6fcf7f)),'lizozom','#6fcf7f');
+  add(g,new THREE.Mesh(new THREE.SphereGeometry(.1,10,8),mat(0x2f8a45)),'lizozom','#2f8a45');
+  proxy(g,'lizozom',.45);});
+
+/* sentrozom */
+const cg=new THREE.Group();cg.position.set(-2.8,2.6,-.5);cg.rotation.set(.3,.5,.2);world.add(cg);
+const c1=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.9,16),mat(0xff6f91));add(cg,c1,'sentrozom','#ff6f91');
+const c2=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.9,16),mat(0xff6f91));
+c2.rotation.z=Math.PI/2;c2.position.set(.55,-.45,0);add(cg,c2,'sentrozom','#ff6f91');
+proxy(cg,'sentrozom',.8);
+
+/* serbest ribozomlar */
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+let n=0;while(n<50){const x=(rnd()*2-1)*5.3*.85,y=(rnd()*2-1)*4.6*.85,z=(rnd()*2-1)*4.4*.85,p=V(x,y,z);
+  if((x/4.5)**2+(y/3.9)**2+(z/3.74)**2>1||p.distanceTo(NP)<2.6)continue;ribo(p);n++;}
+
+/* ---------- etkileşim ---------- */
+let sel=null,hov=null;
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+function pickAt(e){
+  const r=renderer.domElement.getBoundingClientRect();
+  mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
+  ray.setFromCamera(mouse,camera);
+  const h=ray.intersectObjects(pick,false);
+  if(!h.length)return null;
+  const nlHit=h.find(x=>x.object.userData.key==='cekirdekcik');
+  if(nlHit)return 'cekirdekcik';
+  const o=h.find(x=>x.object.userData.key!=='zar');
+  return (o||h[0]).object.userData.key;
+}
+function show(k){
+  const d=DATA[k];
+  info.innerHTML='<h2><i style="background:'+d.color+'"></i>'+d.name+' <span>'+d.en+'</span></h2>'+
+  '<h3>Yapısı</h3><p>'+d.where+'</p><h3>Görevleri</h3><ul>'+d.duties.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+  '<p class="tip">💡 '+d.tip+'</p>';
+}
+function select(k){
+  sel=k;show(k);
+  chips.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===k)));
+}
+info.innerHTML='<p>Bir organele tıkla ya da aşağıdaki listeden seç. Döndürmek için sürükle, yakınlaştırmak için kaydır veya iki parmakla yakınlaştır.</p>';
+Object.keys(DATA).forEach(k=>{
+  const b=document.createElement('button');b.type='button';b.className='chip';b.dataset.k=k;b.setAttribute('aria-pressed','false');
+  b.innerHTML='<i style="background:'+DATA[k].color+'"></i>'+DATA[k].name.replace(/ \(.*\)/,'');
+  b.onclick=()=>select(k);chips.appendChild(b);});
+
+let down=null;const el=renderer.domElement;
+el.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};});
+el.addEventListener('pointerup',e=>{
+  if(!down)return;
+  const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y);down=null;
+  if(moved<6){const k=pickAt(e);if(k)select(k);}
+});
+el.addEventListener('pointermove',e=>{
+  if(e.pointerType!=='mouse'||down)return;
+  hov=pickAt(e);el.style.cursor=hov?'pointer':'grab';
+});
+el.addEventListener('pointerleave',()=>{hov=null;});
+
+function setRot(on){controls.autoRotate=on;rotBtn.textContent='⟳ Otomatik dönüş: '+(on?'Açık':'Kapalı');rotBtn.setAttribute('aria-pressed',String(on));}
+rotBtn.onclick=()=>setRot(!controls.autoRotate);
+controls.addEventListener('start',()=>{if(controls.autoRotate)setRot(false);});
+
+function fit(){const w=scope.clientWidth,h=scope.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+new ResizeObserver(fit).observe(scope);fit();
+
+const clock=new THREE.Clock();
+(function loop(){
+  requestAnimationFrame(loop);
+  const t=clock.getElapsedTime();controls.update();
+  for(const k in byKey){
+    const lv=k===sel?.3+.18*Math.sin(t*4):(k===hov?.2:0);
+    for(const m of byKey[k])m.material.emissive.copy(m.userData.c).multiplyScalar(lv);
+  }
+  renderer.render(scene,camera);
+})();
+</script>
+</body>
+                                                                                  </html>
