@@ -1,7 +1,7 @@
 import * as THREE from 'https://esm.sh/three@0.152.2';
 
 const organs=[
-{id:'nucleus',name:'Çekirdek',en:'Nucleus',emoji:'🧬',chip:'#8d9bff',
+{id:'nucleus',name:'Çekirdek',en:'Nucleus',emoji:'🧬',chip:'#b77cff',
 desc:'Hücrenin yönetim merkezi; kalıtsal maddeyi (DNA) barındırır.',edesc:'The control center of the cell; it holds the genetic material (DNA).',
 structure:'Gözenekli çift zarla çevrilidir; içinde DNA’dan oluşan kromatin iplikleri bulunur.',estructure:'Surrounded by a double membrane with pores; contains chromatin made of DNA.',
 function:'Hücrenin hangi proteinleri üreteceğini belirler: DNA’dan mRNA sentezlenir ve çekirdek gözeneklerinden sitoplazmaya geçer. Hücre bölünürken kromatin kromozomlara dönüşür.',efunction:'Decides which proteins the cell makes: mRNA is copied from DNA and leaves through the nuclear pores. Chromatin condenses into chromosomes during cell division.'},
@@ -13,15 +13,15 @@ function:'rRNA sentezlenir ve proteinlerle birleşerek ribozomların alt birimle
 desc:'Hücrenin enerji santrali.',edesc:'The power plant of the cell.',
 structure:'Çift zarlıdır; iç zar kıvrılarak kristaları oluşturur. Kendi DNA’sı ve ribozomları vardır.',estructure:'Double membrane; the inner membrane folds into cristae. Has its own DNA and ribosomes.',
 function:'Hücresel solunumla glikozdaki enerjiyi ATP’ye çevirir: glikoz + O₂ → CO₂ + H₂O + ATP. Krebs döngüsü matriksde, elektron taşıma sistemi kristalarda gerçekleşir.',efunction:'Cellular respiration turns the energy in glucose into ATP: glucose + O₂ → CO₂ + H₂O + ATP. The Krebs cycle runs in the matrix, the electron transport chain on the cristae.'},
-{id:'rough',name:'Granüllü ER',en:'Rough ER',emoji:'🌀',chip:'#e27fb3',
+{id:'rough',name:'Granüllü ER',en:'Rough ER',emoji:'🌀',chip:'#168cff',
 desc:'Protein üretimi ve işlenmesiyle ilgili zar ağı.',edesc:'A membrane network for making and processing proteins.',
 structure:'Yüzeyi ribozomlarla kaplı, birbirine bağlı kanal ve keselerdir; çekirdek zarıyla süreklidir.',estructure:'Connected channels and sacs covered with ribosomes; continuous with the nuclear envelope.',
 function:'Ribozomlarda üretilen proteinleri içine alır, katlar ve keseciklerle Golgi’ye gönderir. Salgı yapan hücrelerde çok gelişmiştir.',efunction:'Takes in proteins made by its ribosomes, folds them and sends them to the Golgi in vesicles. Well developed in secretory cells.'},
-{id:'smooth',name:'Düz ER',en:'Smooth ER',emoji:'〰️',chip:'#f0a8d6',
+{id:'smooth',name:'Düz ER',en:'Smooth ER',emoji:'〰️',chip:'#27c8ff',
 desc:'Lipit sentezi ve zehirsizleştirme yapan zar ağı.',edesc:'A membrane network for lipid synthesis and detoxification.',
 structure:'Yüzeyinde ribozom bulunmayan, borucuk biçimli zar sistemidir.',estructure:'Tube-shaped membranes without ribosomes on the surface.',
 function:'Lipit ve steroid hormon sentezler; karaciğerde ilaç ve zehirli maddeleri zararsız hale getirir; kas hücrelerinde kalsiyum depolar.',efunction:'Makes lipids and steroid hormones; detoxifies drugs and poisons in the liver; stores calcium in muscle cells.'},
-{id:'golgi',name:'Golgi aygıtı',en:'Golgi apparatus',emoji:'📚',chip:'#f2c14e',
+{id:'golgi',name:'Golgi aygıtı',en:'Golgi apparatus',emoji:'📚',chip:'#ff5ca8',
 desc:'Hücrenin paketleme ve kargo merkezi.',edesc:'The packaging and shipping center of the cell.',
 structure:'Üst üste dizilmiş yassı zar keseciklerinden (sisternalardan) oluşur.',estructure:'A stack of flattened membrane sacs (cisternae).',
 function:'ER’den gelen proteinleri ve lipitleri olgunlaştırır, paketler ve salgı kesecikleriyle hedefine gönderir (ekzositoz). Lizozomların oluşumuna da katkıda bulunur.',efunction:'Finishes and packages proteins and lipids from the ER and ships them in secretory vesicles (exocytosis). Also helps form lysosomes.'},
@@ -131,11 +131,11 @@ function buildCell(){
   const ng=new THREE.SphereGeometry(1.4,64,48),np=ng.attributes.position,tv=V(0,0,0);
   for(let i=0;i<np.count;i++){tv.fromBufferAttribute(np,i);tv.multiplyScalar(1+.035*Math.sin(tv.x*5)*Math.cos(tv.y*4)*Math.sin(tv.z*5));np.setXYZ(i,tv.x,tv.y,tv.z);}
   ng.computeVertexNormals();
-  const nuc=new THREE.Mesh(ng,mat(0x8735d2,{transparent:true,opacity:.4,depthWrite:false,shininess:100}));nuc.position.copy(NP);add(root,nuc,'nucleus','#5b6ee1');
-  for(let i=0;i<40;i++){const y=1-i/19.5,r=Math.sqrt(Math.max(0,1-y*y)),a=i*2.39996,pm=sph(.08,0x2a2f8a,null,8,6);
+  const nuc=new THREE.Mesh(ng,mat(0x8735d2,{transparent:true,opacity:.4,depthWrite:false,shininess:100}));nuc.position.copy(NP);add(root,nuc,'nucleus','#8735d2');
+  for(let i=0;i<40;i++){const y=1-i/19.5,r=Math.sqrt(Math.max(0,1-y*y)),a=i*2.39996,pm=sph(.08,0x4d167e,null,8,6);
     pm.position.set(NP.x+Math.cos(a)*r*1.42,NP.y+y*1.42,NP.z+Math.sin(a)*r*1.42);add(root,pm,'nucleus','#2a2f8a');}
-  [[.55,.07,2,3,0xb7c0ff,0],[.42,.06,3,5,0x8fa0ff,1.1],[.3,.05,2,5,0xd0d6ff,2.2]].forEach(k=>{
-    const m=new THREE.Mesh(new THREE.TorusKnotGeometry(k[0],k[1],120,8,k[2],k[3]),mat(k[4]));m.position.copy(NP);m.rotation.set(k[5],k[5]*.7,0);add(root,m,'nucleus','#b7c0ff');});
+  [[.55,.07,2,3,0xd9a2ff,0],[.42,.06,3,5,0xb34df0,1.1],[.3,.05,2,5,0xf0caff,2.2]].forEach(k=>{
+    const m=new THREE.Mesh(new THREE.TorusKnotGeometry(k[0],k[1],120,8,k[2],k[3]),mat(k[4]));m.position.copy(NP);m.rotation.set(k[5],k[5]*.7,0);add(root,m,'nucleus','#d9a2ff');});
   const nl=sph(.4,0xffd36e,{shininess:90},24,18);nl.position.set(-.1,.4,.3);add(root,nl,'nucleolus','#ffd36e');
   [[.3,.1,.1],[-.25,-.1,.2],[.05,.3,-.25]].forEach(o=>{const b=sph(.17,0xffc247,null,12,10);b.position.set(-.1+o[0],.4+o[1],.3+o[2]);add(root,b,'nucleolus','#ffc247');});
 
@@ -146,23 +146,23 @@ function buildCell(){
   /* granüllü ER: katlanmış yassı keseler + ribozomlar */
   const rpts=[];for(let i=0;i<=80;i++){const a=i/80*Math.PI*3.2,r=2.15+.28*Math.sin(5*a);rpts.push(V(NP.x+r*Math.cos(a),NP.y+.8*Math.sin(a*.7)+.25*Math.cos(3*a),r*Math.sin(a)*.9));}
   const rc=new THREE.CatmullRomCurve3(rpts),dys=[-.34,0,.34];
-  dys.forEach(dy=>{const m=ribbon(rc,.3,160,0xe27fb3);m.position.y=dy;add(root,m,'rough','#e27fb3',NP);});
+  dys.forEach(dy=>{const m=ribbon(rc,.3,160,0x168cff);m.position.y=dy;add(root,m,'rough','#168cff',NP);});
   for(let i=0;i<110;i++){const f=frame(rc,rnd());ribo(f.p.clone().addScaledVector(f.s,(rnd()*2-1)*.3).addScaledVector(f.n,.06).add(V(0,dys[i%3],0)));}
 
   /* düz ER: dallanmış borucuk ağı */
-  const smm=mat(0xf0a8d6),sf=V(3.2,.4,0);
+  const smm=mat(0x27c8ff),sf=V(3.2,.4,0);
   [[[2,2.2,.8],[3.2,1.6,-.6],[3.6,.5,.7],[2.9,-.4,-.7],[3.4,-1.3,.6]],[[3.2,1.6,-.6],[4.1,2,.2],[4.3,.6,-.8]],
    [[2.9,-.4,-.7],[1.9,-1,-1.5],[2.4,-2,-.6]],[[2,2.2,.8],[1.3,3,0],[2,3.4,-1]]].forEach(c=>{
     const cur=new THREE.CatmullRomCurve3(c.map(p=>V(p[0],p[1],p[2])));
-    add(root,new THREE.Mesh(new THREE.TubeGeometry(cur,70,.11,8,false),smm),'smooth','#f0a8d6',sf);
-    c.forEach(p=>{const j=sph(.17,0xf0a8d6,null,10,8);j.position.set(p[0],p[1],p[2]);add(root,j,'smooth','#f0a8d6',sf);});});
+    add(root,new THREE.Mesh(new THREE.TubeGeometry(cur,70,.11,8,false),smm),'smooth','#27c8ff',sf);
+    c.forEach(p=>{const j=sph(.17,0x27c8ff,null,10,8);j.position.set(p[0],p[1],p[2]);add(root,j,'smooth','#27c8ff',sf);});});
 
   /* Golgi: üst üste yassı keseler + keseciklar */
   const gg=new THREE.Group();gg.position.set(-3.2,-1.8,.6);gg.rotation.set(.3,.4,.5);root.add(gg);
   for(let i=0;i<6;i++){const sc=1-.07*Math.abs(i-2.5),cp=[];for(let k=0;k<=8;k++){const x=(-1.1+k*.275)*sc;cp.push(V(x,0,.3*x*x));}
-    const m=ribbon(new THREE.CatmullRomCurve3(cp),.5*sc,40,0xf2c14e);m.position.y=(i-2.5)*.3;add(gg,m,'golgi','#f2c14e');}
+    const m=ribbon(new THREE.CatmullRomCurve3(cp),.5*sc,40,0xff5ca8);m.position.y=(i-2.5)*.3;add(gg,m,'golgi','#ff5ca8');}
   [[1.3,.7,.5],[-1.3,-.6,.5],[1.5,-.2,.9],[-1.5,.4,.9],[0,1.2,.5],[.2,-1.1,.6]].forEach(p=>{
-    const v=sph(.14,0xffe08a,{shininess:100},12,10);v.position.set(p[0],p[1],p[2]);add(gg,v,'golgi','#ffe08a');floaters.push({o:v,b:v.position.clone(),ph:rnd()*6,a:.08});});
+    const v=sph(.14,0xffa4d0,{shininess:100},12,10);v.position.set(p[0],p[1],p[2]);add(gg,v,'golgi','#ffa4d0');floaters.push({o:v,b:v.position.clone(),ph:rnd()*6,a:.08});});
   proxy(gg,'golgi',1.2);
 
   /* mitokondri: dış zar, iç zar, kristalar */
@@ -170,8 +170,19 @@ function buildCell(){
     const g=new THREE.Group();g.position.set(a[0],a[1],a[2]);g.rotation.set(0,a[3],a[4]);root.add(g);
     const o=sph(1,0xe8643c,{transparent:true,opacity:.5,depthWrite:false},28,18);o.scale.set(1.05,.46,.46);add(g,o,'mito','#e8643c');
     const inn=sph(1,0xff8b5a,{transparent:true,opacity:.9},24,16);inn.scale.set(.93,.34,.34);add(g,inn,'mito','#ff8b5a');
-    for(let i=-3;i<=3;i++){const r=.3*Math.sqrt(1-(i*.27/.95)**2)+.03,c=new THREE.Mesh(new THREE.CylinderGeometry(r,r,.05,16),mat(0xffc08a));
-      c.rotation.z=Math.PI/2;c.position.set(i*.27,(i%2?.05:-.05),0);add(g,c,'mito','#ffc08a');}
+    /* Kristalar: iç zarın belirgin, dalgalı kıvrımları */
+    for(let i=-2;i<=2;i++){
+      const pts=[];
+      for(let j=0;j<=12;j++){
+        const x=-.78+j*.13;
+        const y=i*.085+Math.sin(j*.85+i*.7)*.075;
+        const z=Math.cos(j*.75+i*.6)*.045;
+        pts.push(V(x,y,z));
+      }
+      const cr=new THREE.CatmullRomCurve3(pts);
+      const fold=new THREE.Mesh(new THREE.TubeGeometry(cr,48,.025,6,false),mat(0xffffb0,{shininess:95}));
+      add(g,fold,'mito','#ffffb0');
+    }
     proxy(g,'mito',.65);floaters.push({o:g,b:g.position.clone(),ph:rnd()*6,a:.12});});
 
   /* lizozom */
