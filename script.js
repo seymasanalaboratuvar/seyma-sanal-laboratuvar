@@ -131,7 +131,7 @@ function buildCell(){
   const ng=new THREE.SphereGeometry(1.4,64,48),np=ng.attributes.position,tv=V(0,0,0);
   for(let i=0;i<np.count;i++){tv.fromBufferAttribute(np,i);tv.multiplyScalar(1+.035*Math.sin(tv.x*5)*Math.cos(tv.y*4)*Math.sin(tv.z*5));np.setXYZ(i,tv.x,tv.y,tv.z);}
   ng.computeVertexNormals();
-  const nuc=new THREE.Mesh(ng,mat(0x5b6ee1,{transparent:true,opacity:.4,depthWrite:false,shininess:100}));nuc.position.copy(NP);add(root,nuc,'nucleus','#5b6ee1');
+  const nuc=new THREE.Mesh(ng,mat(0x8735d2,{transparent:true,opacity:.4,depthWrite:false,shininess:100}));nuc.position.copy(NP);add(root,nuc,'nucleus','#5b6ee1');
   for(let i=0;i<40;i++){const y=1-i/19.5,r=Math.sqrt(Math.max(0,1-y*y)),a=i*2.39996,pm=sph(.08,0x2a2f8a,null,8,6);
     pm.position.set(NP.x+Math.cos(a)*r*1.42,NP.y+y*1.42,NP.z+Math.sin(a)*r*1.42);add(root,pm,'nucleus','#2a2f8a');}
   [[.55,.07,2,3,0xb7c0ff,0],[.42,.06,3,5,0x8fa0ff,1.1],[.3,.05,2,5,0xd0d6ff,2.2]].forEach(k=>{
