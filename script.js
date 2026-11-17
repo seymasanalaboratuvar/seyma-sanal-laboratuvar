@@ -86,107 +86,143 @@ document.querySelectorAll('.grade').forEach(b=>b.onclick=()=>{
   $('gradeMessage').textContent=t(`${b.dataset.grade}. sınıf laboratuvar modülü seçildi.`,`Grade ${b.dataset.grade} laboratory module selected.`);
 });
 
-/* ---------- 3B mikroskop sahnesi ---------- */
-const V=(x,y,z)=>new THREE.Vector3(x,y,z);
-const mat=(c,o)=>new THREE.MeshPhongMaterial(Object.assign({color:c,shininess:60,specular:0x444444},o||{}));
-function add(parent,mesh,id,hex){
-  mesh.userData.id=id;mesh.userData.c=new THREE.Color(hex);
-  (byId[id]=byId[id]||[]).push(mesh);targets.push(mesh);parent.add(mesh);return mesh;
+/* ---------- 3B mikroskop sahnesi (zengin sürüm) ---------- */
+const V=(x,y,z)=>new THREE.Vector3(x,y,z),UP=V(0,1,0);
+const mat=(c,o)=>new THREE.MeshPhongMaterial(Object.assign({color:c,shininess:70,specular:0x555555},o||{}));
+const floaters=[];let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+let membMat,dust,lab,hit=null,lastSel=selected,focusOn=false,camZ=19;const focusLocal=V(0,0,0);
+const ZOOM={membrane:19,rough:14,smooth:14,nucleus:13,golgi:12,nucleolus:9.5,mito:11,lysosome:10,ribosome:11,centrosome:10};
+function add(parent,mesh,id,hex,focus){mesh.userData.id=id;mesh.userData.c=new THREE.Color(hex);if(focus)mesh.userData.focus=focus;(byId[id]=byId[id]||[]).push(mesh);targets.push(mesh);parent.add(mesh);return mesh;}
+function proxy(parent,id,r){const m=new THREE.Mesh(new THREE.SphereGeometry(r,8,8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));m.userData.id=id;targets.push(m);parent.add(m);}
+function frame(c,u){const p=c.getPoint(u),tg=c.getTangent(u),s=new THREE.Vector3().crossVectors(tg,UP).normalize(),n=new THREE.Vector3().crossVectors(s,tg).normalize();return{p,s,n};}
+function ribbon(curve,w,seg,color){
+  const pos=[],idx=[];
+  for(let i=0;i<=seg;i++){const u=i/seg,f=frame(curve,u),ww=w*(1+.22*Math.sin(u*17)),off=.12*Math.sin(u*13);
+    for(const k of[-1,1]){const q=f.p.clone().addScaledVector(f.s,k*ww).addScaledVector(f.n,off+k*.05*Math.sin(u*9));pos.push(q.x,q.y,q.z);}
+    if(i<seg){const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2);}}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();
+  return new THREE.Mesh(g,mat(color,{side:THREE.DoubleSide}));
 }
-function proxy(parent,id,r){
-  const m=new THREE.Mesh(new THREE.SphereGeometry(r,8,8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
-  m.userData.id=id;targets.push(m);parent.add(m);
-}
+const inE=(p,s)=>(p.x/(5.3*s))**2+(p.y/(4.6*s))**2+(p.z/(4.4*s))**2<1;
+const rp=s=>{let p;do{p=V((rnd()*2-1)*5.3*s,(rnd()*2-1)*4.6*s,(rnd()*2-1)*4.4*s);}while(!inE(p,s));return p;};
+const sph=(r,c,o,w=20,h=14)=>new THREE.Mesh(new THREE.SphereGeometry(r,w,h),mat(c,o));
+
 function buildCell(){
   const NP=V(-.6,.3,0);
-  const memb=new THREE.Mesh(new THREE.SphereGeometry(1,64,48),mat(0x7fe0cf,{transparent:true,opacity:.13,side:THREE.DoubleSide,depthWrite:false,shininess:120}));
-  memb.scale.set(5.3,4.6,4.4);add(root,memb,'membrane','#7fe0cf');
-  const rim=new THREE.Mesh(new THREE.SphereGeometry(1,48,32),new THREE.MeshBasicMaterial({color:0x66ffee,transparent:true,opacity:.07,side:THREE.BackSide,depthWrite:false}));
-  rim.scale.set(5.4,4.7,4.5);root.add(rim);
+  const cy=new THREE.Mesh(new THREE.SphereGeometry(1,48,36),new THREE.MeshBasicMaterial({color:0x1f7a78,transparent:true,opacity:.22,side:THREE.BackSide,depthWrite:false}));
+  cy.scale.set(5.25,4.55,4.35);root.add(cy);
+  membMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,
+    uniforms:{glow:{value:0},col:{value:new THREE.Color(0x7fe0cf)}},
+    vertexShader:'varying vec3 n;varying vec3 v;void main(){n=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);v=-mv.xyz;gl_Position=projectionMatrix*mv;}',
+    fragmentShader:'uniform vec3 col;uniform float glow;varying vec3 n;varying vec3 v;void main(){float f=pow(1.-abs(dot(normalize(n),normalize(v))),2.3);gl_FragColor=vec4(col+glow,.07+f*.6+glow*.25);}'});
+  const memb=new THREE.Mesh(new THREE.SphereGeometry(1,64,48),membMat);memb.scale.set(5.3,4.6,4.4);add(root,memb,'membrane','#7fe0cf',V(0,0,0));
 
-  const nuc=new THREE.Mesh(new THREE.SphereGeometry(1.4,40,32),mat(0x5b6ee1,{transparent:true,opacity:.45,depthWrite:false}));
-  nuc.position.copy(NP);add(root,nuc,'nucleus','#5b6ee1');
-  const knot=new THREE.Mesh(new THREE.TorusKnotGeometry(.55,.09,90,8,2,3),mat(0xb7c0ff));
-  knot.position.copy(NP);add(root,knot,'nucleus','#b7c0ff');
-  const nl=new THREE.Mesh(new THREE.SphereGeometry(.42,24,20),mat(0xffd36e));
-  nl.position.set(-.1,.4,.3);add(root,nl,'nucleolus','#ffd36e');
+  /* sitoplazma tozları ve hücre iskeleti */
+  const spr=(()=>{const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d'),gr=g.createRadialGradient(16,16,0,16,16,16);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,0,32,32);return new THREE.CanvasTexture(c);})();
+  const dp=[];for(let i=0;i<420;i++){const p=rp(.95);dp.push(p.x,p.y,p.z);}
+  const dg=new THREE.BufferGeometry();dg.setAttribute('position',new THREE.Float32BufferAttribute(dp,3));
+  dust=new THREE.Points(dg,new THREE.PointsMaterial({size:.16,map:spr,transparent:true,opacity:.5,depthWrite:false,color:0xbff7ee,blending:THREE.AdditiveBlending}));root.add(dust);
+  const lp=[];for(let i=0;i<40;i++){const a=rp(.9),b=rp(.9),m=a.clone().lerp(b,.5).add(V(rnd()-.5,rnd()-.5,rnd()-.5).multiplyScalar(1.5));
+    const pts=new THREE.CatmullRomCurve3([a,m,b]).getPoints(12);for(let k=0;k<12;k++)lp.push(pts[k].x,pts[k].y,pts[k].z,pts[k+1].x,pts[k+1].y,pts[k+1].z);}
+  const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute(lp,3));
+  root.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0x9be8dc,transparent:true,opacity:.16})));
 
-  const rg=new THREE.SphereGeometry(.07,8,6),rm=mat(0xd8f3ff,{shininess:30});
+  /* çekirdek: zar, gözenekler, kromatin, çekirdekçik */
+  const ng=new THREE.SphereGeometry(1.4,64,48),np=ng.attributes.position,tv=V(0,0,0);
+  for(let i=0;i<np.count;i++){tv.fromBufferAttribute(np,i);tv.multiplyScalar(1+.035*Math.sin(tv.x*5)*Math.cos(tv.y*4)*Math.sin(tv.z*5));np.setXYZ(i,tv.x,tv.y,tv.z);}
+  ng.computeVertexNormals();
+  const nuc=new THREE.Mesh(ng,mat(0x5b6ee1,{transparent:true,opacity:.4,depthWrite:false,shininess:100}));nuc.position.copy(NP);add(root,nuc,'nucleus','#5b6ee1');
+  for(let i=0;i<40;i++){const y=1-i/19.5,r=Math.sqrt(Math.max(0,1-y*y)),a=i*2.39996,pm=sph(.08,0x2a2f8a,null,8,6);
+    pm.position.set(NP.x+Math.cos(a)*r*1.42,NP.y+y*1.42,NP.z+Math.sin(a)*r*1.42);add(root,pm,'nucleus','#2a2f8a');}
+  [[.55,.07,2,3,0xb7c0ff,0],[.42,.06,3,5,0x8fa0ff,1.1],[.3,.05,2,5,0xd0d6ff,2.2]].forEach(k=>{
+    const m=new THREE.Mesh(new THREE.TorusKnotGeometry(k[0],k[1],120,8,k[2],k[3]),mat(k[4]));m.position.copy(NP);m.rotation.set(k[5],k[5]*.7,0);add(root,m,'nucleus','#b7c0ff');});
+  const nl=sph(.4,0xffd36e,{shininess:90},24,18);nl.position.set(-.1,.4,.3);add(root,nl,'nucleolus','#ffd36e');
+  [[.3,.1,.1],[-.25,-.1,.2],[.05,.3,-.25]].forEach(o=>{const b=sph(.17,0xffc247,null,12,10);b.position.set(-.1+o[0],.4+o[1],.3+o[2]);add(root,b,'nucleolus','#ffc247');});
+
+  /* ribozom */
+  const rg=new THREE.SphereGeometry(.075,8,6),rm=mat(0xd8f3ff,{shininess:30});
   const ribo=p=>{const m=new THREE.Mesh(rg,rm);m.position.copy(p);add(root,m,'ribosome','#d8f3ff');};
 
-  const pts=[];
-  for(let i=0;i<=70;i++){const a=i/70*Math.PI*3,r=2.1+.25*Math.sin(5*a);
-    pts.push(V(NP.x+r*Math.cos(a),NP.y+.9*Math.sin(a*.7)+.3*Math.cos(3*a),r*Math.sin(a)*.9));}
-  const rc=new THREE.CatmullRomCurve3(pts),rtube=new THREE.TubeGeometry(rc,200,.12,8,false),rmat=mat(0xe27fb3);
-  [-.26,0,.26].forEach(dy=>{const m=new THREE.Mesh(rtube,rmat);m.position.y=dy;add(root,m,'rough','#e27fb3');});
-  for(let i=0;i<60;i++){const p=rc.getPoint(i/60);ribo(V(p.x+(i%3-1)*.05,p.y+((i*7)%3-1)*.2,p.z+.13));}
+  /* granüllü ER: katlanmış yassı keseler + ribozomlar */
+  const rpts=[];for(let i=0;i<=80;i++){const a=i/80*Math.PI*3.2,r=2.15+.28*Math.sin(5*a);rpts.push(V(NP.x+r*Math.cos(a),NP.y+.8*Math.sin(a*.7)+.25*Math.cos(3*a),r*Math.sin(a)*.9));}
+  const rc=new THREE.CatmullRomCurve3(rpts),dys=[-.34,0,.34];
+  dys.forEach(dy=>{const m=ribbon(rc,.3,160,0xe27fb3);m.position.y=dy;add(root,m,'rough','#e27fb3',NP);});
+  for(let i=0;i<110;i++){const f=frame(rc,rnd());ribo(f.p.clone().addScaledVector(f.s,(rnd()*2-1)*.3).addScaledVector(f.n,.06).add(V(0,dys[i%3],0)));}
 
-  const smat=mat(0xf0a8d6);
-  [[[2,2.2,.8],[3.2,1.6,-.6],[3.6,.5,.7],[2.9,-.4,-.7],[3.4,-1.3,.6]],
-   [[3.2,1.6,-.6],[4.1,2,.2],[4.3,.6,-.8]],
-   [[2.9,-.4,-.7],[1.9,-1,-1.5],[2.4,-2,-.6]]].forEach(c=>{
+  /* düz ER: dallanmış borucuk ağı */
+  const smm=mat(0xf0a8d6),sf=V(3.2,.4,0);
+  [[[2,2.2,.8],[3.2,1.6,-.6],[3.6,.5,.7],[2.9,-.4,-.7],[3.4,-1.3,.6]],[[3.2,1.6,-.6],[4.1,2,.2],[4.3,.6,-.8]],
+   [[2.9,-.4,-.7],[1.9,-1,-1.5],[2.4,-2,-.6]],[[2,2.2,.8],[1.3,3,0],[2,3.4,-1]]].forEach(c=>{
     const cur=new THREE.CatmullRomCurve3(c.map(p=>V(p[0],p[1],p[2])));
-    add(root,new THREE.Mesh(new THREE.TubeGeometry(cur,60,.13,8,false),smat),'smooth','#f0a8d6');});
+    add(root,new THREE.Mesh(new THREE.TubeGeometry(cur,70,.11,8,false),smm),'smooth','#f0a8d6',sf);
+    c.forEach(p=>{const j=sph(.17,0xf0a8d6,null,10,8);j.position.set(p[0],p[1],p[2]);add(root,j,'smooth','#f0a8d6',sf);});});
 
+  /* Golgi: üst üste yassı keseler + keseciklar */
   const gg=new THREE.Group();gg.position.set(-3.2,-1.8,.6);gg.rotation.set(.3,.4,.5);root.add(gg);
-  for(let i=0;i<5;i++){
-    const m=new THREE.Mesh(new THREE.TorusGeometry(1-.06*Math.abs(i-2),.09,8,28,Math.PI*.9),mat(0xf2c14e));
-    m.rotation.x=Math.PI/2;m.position.y=(i-2)*.3;add(gg,m,'golgi','#f2c14e');}
-  [[1,.6,.2],[-.9,-.5,.3],[.2,.8,.9],[-.3,-.7,.8]].forEach(p=>{
-    const v=new THREE.Mesh(new THREE.SphereGeometry(.15,12,10),mat(0xffe08a));v.position.set(p[0],p[1],p[2]);add(gg,v,'golgi','#ffe08a');});
-  proxy(gg,'golgi',1.1);
+  for(let i=0;i<6;i++){const sc=1-.07*Math.abs(i-2.5),cp=[];for(let k=0;k<=8;k++){const x=(-1.1+k*.275)*sc;cp.push(V(x,0,.3*x*x));}
+    const m=ribbon(new THREE.CatmullRomCurve3(cp),.5*sc,40,0xf2c14e);m.position.y=(i-2.5)*.3;add(gg,m,'golgi','#f2c14e');}
+  [[1.3,.7,.5],[-1.3,-.6,.5],[1.5,-.2,.9],[-1.5,.4,.9],[0,1.2,.5],[.2,-1.1,.6]].forEach(p=>{
+    const v=sph(.14,0xffe08a,{shininess:100},12,10);v.position.set(p[0],p[1],p[2]);add(gg,v,'golgi','#ffe08a');floaters.push({o:v,b:v.position.clone(),ph:rnd()*6,a:.08});});
+  proxy(gg,'golgi',1.2);
 
-  [[.8,-2.6,.8,.4,.3],[-3.6,.9,-1.2,1.1,-.4],[1.9,.8,-2.8,2.2,.2],[.4,3.1,-1.2,.7,-.3],[3.2,-2.4,1,1.8,.5]].forEach(a=>{
+  /* mitokondri: dış zar, iç zar, kristalar */
+  [[.8,-2.6,.8,.4,.3],[-3.6,.9,-1.2,1.1,-.4],[1.9,.8,-2.8,2.2,.2],[.4,3.1,-1.2,.7,-.3],[3.2,-2.4,1,1.8,.5],[-1.3,-3,-1.8,.3,.4],[2.6,2.8,-.9,1.4,-.2]].forEach(a=>{
     const g=new THREE.Group();g.position.set(a[0],a[1],a[2]);g.rotation.set(0,a[3],a[4]);root.add(g);
-    const o=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),mat(0xe8643c,{transparent:true,opacity:.7,depthWrite:false}));
-    o.scale.set(.95,.42,.42);add(g,o,'mito','#e8643c');
-    for(let i=-2;i<=2;i++){const c=new THREE.Mesh(new THREE.CylinderGeometry(.26,.26,.04,16),mat(0xffb36b));
-      c.rotation.z=Math.PI/2;c.position.x=i*.28;add(g,c,'mito','#ffb36b');}
-    proxy(g,'mito',.6);});
+    const o=sph(1,0xe8643c,{transparent:true,opacity:.5,depthWrite:false},28,18);o.scale.set(1.05,.46,.46);add(g,o,'mito','#e8643c');
+    const inn=sph(1,0xff8b5a,{transparent:true,opacity:.9},24,16);inn.scale.set(.93,.34,.34);add(g,inn,'mito','#ff8b5a');
+    for(let i=-3;i<=3;i++){const r=.3*Math.sqrt(1-(i*.27/.95)**2)+.03,c=new THREE.Mesh(new THREE.CylinderGeometry(r,r,.05,16),mat(0xffc08a));
+      c.rotation.z=Math.PI/2;c.position.set(i*.27,(i%2?.05:-.05),0);add(g,c,'mito','#ffc08a');}
+    proxy(g,'mito',.65);floaters.push({o:g,b:g.position.clone(),ph:rnd()*6,a:.12});});
 
+  /* lizozom */
   [[-1.4,2.6,1.4],[-2.2,-.6,2.5],[1.2,-1.4,2.8],[3.6,2.2,1],[-1,-3.4,1.6]].forEach(p=>{
     const g=new THREE.Group();g.position.set(p[0],p[1],p[2]);root.add(g);
-    add(g,new THREE.Mesh(new THREE.SphereGeometry(.28,20,16),mat(0x6fcf7f)),'lysosome','#6fcf7f');
-    add(g,new THREE.Mesh(new THREE.SphereGeometry(.1,10,8),mat(0x2f8a45)),'lysosome','#2f8a45');
-    proxy(g,'lysosome',.45);});
+    add(g,sph(.3,0x6fcf7f,{transparent:true,opacity:.75,depthWrite:false,shininess:120}),'lysosome','#6fcf7f');
+    [[.1,.05,.05],[-.1,.08,-.05],[.02,-.1,.1],[-.06,-.05,-.12]].forEach(o=>{const gr=sph(.07,0x2f8a45,null,8,6);gr.position.set(o[0],o[1],o[2]);add(g,gr,'lysosome','#2f8a45');});
+    proxy(g,'lysosome',.45);floaters.push({o:g,b:g.position.clone(),ph:rnd()*6,a:.15});});
 
+  /* sentrozom: iki sentriyol + ışınsal mikrotübüller */
   const cg=new THREE.Group();cg.position.set(-2.8,2.6,-.5);cg.rotation.set(.3,.5,.2);root.add(cg);
-  add(cg,new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.9,16),mat(0xff6f91)),'centrosome','#ff6f91');
-  const c2=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.9,16),mat(0xff6f91));
-  c2.rotation.z=Math.PI/2;c2.position.set(.55,-.45,0);add(cg,c2,'centrosome','#ff6f91');
+  [[0,0,0,0],[.55,-.45,0,Math.PI/2]].forEach(c=>{
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.9,16),mat(0xff6f91));m.position.set(c[0],c[1],c[2]);m.rotation.z=c[3];add(cg,m,'centrosome','#ff6f91');
+    [-.3,0,.3].forEach(y=>{const r=new THREE.Mesh(new THREE.TorusGeometry(.14,.018,6,16),mat(0xffb3c6));r.rotation.x=Math.PI/2;r.position.y=y;add(m,r,'centrosome','#ffb3c6');});});
   proxy(cg,'centrosome',.8);
+  const ap=[];for(let i=0;i<18;i++){const d=V(rnd()-.5,rnd()-.5,rnd()-.5).normalize().multiplyScalar(1.3+rnd()*1.3);ap.push(cg.position.x,cg.position.y,cg.position.z,cg.position.x+d.x,cg.position.y+d.y,cg.position.z+d.z);}
+  const ag=new THREE.BufferGeometry();ag.setAttribute('position',new THREE.Float32BufferAttribute(ap,3));
+  root.add(new THREE.LineSegments(ag,new THREE.LineBasicMaterial({color:0xff9db5,transparent:true,opacity:.25})));
 
-  let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
-  let n=0;while(n<50){const x=(rnd()*2-1)*4.5,y=(rnd()*2-1)*3.9,z=(rnd()*2-1)*3.74,p=V(x,y,z);
-    if((x/4.5)**2+(y/3.9)**2+(z/3.74)**2>1||p.distanceTo(NP)<2.6)continue;ribo(p);n++;}
+  /* serbest ribozomlar */
+  let n=0;while(n<70){const p=rp(.9);if(p.distanceTo(NP)<2.6)continue;ribo(p);n++;}
 }
 
 function init(){
   const host=$('cell3d');
   if(!host||host.dataset.ready)return;
   host.dataset.ready='1';
-  try{
-    renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
-  }catch(e){
-    $('loading3d').innerHTML='<b>3B model başlatılamadı.</b><small>Tarayıcın WebGL’i desteklemiyor olabilir.</small>';return;
-  }
+  try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});}
+  catch(e){$('loading3d').innerHTML='<b>3B model başlatılamadı.</b><small>Tarayıcın WebGL’i desteklemiyor olabilir.</small>';return;}
   host.style.position='relative';host.style.overflow='hidden';
-  host.style.background='radial-gradient(circle at 50% 45%,#215860 0%,#0f2f36 55%,#071519 100%)';
+  host.style.background='radial-gradient(circle at 50% 42%,#2a6f77 0%,#12363d 50%,#061519 100%)';
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
   renderer.setSize(host.clientWidth,host.clientHeight,false);
   renderer.setClearColor(0x000000,0);
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
   const cv=renderer.domElement;cv.style.cssText='display:block;width:100%;height:100%;touch-action:none;cursor:grab';
   host.appendChild(cv);
   const vig=document.createElement('div');
-  vig.style.cssText='position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,transparent 50%,rgba(0,0,0,.55) 100%)';
+  vig.style.cssText='position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,transparent 55%,rgba(0,0,0,.5) 100%)';
   host.appendChild(vig);
+  lab=document.createElement('div');
+  lab.style.cssText='position:absolute;left:0;top:0;display:none;pointer-events:none;white-space:nowrap;padding:5px 12px;border-radius:999px;font:600 13px system-ui,sans-serif;color:#fff;background:rgba(6,21,25,.82);border:1.5px solid #7fe0cf';
+  host.appendChild(lab);
 
   scene=new THREE.Scene();
   camera=new THREE.PerspectiveCamera(40,host.clientWidth/host.clientHeight,.1,100);
   camera.position.set(0,0,19);
-  scene.add(new THREE.AmbientLight(0xffffff,.7));
-  const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(5,8,10);scene.add(dl);
-  const pl=new THREE.PointLight(0x66ffee,.7,50);pl.position.set(-8,-4,6);scene.add(pl);
+  scene.add(new THREE.HemisphereLight(0xcffff4,0x0a2a30,.75));
+  const dl=new THREE.DirectionalLight(0xffffff,1);dl.position.set(5,8,10);scene.add(dl);
+  const rl=new THREE.DirectionalLight(0x7fe0ff,.6);rl.position.set(-6,-3,-8);scene.add(rl);
+  const pl=new THREE.PointLight(0x66ffee,.8,50);pl.position.set(-8,-4,6);scene.add(pl);
   root=new THREE.Group();scene.add(root);
   buildCell();
   $('loading3d')?.remove();
@@ -198,35 +234,58 @@ function init(){
     ray.setFromCamera(mouse,camera);
     const h=ray.intersectObjects(targets,false);
     if(!h.length)return null;
-    if(h.some(x=>x.object.userData.id==='nucleolus'))return 'nucleolus';
-    return (h.find(x=>x.object.userData.id!=='membrane')||h[0]).object.userData.id;
+    const nlh=h.find(x=>x.object.userData.id==='nucleolus');
+    return nlh?nlh.object:(h.find(x=>x.object.userData.id!=='membrane')||h[0]).object;
   }
   cv.addEventListener('pointerdown',e=>{drag=true;prev={x:e.clientX,y:e.clientY};down={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);});
   cv.addEventListener('pointermove',e=>{if(drag){root.rotation.y+=(e.clientX-prev.x)*.006;root.rotation.x+=(e.clientY-prev.y)*.006;prev={x:e.clientX,y:e.clientY};}});
   cv.addEventListener('pointerup',e=>{
     drag=false;
-    if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<7){const id=pickAt(e);if(id)selectOrgan(id,false);}
+    if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<7){const o=pickAt(e);if(o){hit=o;lastSel=null;selectOrgan(o.userData.id,false);}}
     down=null;
   });
   cv.addEventListener('pointercancel',()=>{drag=false;down=null;});
-  host.addEventListener('wheel',e=>{camera.position.z=Math.max(9,Math.min(26,camera.position.z+e.deltaY*.01));},{passive:true});
+  $('orgGrid').addEventListener('click',()=>{hit=null;lastSel=null;});
+  host.addEventListener('wheel',e=>{camZ=Math.max(8,Math.min(26,camZ+e.deltaY*.01));},{passive:true});
   window.addEventListener('resize',()=>{camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight,false);});
 
   $('rotateBtn').onclick=()=>{
     auto=!auto;$('rotateBtn').classList.toggle('active',auto);
     const s=$('rotateBtn').querySelector('span');if(s)s.textContent=auto?t('Otomatik döndür','Auto rotate'):t('Döndürme durdu','Auto rotate paused');
   };
-  $('zoomIn').onclick=()=>{camera.position.z=Math.max(9,camera.position.z-2);};
-  $('zoomOut').onclick=()=>{camera.position.z=Math.min(26,camera.position.z+2);};
-  $('resetBtn').onclick=()=>{root.rotation.set(0,0,0);camera.position.set(0,0,19);};
+  $('zoomIn').onclick=()=>{camZ=Math.max(8,camZ-2);};
+  $('zoomOut').onclick=()=>{camZ=Math.min(26,camZ+2);};
+  $('resetBtn').onclick=()=>{root.rotation.set(0,0,0);camZ=19;focusOn=false;lab.style.display='none';};
 
+  function computeFocus(){
+    const o=(hit&&hit.userData.id===selected)?hit:(byId[selected]||[])[0];
+    if(!o){focusOn=false;return;}
+    if(o.userData.focus)focusLocal.copy(o.userData.focus);
+    else{const src=(o.parent&&o.parent!==root)?o.parent:o,w=src.getWorldPosition(new THREE.Vector3());root.worldToLocal(w);focusLocal.copy(w);}
+    camZ=ZOOM[selected]||12;focusOn=true;
+    const org=organs.find(x=>x.id===selected);lab.style.borderColor=org?org.chip:'#7fe0cf';
+  }
   (function animate(){
     requestAnimationFrame(animate);
-    if(auto&&!drag)root.rotation.y+=.0016;
     const tm=performance.now()/1000;
+    if(selected!==lastSel){lastSel=selected;computeFocus();hit=null;}
+    if(auto&&!drag)root.rotation.y+=.0016;
+    dust.rotation.y+=.0004;
+    for(const f of floaters)f.o.position.set(f.b.x+Math.cos(tm*.5+f.ph)*f.a,f.b.y+Math.sin(tm*.6+f.ph)*f.a,f.b.z);
+    const target=focusOn?focusLocal.clone().applyQuaternion(root.quaternion).multiplyScalar(-1):V(0,0,0);
+    root.position.lerp(target,.07);
+    camera.position.z+=(camZ-camera.position.z)*.07;
     for(const id in byId){
-      const lv=id===selected?.3+.18*Math.sin(tm*4):0;
-      for(const m of byId[id])m.material.emissive.copy(m.userData.c).multiplyScalar(lv);
+      const lv=id===selected?.28+.16*Math.sin(tm*4):0;
+      for(const m of byId[id]){if(m.material.uniforms)m.material.uniforms.glow.value=lv;else m.material.emissive.copy(m.userData.c).multiplyScalar(lv);}
+    }
+    root.updateMatrixWorld(true);
+    if(focusOn){
+      const w=focusLocal.clone();root.localToWorld(w);w.project(camera);
+      const org=organs.find(x=>x.id===selected);
+      lab.textContent=org?t(org.name,org.en):'';
+      lab.style.display='block';
+      lab.style.transform=`translate(${(w.x*.5+.5)*host.clientWidth}px,${(-w.y*.5+.5)*host.clientHeight}px) translate(-50%,-170%)`;
     }
     renderer.render(scene,camera);
   })();
