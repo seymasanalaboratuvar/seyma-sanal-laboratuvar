@@ -152,58 +152,97 @@ function resize(){
  draw();
 }
 
-function draw(){
- const w=canvas.clientWidth,h=canvas.clientHeight;
- ctx.clearRect(0,0,w,h);
- ctx.fillStyle=kind==='cheek'?'#e8c3cf':kind==='leaf'?'#c7e8b0':'#ead9ed';
- ctx.fillRect(0,0,w,h);
- const level=Number(objective.value);
- const f=Number(focus.value);
- ctx.save();
- ctx.translate(w/2,h/2);
- const blur=(10-f)*.65;
- ctx.filter=`blur(${blur}px)`;
- if(kind==='onion') drawOnion(w,h,level);
- if(kind==='cheek') drawCheek(w,h,level);
- if(kind==='leaf') drawLeaf(w,h,level);
- ctx.restore();
- ctx.filter='none';
- const grad=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.7);
- grad.addColorStop(0,'#00000000');
- grad.addColorStop(1,'#101b2544');
- ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
-}
 
-function drawOnion(w,h,level){
- const cell=level===4?105:level===10?72:45;
- for(let y=-h;y<h;y+=cell){
-  for(let x=-w;x<w;x+=cell*1.65){
-   ctx.fillStyle='#d7a6d9';
-   ctx.strokeStyle='#9a5cae';
-   ctx.lineWidth=2;
-   ctx.beginPath();
-   ctx.roundRect(x-cell/2,y-cell/2,cell*1.55,cell,5);
-   ctx.fill();ctx.stroke();
-   ctx.fillStyle='#77448c';
-   ctx.beginPath();ctx.ellipse(x+cell*.3,y,cell*.12,cell*.18,0,0,Math.PI*2);ctx.fill();
+const microPhotos = {
+  onion: new Image(),
+  cheek: new Image(),
+  leaf: new Image()
+};
+
+microPhotos.onion.src =
+  "https://commons.wikimedia.org/wiki/Special:FilePath/Onion%20epidermis%20high%20power.jpg";
+
+microPhotos.cheek.src =
+  "https://commons.wikimedia.org/wiki/Special:FilePath/Microscopic%20Image%20of%20Human%20Cheek%20Cells.jpg";
+
+microPhotos.leaf.src =
+  "https://commons.wikimedia.org/wiki/Special:FilePath/Elodea%20cells%20under%20microscope.jpg";
+
+Object.values(microPhotos).forEach(img => {
+  img.onload = draw;
+  img.onerror = () => console.error("Mikroskop görseli yüklenemedi:", img.src);
+});
+
+function draw() {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+
+  ctx.clearRect(0, 0, w, h);
+
+  const img = microPhotos[kind];
+
+  if (!img.complete || !img.naturalWidth) {
+    ctx.fillStyle = "#142d35";
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "16px Nunito";
+    ctx.textAlign = "center";
+    ctx.fillText("Görüntü yükleniyor...", w/2, h/2);
+    return;
   }
- }
-}
 
-function drawCheek(w,h,level){
- const size=level===4?80:level===10?58:39;
- for(let y=-h;y<h;y+=size*1.8){
-  for(let x=-w;x<w;x+=size*1.8){
-   const px=x+(Math.random()-.5)*size*.6;
-   const py=y+(Math.random()-.5)*size*.5;
-   ctx.fillStyle='#e9a8bb';ctx.strokeStyle='#a64f79';ctx.lineWidth=2;
-   ctx.beginPath();ctx.ellipse(px,py,size*.75,size*.55,Math.random()*.5,0,Math.PI*2);ctx.fill();ctx.stroke();
-   ctx.fillStyle='#74406f';ctx.beginPath();ctx.ellipse(px,py,size*.18,size*.22,0,0,Math.PI*2);ctx.fill();
+  const level = Number(objective.value);
+  const f = Number(focus.value);
+
+  const scale = level === 4 ? 1 : level === 10 ? 1.5 : 2.5;
+
+  const cropW = img.naturalWidth / scale;
+  const cropH = img.naturalHeight / scale;
+
+  const sx = (img.naturalWidth - cropW) / 2;
+  const sy = (img.naturalHeight - cropH) / 2;
+
+  const imageRatio = cropW / cropH;
+  const screenRatio = w / h;
+
+  let sw = cropW;
+  let sh = cropH;
+
+  if (imageRatio > screenRatio) {
+    sw = cropH * screenRatio;
+  } else {
+    sh = cropW / screenRatio;
   }
- }
+
+  ctx.save();
+  ctx.filter = `blur(${(10-f)*0.45}px)`;
+
+  ctx.drawImage(
+    img,
+    sx + (cropW-sw)/2,
+    sy + (cropH-sh)/2,
+    sw,
+    sh,
+    0,
+    0,
+    w,
+    h
+  );
+
+  ctx.restore();
+
+  const grad = ctx.createRadialGradient(
+    w/2, h/2, Math.min(w,h)*0.3,
+    w/2, h/2, Math.max(w,h)*0.7
+  );
+
+  grad.addColorStop(0, "#00000000");
+  grad.addColorStop(1, "#101b2522");
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
 }
 
-function drawLeaf(w,h,level){
  const cell=level===4?105:level===10?72:48;
  for(let y=-h;y<h;y+=cell){
   for(let x=-w;x<w;x+=cell*1.5){
