@@ -242,21 +242,7 @@ function draw() {
   ctx.fillRect(0, 0, w, h);
 }
 
- const cell=level===4?105:level===10?72:48;
- for(let y=-h;y<h;y+=cell){
-  for(let x=-w;x<w;x+=cell*1.5){
-   ctx.fillStyle='#b5d98c';ctx.strokeStyle='#568c4a';ctx.lineWidth=2;
-   ctx.beginPath();ctx.roundRect(x-cell/2,y-cell/2,cell*1.4,cell,8);ctx.fill();ctx.stroke();
-   for(let i=0;i<7;i++){
-    ctx.fillStyle='#36894c';
-    ctx.beginPath();ctx.ellipse(x-cell*.35+i*cell*.16,y-cell*.2,cell*.055,cell*.1,0,0,Math.PI*2);ctx.fill();
-   }
-   ctx.fillStyle='#668b48';ctx.beginPath();ctx.arc(x,y,cell*.09,0,Math.PI*2);ctx.fill();
-  }
- }
-}
-
-document.querySelectorAll('.prep').forEach(btn=>{
+ document.querySelectorAll('.prep').forEach(btn=>{
  btn.addEventListener('click',()=>{
   document.querySelectorAll('.prep').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
