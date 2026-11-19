@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Şeyma Hocanın Sanal Laboratuvarı | Mikroskop</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+:root{--purple:#7138c5;--ink:#24184e;--lav:#f4efff;--line:#e8defb}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(145deg,#faf7ff,#eee7ff);font-family:Nunito,sans-serif;color:var(--ink)}
+header{padding:18px 6%;background:#fff;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.brand{font-weight:900;color:var(--purple);font-size:18px}
+.back{color:var(--purple);text-decoration:none;font-weight:800}
+main{max-width:1120px;margin:35px auto;padding:0 18px}
+.intro{text-align:center;margin-bottom:25px}
+.eyebrow{color:var(--purple);font-size:11px;font-weight:900;letter-spacing:2px}
+h1{font-size:clamp(27px,4vw,40px);margin:7px 0}
+.intro p{color:#77718e}
+.panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;margin-bottom:20px;box-shadow:0 12px 35px #50318b10}
+h2{font-size:20px;margin:0 0 15px}
+.preparats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.prep{border:1px solid var(--line);background:#fff;border-radius:15px;padding:14px;text-align:left;cursor:pointer;font:800 14px Nunito;color:var(--ink)}
+.prep.active{border:2px solid var(--purple);background:#f4efff}
+.prep span{display:block;font-size:25px;margin-bottom:5px}
+.microscope{background:#142d35;border-radius:20px;padding:14px}
+.screen{height:390px;background:#101b25;border-radius:13px;overflow:hidden;position:relative}
+canvas{width:100%;height:100%;display:block}
+.screen-label{position:absolute;top:12px;left:14px;color:white;background:#101b25bb;padding:7px 12px;border-radius:20px;font-size:11px}
+.controls{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;padding:17px 5px 5px;color:white}
+select,input{accent-color:#a77bea}
+select{padding:10px;border-radius:10px;border:0;font:700 13px Nunito}
+button{font-family:Nunito}
+.control-group{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800}
+input[type=range]{width:115px}
+.stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:13px}
+.stat{background:#f3edff;padding:9px 15px;border-radius:12px;font-size:12px;font-weight:800}
+.note{font-size:12px;color:#817895;text-align:center;margin:13px 0 0}
+textarea{width:100%;min-height:115px;border:1px solid var(--line);border-radius:13px;padding:13px;font:14px Nunito;resize:vertical}
+.action{background:var(--purple);color:white;border:0;padding:11px 18px;border-radius:12px;font-weight:900;cursor:pointer;margin-top:10px}
+.observation{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quiz-question{background:#f7f3ff;padding:15px;border-radius:14px;margin:10px 0}
+.quiz-question button{display:block;width:100%;text-align:left;border:1px solid var(--line);background:white;padding:10px 12px;border-radius:9px;margin-top:7px;cursor:pointer;color:var(--ink)}
+.feedback{font-weight:800;font-size:13px;margin-top:9px}
+footer{text-align:center;color:#8d84a5;padding:25px;font-size:12px}
+@media(max-width:650px){.preparats{grid-template-columns:1fr}.screen{height:300px}.panel{padding:15px}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">🧬 Şeyma Hocanın Sanal Laboratuvarı</div>
+<a class="back" href="index.html">← Hücre laboratuvarına dön</a>
+</header>
+
+<main>
+<section class="intro">
+<span class="eyebrow">DİJİTAL DENEY ALANI · 02</span>
+<h1>🔬 Mikroskop Laboratuvarı</h1>
+<p>Preparatını seç, büyütmeyi ayarla ve hücreleri keşfet.</p>
+</section>
+
+<section class="panel">
+<h2>1. İncelemek istediğin preparatı seç</h2>
+<div class="preparats">
+<button class="prep active" data-kind="onion"><span>🧅</span>Soğan zarı hücresi</button>
+<button class="prep" data-kind="cheek"><span>🧫</span>Ağız içi epitel hücresi</button>
+<button class="prep" data-kind="leaf"><span>🌿</span>Elodea yaprak hücresi</button>
+</div>
+</section>
+
+<section class="panel">
+<h2>2. Mikroskop görüntüsü</h2>
+<div class="microscope">
+<div class="screen">
+<canvas id="view"></canvas>
+<div class="screen-label" id="sampleLabel">SOĞAN ZARI · PREPARAT</div>
+</div>
+<div class="controls">
+<label class="control-group">Objektif
+<select id="objective">
+<option value="4">4x</option>
+<option value="10" selected>10x</option>
+<option value="40">40x</option>
+</select>
+</label>
+<label class="control-group">Oküler 10x</label>
+<label class="control-group">Odak
+<input id="focus" type="range" min="0" max="10" value="5">
+</label>
+</div>
+<div class="stats">
+<div class="stat" id="magnification">Toplam büyütme: 100x</div>
+<div class="stat" id="focusStatus">Odak: Orta</div>
+</div>
+</div>
+<p class="note">Eğitim amaçlı şematik mikroskop simülasyonudur. Görüntüler gerçek mikroskop fotoğrafı değildir.</p>
+</section>
+
+<section class="panel">
+<h2>3. Gözlem defterim 📝</h2>
+<p>Gördüğün hücresel yapıları ve dikkatini çeken özellikleri yaz.</p>
+<textarea id="notes" placeholder="Örneğin: Hücreler köşeli ve yan yana dizilmiş görünüyor..."></textarea>
+<div class="observation">
+<button class="action" id="saveNote">Gözlemimi kaydet</button>
+<span class="feedback" id="noteFeedback"></span>
+</div>
+</section>
+
+<section class="panel">
+<h2>4. Bilgini kontrol et</h2>
+<div class="quiz-question">
+<strong>Soğan zarı hücrelerinde hücre sınırlarını belirginleştiren yapı hangisidir?</strong>
+<button data-answer="wrong">Hücre zarı tek başına</button>
+<button data-answer="correct">Hücre duvarı</button>
+<button data-answer="wrong">Kloroplast</button>
+<div class="feedback"></div>
+</div>
+<div class="quiz-question">
+<strong>Elodea yaprak hücrelerinde yeşil renkli yapılar hangileridir?</strong>
+<button data-answer="wrong">Lizozomlar</button>
+<button data-answer="correct">Kloroplastlar</button>
+<button data-answer="wrong">Sentrozomlar</button>
+<div class="feedback"></div>
+</div>
+</section>
+</main>
+
+<footer>KEŞFET · İNCELE · ÖĞREN | Şeyma Hocanın Sanal Laboratuvarı</footer>
+
+<script>
+const canvas=document.getElementById('view');
+const ctx=canvas.getContext('2d');
+const objective=document.getElementById('objective');
+const focus=document.getElementById('focus');
+const magnification=document.getElementById('magnification');
+const focusStatus=document.getElementById('focusStatus');
+let kind='onion';
+
+const names={
+ onion:'SOĞAN ZARI · PREPARAT',
+ cheek:'AĞIZ İÇİ EPİTELİ · PREPARAT',
+ leaf:'ELODEA YAPRAĞI · PREPARAT'
+};
+
+function resize(){
+ const r=canvas.getBoundingClientRect();
+ const dpr=window.devicePixelRatio||1;
+ canvas.width=r.width*dpr;
+ canvas.height=r.height*dpr;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ draw();
+}
+
+function draw(){
+ const w=canvas.clientWidth,h=canvas.clientHeight;
+ ctx.clearRect(0,0,w,h);
+ ctx.fillStyle=kind==='cheek'?'#e8c3cf':kind==='leaf'?'#c7e8b0':'#ead9ed';
+ ctx.fillRect(0,0,w,h);
+ const level=Number(objective.value);
+ const f=Number(focus.value);
+ ctx.save();
+ ctx.translate(w/2,h/2);
+ const blur=(10-f)*.65;
+ ctx.filter=`blur(${blur}px)`;
+ if(kind==='onion') drawOnion(w,h,level);
+ if(kind==='cheek') drawCheek(w,h,level);
+ if(kind==='leaf') drawLeaf(w,h,level);
+ ctx.restore();
+ ctx.filter='none';
+ const grad=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.7);
+ grad.addColorStop(0,'#00000000');
+ grad.addColorStop(1,'#101b2544');
+ ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
+}
+
+function drawOnion(w,h,level){
+ const cell=level===4?105:level===10?72:45;
+ for(let y=-h;y<h;y+=cell){
+  for(let x=-w;x<w;x+=cell*1.65){
+   ctx.fillStyle='#d7a6d9';
+   ctx.strokeStyle='#9a5cae';
+   ctx.lineWidth=2;
+   ctx.beginPath();
+   ctx.roundRect(x-cell/2,y-cell/2,cell*1.55,cell,5);
+   ctx.fill();ctx.stroke();
+   ctx.fillStyle='#77448c';
+   ctx.beginPath();ctx.ellipse(x+cell*.3,y,cell*.12,cell*.18,0,0,Math.PI*2);ctx.fill();
+  }
+ }
+}
+
+function drawCheek(w,h,level){
+ const size=level===4?80:level===10?58:39;
+ for(let y=-h;y<h;y+=size*1.8){
+  for(let x=-w;x<w;x+=size*1.8){
+   const px=x+(Math.random()-.5)*size*.6;
+   const py=y+(Math.random()-.5)*size*.5;
+   ctx.fillStyle='#e9a8bb';ctx.strokeStyle='#a64f79';ctx.lineWidth=2;
+   ctx.beginPath();ctx.ellipse(px,py,size*.75,size*.55,Math.random()*.5,0,Math.PI*2);ctx.fill();ctx.stroke();
+   ctx.fillStyle='#74406f';ctx.beginPath();ctx.ellipse(px,py,size*.18,size*.22,0,0,Math.PI*2);ctx.fill();
+  }
+ }
+}
+
+function drawLeaf(w,h,level){
+ const cell=level===4?105:level===10?72:48;
+ for(let y=-h;y<h;y+=cell){
+  for(let x=-w;x<w;x+=cell*1.5){
+   ctx.fillStyle='#b5d98c';ctx.strokeStyle='#568c4a';ctx.lineWidth=2;
+   ctx.beginPath();ctx.roundRect(x-cell/2,y-cell/2,cell*1.4,cell,8);ctx.fill();ctx.stroke();
+   for(let i=0;i<7;i++){
+    ctx.fillStyle='#36894c';
+    ctx.beginPath();ctx.ellipse(x-cell*.35+i*cell*.16,y-cell*.2,cell*.055,cell*.1,0,0,Math.PI*2);ctx.fill();
+   }
+   ctx.fillStyle='#668b48';ctx.beginPath();ctx.arc(x,y,cell*.09,0,Math.PI*2);ctx.fill();
+  }
+ }
+}
+
+document.querySelectorAll('.prep').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  document.querySelectorAll('.prep').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  kind=btn.dataset.kind;
+  document.getElementById('sampleLabel').textContent=names[kind];
+  draw();
+ });
+});
+
+objective.addEventListener('change',()=>{
+ magnification.textContent='Toplam büyütme: '+(Number(objective.value)*10)+'x';
+ draw();
+});
+focus.addEventListener('input',()=>{
+ const v=Number(focus.value);
+ focusStatus.textContent='Odak: '+(v<3?'Bulanık':v<7?'Orta':'Net');
+ draw();
+});
+
+document.getElementById('saveNote').addEventListener('click',()=>{
+ const note=document.getElementById('notes').value.trim();
+ document.getElementById('noteFeedback').textContent=note?'Gözlemin kaydedildi!':'Önce gözlemini yazmalısın.';
+});
+
+document.querySelectorAll('.quiz-question').forEach(q=>{
+ q.querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+   const feedback=q.querySelector('.feedback');
+   feedback.textContent=btn.dataset.answer==='correct'?'Doğru cevap! 🎉':'Tekrar düşün, ipuçlarını incele.';
+   feedback.style.color=btn.dataset.answer==='correct'?'#21865b':'#b44a5a';
+  });
+ });
+});
+
+window.addEventListener('resize',resize);
+resize();
+</script>
+</body>
+</html>
