@@ -11,19 +11,20 @@ const organs = [
  {id:'ribosome',name:'Ribozom',en:'Ribosome',emoji:'🔵',chip:'#b8e9ff',desc:'Protein sentezinin gerçekleştiği zarsız yapı.',edesc:'A membrane-free structure where proteins are synthesized.',structure:'rRNA ve proteinlerden oluşan büyük ve küçük alt birimi vardır.',estructure:'Has large and small subunits made of rRNA and proteins.',fn:'mRNA’daki şifreyi okuyarak protein sentezler.',efn:'Reads mRNA instructions to synthesize proteins.'},
  {id:'lysosome',name:'Lizozom',en:'Lysosome',emoji:'🟢',chip:'#75d98a',desc:'Hücre içi sindirim ve geri dönüşüm keseciği.',edesc:'A vesicle for intracellular digestion and recycling.',structure:'Sindirim enzimleri içeren tek zarlı keseciktir.',estructure:'A single-membrane vesicle containing digestive enzymes.',fn:'Maddeleri ve yaşlanmış organelleri parçalar.',efn:'Breaks down materials and worn-out organelles.'},
  {id:'centrosome',name:'Sentrozom',en:'Centrosome',emoji:'🟠',chip:'#ff8b75',desc:'Hayvan hücrelerinde hücre bölünmesinin düzenlenmesine katkı sağlar.',edesc:'Helps organize cell division in animal cells.',structure:'Genellikle birbirine dik duran iki sentriyolden oluşur.',estructure:'Usually consists of two centrioles at right angles.',fn:'İğ ipliklerinin organizasyonunda görev alır.',efn:'Organizes spindle fibers.'},
+ {id:'cytoskeleton',name:'Hücre iskeleti',en:'Cytoskeleton',emoji:'🕸️',chip:'#c6ff00',desc:'Hücreye şekil veren, organelleri tutan ve taşıyan protein ağı.',edesc:'A protein network that shapes the cell and holds and moves organelles.',structure:'Mikrotübüller, aktin filamentleri ve ara filamentlerden oluşur; mikrotübüller sentrozomdan yayılır.',estructure:'Made of microtubules, actin filaments and intermediate filaments; microtubules radiate from the centrosome.',fn:'Hücre şeklini korur, organel taşınmasını ve hücre bölünmesini sağlar.',efn:'Maintains cell shape and enables organelle transport and cell division.'},
  {id:'membrane',name:'Hücre zarı',en:'Cell membrane',emoji:'🫧',chip:'#7fe0cf',desc:'Hücreyi çevreleyen seçici geçirgen sınır.',edesc:'The selectively permeable boundary surrounding the cell.',structure:'Fosfolipit çift tabaka ve içine gömülü proteinlerden oluşur.',estructure:'A phospholipid bilayer with embedded proteins.',fn:'Madde alışverişini ve hücreler arası iletişimi düzenler.',efn:'Regulates material exchange and cell communication.'}
 ];
 
 let lang='tr', selected='nucleus', auto=true, scene,camera,renderer,root,host,raycaster,mouse,cellLabel;
-let camZ=10.8, dragging=false, down=null, previous={x:0,y:0}, focusOn=false;
-const pickables=[], meshesById={}, focusPoints={};
+let camZ=10.8, camX=0, camY=0, dragging=false, down=null, previous={x:0,y:0}, focusOn=false, highlightOn=false, langReady=false;
+const pickables=[], meshesById={}, focusLocal={}, focusRadius={};
 const $=id=>document.getElementById(id);
 const tr=(a,b)=>lang==='tr'?a:b;
 const rules=[
  ['membrane','membrane'],['nucleolus','nucleolus'],['nucleus','nucleus'],
  ['mito','mito'],['rough','rough'],['smooth','smooth'],['golgi','golgi'],
  ['free_ribosome','ribosome'],['rough_er_ribosome','rough'],['lysosome','lysosome'],
- ['centrosome','centrosome'],['cytoplasm','']
+ ['centrosome','centrosome'],['cytoskeleton','cytoskeleton'],['cytoplasm','']
 ];
 function idFor(name){
  const n=(name||'').toLowerCase();
@@ -57,7 +58,7 @@ function renderOrgans(){
  organs.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='org-btn'+(o.id===selected?' active':'');
  b.innerHTML=`<span class="org-icon" style="--chip:${o.chip}">${o.emoji}</span><span>${tr(o.name,o.en)}</span>`;
  b.addEventListener('click',()=>selectOrgan(o.id,true));grid.appendChild(b);});
- const count=document.querySelector('.count');if(count)count.innerHTML='10 <small>'+tr('YAPI','STRUCTURES')+'</small>';
+ const count=document.querySelector('.count');if(count)count.innerHTML=organs.length+' <small>'+tr('YAPI','STRUCTURES')+'</small>';
 }
 function showDetail(o){
  if(!$('detailCard')||!o)return;
@@ -70,9 +71,10 @@ function showDetail(o){
 function selectOrgan(id,scroll=false){
  selected=id;const o=organs.find(x=>x.id===id);if(!o)return;renderOrgans();showDetail(o);
  if(scroll)$('detailCard')?.scrollIntoView({behavior:'smooth',block:'nearest'});
- focusOn=true;
+ focusOn=true;highlightOn=true;applyHighlight();
 }
 function setupLanguage(){
+ if(langReady)return;langReady=true;
  $('langBtn')?.addEventListener('click',()=>{lang=lang==='tr'?'en':'tr';document.documentElement.lang=lang;
  $('langBtn').textContent=lang==='tr'?'EN':'TR';document.querySelectorAll('[data-tr]').forEach(el=>{el.textContent=el.dataset[lang];});
  renderOrgans();showDetail(organs.find(o=>o.id===selected));});
@@ -86,32 +88,35 @@ function prepareModel(gltf){
  root.position.sub(center);
  const maxDim=Math.max(size.x,size.y,size.z);
  const scale=9.6/maxDim;root.scale.setScalar(scale);
+ root.updateMatrixWorld(true);
  root.traverse(obj=>{
   if(!obj.isMesh)return;
+  obj.material=obj.material.clone();
+  const m=obj.material;m.side=THREE.DoubleSide;
+  if(m.transparent)m.depthWrite=false;
+  m.userData.base={opacity:m.opacity,transparent:m.transparent,depthWrite:m.depthWrite,emissive:m.emissive?m.emissive.clone():null,emissiveIntensity:m.emissiveIntensity};
   const id=idFor(obj.name);
-  if(id){
-   obj.userData.organelle=id;pickables.push(obj);(meshesById[id] ||= []).push(obj);
-   const color=colorFor(id,obj.name);
-   if(color!==null){obj.material=obj.material.clone();obj.material.color.setHex(color);obj.material.needsUpdate=true;}
-   if(id==='membrane'){obj.material.transparent=true;obj.material.opacity=.22;obj.material.side=THREE.DoubleSide;obj.material.depthWrite=false;}
-   if(id==='nucleus'&&obj.name.includes('nucleus_core')){obj.material.emissive?.setHex(0x4b006e);}
-   if(id==='mito'&&obj.name.includes('cristae')){obj.material.emissive?.setHex(0x9a4300);}
-  }
-  if(obj.name==='cytoplasm_body'){
-   obj.material=obj.material.clone();
-   obj.material.color.setHex(0x167b78);
-   obj.material.transparent=true;
-   obj.material.opacity=.10;
-   obj.material.depthWrite=false;
-   obj.material.needsUpdate=true;
-  }
+  if(id){obj.userData.organelle=id;pickables.push(obj);(meshesById[id] ||= []).push(obj);}
  });
  for(const id of Object.keys(meshesById)){
-  const arr=meshesById[id];const b=new THREE.Box3();
-  arr.forEach(m=>b.expandByObject(m));focusPoints[id]=b.getCenter(new THREE.Vector3());
+  const b=new THREE.Box3();meshesById[id].forEach(m=>b.expandByObject(m));
+  const c=b.getCenter(new THREE.Vector3()),sz=b.getSize(new THREE.Vector3());
+  focusLocal[id]=root.worldToLocal(c.clone());focusRadius[id]=Math.max(sz.x,sz.y)/2;
  }
- camZ=10.8;camera.position.set(0,0,camZ);
+ camZ=10.8;camX=0;camY=0;camera.position.set(0,0,camZ);
  $('loading3d')?.remove();
+}
+function applyHighlight(){
+ const o=organs.find(x=>x.id===selected);
+ for(const id of Object.keys(meshesById)){
+  meshesById[id].forEach(mesh=>{
+   const m=mesh.material,b=m.userData.base;if(!b)return;
+   if(!highlightOn){m.opacity=b.opacity;m.transparent=b.transparent;m.depthWrite=b.depthWrite;if(m.emissive&&b.emissive){m.emissive.copy(b.emissive);m.emissiveIntensity=b.emissiveIntensity;}m.needsUpdate=true;return;}
+   if(id===selected){m.opacity=Math.max(b.opacity,.75);m.transparent=b.transparent;m.depthWrite=b.depthWrite;if(m.emissive){m.emissive.set(o?o.chip:'#ffffff');m.emissiveIntensity=.55;}}
+   else{const keep=(id==='membrane');m.transparent=true;m.depthWrite=false;m.opacity=keep?b.opacity:Math.min(b.opacity,1)*.28;if(m.emissive&&b.emissive){m.emissive.copy(b.emissive);m.emissiveIntensity=b.emissiveIntensity;}}
+   m.needsUpdate=true;
+  });
+ }
 }
 function init(){
  host=$('cell3d');if(!host||window.__seymaCellLabStarted)return;window.__seymaCellLabStarted=true;
@@ -128,29 +133,32 @@ function init(){
  const rim=new THREE.PointLight(0x5fffe5,.8,50);rim.position.set(-8,-4,6);scene.add(rim);
  raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();
  const loader=new GLTFLoader();
- loader.load('./animal_cell_cutaway.glb',gltf=>prepareModel(gltf),undefined,err=>{console.error('GLB yüklenemedi',err);if($('loading3d'))$('loading3d').textContent='3B hücre modeli yüklenemedi. animal_cell_cutaway.glb dosyasını kontrol et.';});
+ loader.load('./animal_cell_cutaway.glb?v=9',gltf=>prepareModel(gltf),undefined,err=>{console.error('GLB yüklenemedi',err);if($('loading3d'))$('loading3d').textContent='3B hücre modeli yüklenemedi. animal_cell_cutaway.glb dosyasını kontrol et.';});
  const canvas=renderer.domElement;
  function pick(e){const r=canvas.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1);raycaster.setFromCamera(mouse,camera);
- const hit=raycaster.intersectObjects(pickables,true).find(h=>h.object.userData.organelle);return hit?.object.userData.organelle||'';}
+ const hits=raycaster.intersectObjects(pickables,true).filter(h=>h.object.userData.organelle);const hit=hits.find(h=>h.object.userData.organelle!=='membrane')||hits[0];return hit?.object.userData.organelle||'';}
  canvas.addEventListener('pointerdown',e=>{dragging=true;previous={x:e.clientX,y:e.clientY};down={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
  canvas.addEventListener('pointermove',e=>{if(!dragging)return;root&&(root.rotation.y+=(e.clientX-previous.x)*.006,root.rotation.x+=(e.clientY-previous.y)*.006);previous={x:e.clientX,y:e.clientY};});
  canvas.addEventListener('pointerup',e=>{dragging=false;if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<7){const id=pick(e);if(id)selectOrgan(id,false);}down=null;});
  canvas.addEventListener('pointercancel',()=>{dragging=false;down=null;});
- canvas.addEventListener('wheel',e=>{camZ=Math.max(8,Math.min(25,camZ+e.deltaY*.01));},{passive:true});
+ canvas.addEventListener('wheel',e=>{camZ=Math.max(3.2,Math.min(25,camZ+e.deltaY*.01));},{passive:true});
  $('rotateBtn')?.addEventListener('click',()=>{auto=!auto;$('rotateBtn').classList.toggle('active',auto);const span=$('rotateBtn').querySelector('span');if(span)span.textContent=tr(auto?'Otomatik döndür':'Döndürme durdu',auto?'Auto rotate':'Auto rotate paused');});
- $('zoomIn')?.addEventListener('click',()=>camZ=Math.max(8,camZ-1.5));
+ $('zoomIn')?.addEventListener('click',()=>camZ=Math.max(3.2,camZ-1.5));
  $('zoomOut')?.addEventListener('click',()=>camZ=Math.min(25,camZ+1.5));
- $('resetBtn')?.addEventListener('click',()=>{if(root)root.rotation.set(0,0,0);camZ=10.8;focusOn=false;if(cellLabel)cellLabel.style.display='none';});
+ $('resetBtn')?.addEventListener('click',()=>{if(root)root.rotation.set(0,0,0);camZ=10.8;focusOn=false;highlightOn=false;applyHighlight();if(cellLabel)cellLabel.style.display='none';});
  const resize=()=>{if(!host.clientWidth||!host.clientHeight)return;camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight,false);};
  new ResizeObserver(resize).observe(host);
  cellLabel=document.createElement('div');cellLabel.style.cssText='position:absolute;display:none;pointer-events:none;white-space:nowrap;padding:5px 12px;border-radius:999px;font:600 13px system-ui;color:white;background:#061519d9;border:1.5px solid #7fe0cf';host.appendChild(cellLabel);
  let lastSelected='';
  function animate(){requestAnimationFrame(animate);if(!renderer)return;
   if(auto&&!dragging&&root)root.rotation.y+=.0012;
-  if(selected!==lastSelected){lastSelected=selected;if(root&&focusPoints[selected]){focusOn=true;camZ=selected==='nucleus'?8.8:selected==='mito'?8.8:10;}}
-  
+  if(selected!==lastSelected){lastSelected=selected;if(root&&focusLocal[selected]){focusOn=true;camZ=Math.max(4.2,Math.min(11,focusRadius[selected]*2.6+3.2));}}
+  let tx=0,ty=0,wp=null;
+  if(focusOn&&root&&focusLocal[selected]){wp=root.localToWorld(focusLocal[selected].clone());tx=wp.x;ty=wp.y;}
+  camX+=(tx-camX)*.08;camY+=(ty-camY)*.08;
+  camera.position.x=camX;camera.position.y=camY;
   camera.position.z+=(camZ-camera.position.z)*.08;
-  if(focusOn&&root&&focusPoints[selected]){const p=(meshesById[selected]||[])[0]?.getWorldPosition(new THREE.Vector3())||new THREE.Vector3();p.project(camera);const o=organs.find(x=>x.id===selected);cellLabel.textContent=o?tr(o.name,o.en):'';cellLabel.style.display='block';cellLabel.style.transform=`translate(${(p.x*.5+.5)*host.clientWidth}px,${(-p.y*.5+.5)*host.clientHeight}px) translate(-50%,-170%)`;cellLabel.style.borderColor=o?o.chip:'#7fe0cf';}
+  if(wp){const p=wp.clone().project(camera);const o=organs.find(x=>x.id===selected);cellLabel.textContent=o?tr(o.name,o.en):'';cellLabel.style.display='block';cellLabel.style.transform=`translate(${(p.x*.5+.5)*host.clientWidth}px,${(-p.y*.5+.5)*host.clientHeight}px) translate(-50%,-170%)`;cellLabel.style.borderColor=o?o.chip:'#7fe0cf';}
   renderer.render(scene,camera);
  }
  animate();
