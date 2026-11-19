@@ -56,13 +56,13 @@ function colorFor(id,name){
 function renderOrgans(){
  const grid=$('orgGrid');if(!grid)return;grid.innerHTML='';
  organs.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='org-btn'+(o.id===selected?' active':'');
- b.innerHTML=`<span class="org-icon" style="--chip:${o.chip}">${o.emoji}</span><span>${tr(o.name,o.en)}</span>`;
+ b.innerHTML=`<span class="org-icon" style="--chip:${o.chip}"><img src="assets/organelles/${o.id}.svg" alt="" loading="lazy"></span><span>${tr(o.name,o.en)}</span>`;
  b.addEventListener('click',()=>selectOrgan(o.id,true));grid.appendChild(b);});
  const count=document.querySelector('.count');if(count)count.innerHTML=organs.length+' <small>'+tr('YAPI','STRUCTURES')+'</small>';
 }
 function showDetail(o){
  if(!$('detailCard')||!o)return;
- $('detailEmoji').textContent=o.emoji;$('orgName').textContent=tr(o.name,o.en);
+ $('detailEmoji').innerHTML=`<img src="assets/organelles/${o.id}.svg" alt="${tr(o.name,o.en)}" />`;
  $('orgDesc').textContent=tr(o.desc,o.edesc);$('orgStructure').textContent=tr(o.structure,o.estructure);
  $('orgFunction').textContent=tr(o.fn,o.efn);
  $('detailVisual').style.background=`radial-gradient(circle at 45% 40%,#fff,${o.chip} 62%,#cbb4ef)`;
