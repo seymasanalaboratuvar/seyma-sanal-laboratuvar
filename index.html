@@ -9,7 +9,7 @@
 
 <section style="max-width:1000px;margin:30px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;padding:15px;">
 
-  <a href="#laboratuvar" style="text-decoration:none;color:#24184e;background:white;border:2px solid #e8defb;border-radius:22px;padding:25px;text-align:center;box-shadow:0 10px 30px #50318b12;">
+  <a href="#laboratuvar"onclick="document.getElementById('laboratuvar').style.display='block'" style="text-decoration:none;color:#24184e;background:white;border:2px solid #e8defb;border-radius:22px;padding:25px;text-align:center;box-shadow:0 10px 30px #50318b12;">
     <div style="font-size:55px;">🧬</div>
     <h2>Hücre Kesiti Laboratuvarı</h2>
     <p>3B hayvan hücresini incele, organelleri keşfet.</p>
@@ -24,7 +24,7 @@
   </a>
 
 </section>
-<section id="laboratuvar" class="lab-wrap"><div class="lab-top"><div><span class="live-dot"></span><b data-tr="3B HÜCRE MODELİ" data-en="3D CELL MODEL">3B HÜCRE MODELİ</b><small data-tr="Kesit alınmış hayvan hücresi" data-en="Animal cell cross-section">Kesit alınmış hayvan hücresi</small></div><span class="model-tag">BIOLOGY · 01</span></div>
+<section id="laboratuvar" class="lab-wrap" style="display:none;">
 <div class="viewer"><div id="cell3d" class="canvas-host"><div id="loading3d" class="loading"><span class="loader"></span><b data-tr="Hücre modeli hazırlanıyor" data-en="Preparing cell model">Hücre modeli hazırlanıyor</b><small data-tr="3B laboratuvar yükleniyor…" data-en="Loading 3D laboratory…">3B laboratuvar yükleniyor…</small></div></div><div class="viewer-caption"><span><i></i><span data-tr="Modeli sürükleyerek döndür" data-en="Drag to rotate the model">Modeli sürükleyerek döndür</span></span><span data-tr="Yakınlaştırmak için kaydır veya iki parmağını kullan" data-en="Scroll or pinch to zoom">Yakınlaştırmak için kaydır veya iki parmağını kullan</span></div></div>
 <div class="toolbar"><button id="rotateBtn" class="tool active">⟳ <span data-tr="Otomatik döndür" data-en="Auto rotate">Otomatik döndür</span></button><button id="zoomIn" class="tool">＋ <span data-tr="Yakınlaştır" data-en="Zoom in">Yakınlaştır</span></button><button id="zoomOut" class="tool">－ <span data-tr="Uzaklaştır" data-en="Zoom out">Uzaklaştır</span></button><button id="resetBtn" class="tool">↺ <span data-tr="Görünümü sıfırla" data-en="Reset view">Görünümü sıfırla</span></button></div>
 <div class="explore-head"><div><span class="eyebrow" data-tr="YAKINDAN İNCELE" data-en="TAKE A CLOSER LOOK">YAKINDAN İNCELE</span><h2 data-tr="Bir organel seç" data-en="Select an organelle">Bir organel seç</h2><p data-tr="İsme veya hücredeki yapıya dokun. Etiketler yalnızca seçim yaptığında görünür." data-en="Tap a name or a structure in the cell. Labels appear only after you select one.">İsme veya hücredeki yapıya dokun. Etiketler yalnızca seçim yaptığında görünür.</p></div><span class="count">11 <small data-tr="YAPI" data-en="STRUCTURES">YAPI</small></span></div>
