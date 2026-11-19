@@ -63,6 +63,7 @@ function renderOrgans(){
 function showDetail(o){
  if(!$('detailCard')||!o)return;
  $('detailEmoji').innerHTML=`<img src="assets/organelles/${o.id}.svg" alt="${tr(o.name,o.en)}" />`;
+ $('orgName').textContent=tr(o.name,o.en);
  $('orgDesc').textContent=tr(o.desc,o.edesc);$('orgStructure').textContent=tr(o.structure,o.estructure);
  $('orgFunction').textContent=tr(o.fn,o.efn);
  $('detailVisual').style.background=`radial-gradient(circle at 45% 40%,#fff,${o.chip} 62%,#cbb4ef)`;
