@@ -124,7 +124,18 @@ footer{text-align:center;color:#8d84a5;padding:25px;font-size:12px}
 <div class="feedback"></div>
 </div>
 </section>
-</main>
+<section class="panel" id="structureLab">
+  <h2>5. Hücre Yapılarını Keşfet 🔬</h2>
+  <p>İncelediğin preparatta bulunan bir yapıyı seç ve görevini öğren.</p>
+
+  <div id="structureButtons" class="preparats"></div>
+
+  <div id="structureInfo" style="margin-top:18px;padding:20px;background:#f4efff;border-radius:16px;">
+    <h3 id="structureTitle">Bir hücre yapısı seç</h3>
+    <p id="structureDescription">Seçtiğin yapının açıklaması burada görünecek.</p>
+    <strong id="structureFunction"></strong>
+  </div>
+</section></main>
 
 <footer>KEŞFET · İNCELE · ÖĞREN | Şeyma Hocanın Sanal Laboratuvarı</footer>
 
@@ -276,7 +287,99 @@ document.querySelectorAll('.quiz-question').forEach(q=>{
   });
  });
 });
+const structureData = {
+  onion: [
+    {
+      name: "Hücre duvarı",
+      description: "Hücreyi çevreleyen, şekil ve destek sağlayan sert yapıdır.",
+      func: "Görevi: Hücreye dayanıklılık ve şekil kazandırmak."
+    },
+    {
+      name: "Çekirdek",
+      description: "Hücrenin kalıtsal materyalini taşır.",
+      func: "Görevi: Hücresel faaliyetleri yönetmek."
+    },
+    {
+      name: "Sitoplazma",
+      description: "Hücre zarı ile çekirdek arasını dolduran yarı akışkan bölgedir.",
+      func: "Görevi: Birçok metabolik olayın gerçekleştiği ortamı sağlamak."
+    },
+    {
+      name: "Koful",
+      description: "Hücre içinde sıvı ve çeşitli maddeleri bulundurabilir.",
+      func: "Görevi: Depolama ve su dengesine katkı sağlamak."
+    }
+  ],
+  cheek: [
+    {
+      name: "Hücre zarı",
+      description: "Hücreyi dış ortamdan ayıran seçici geçirgen yapıdır.",
+      func: "Görevi: Madde alışverişini düzenlemek."
+    },
+    {
+      name: "Çekirdek",
+      description: "DNA'nın bulunduğu hücresel yapıdır.",
+      func: "Görevi: Hücresel faaliyetleri yönetmek."
+    },
+    {
+      name: "Sitoplazma",
+      description: "Hücre zarının içinde bulunan jel kıvamındaki bölgedir.",
+      func: "Görevi: Hücresel tepkimelere ortam sağlamak."
+    }
+  ],
+  leaf: [
+    {
+      name: "Hücre duvarı",
+      description: "Bitki hücresine şekil ve dayanıklılık kazandırır.",
+      func: "Görevi: Hücreyi desteklemek ve korumak."
+    },
+    {
+      name: "Kloroplast",
+      description: "Klorofil pigmenti içeren organeldir.",
+      func: "Görevi: Fotosentezin gerçekleşmesini sağlamak."
+    },
+    {
+      name: "Sitoplazma",
+      description: "Organellerin bulunduğu hücre içi ortamdır.",
+      func: "Görevi: Metabolik olaylara ortam sağlamak."
+    },
+    {
+      name: "Koful",
+      description: "Hücre özsuyunu içeren zarlı yapıdır.",
+      func: "Görevi: Depolama ve turgor basıncına katkı sağlamak."
+    }
+  ]
+};
 
+function renderStructures() {
+  const container = document.getElementById("structureButtons");
+  container.innerHTML = "";
+
+  structureData[kind].forEach(item => {
+    const button = document.createElement("button");
+    button.className = "prep";
+    button.textContent = item.name;
+
+    button.addEventListener("click", () => {
+      document.getElementById("structureTitle").textContent = item.name;
+      document.getElementById("structureDescription").textContent = item.description;
+      document.getElementById("structureFunction").textContent = item.func;
+    });
+
+    container.appendChild(button);
+  });
+
+  document.getElementById("structureTitle").textContent = "Bir yapı seç";
+  document.getElementById("structureDescription").textContent =
+    "İncelemek istediğin hücre yapısına tıkla.";
+  document.getElementById("structureFunction").textContent = "";
+}
+
+document.querySelectorAll(".prep").forEach(button => {
+  button.addEventListener("click", renderStructures);
+});
+
+renderStructures();
 window.addEventListener('resize',resize);
 resize();
 </script>
