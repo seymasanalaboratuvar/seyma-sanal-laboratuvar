@@ -186,7 +186,7 @@ function init(){
  canvas.addEventListener('pointermove',e=>{if(!dragging)return;root&&(root.rotation.y+=(e.clientX-previous.x)*.006,root.rotation.x+=(e.clientY-previous.y)*.006);previous={x:e.clientX,y:e.clientY};});
  canvas.addEventListener('pointerup',e=>{dragging=false;if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<7){const id=pick(e);if(id)selectOrgan(id,false);}down=null;});
  canvas.addEventListener('pointercancel',()=>{dragging=false;down=null;});
- canvas.addEventListener('wheel',e=>{camZ=Math.max(3.2,Math.min(25,camZ+e.deltaY*.));},{passive:true});
+ canvas.addEventListener('wheel',e=>{camZ=Math.max(3.2,Math.min(25,camZ+e.deltaY*.01));},{passive:true});
  $('rotateBtn')?.addEventListener('click',()=>{auto=!auto;$('rotateBtn').classList.toggle('active',auto);const span=$('rotateBtn').querySelector('span');if(span)span.textContent=tr(auto?'Otomatik döndür':'Döndürme durdu',auto?'Auto rotate':'Auto rotate paused');});
  $('zoomIn')?.addEventListener('click',()=>camZ=Math.max(3.2,camZ-1.5));
  $('zoomOut')?.addEventListener('click',()=>camZ=Math.min(25,camZ+1.5));
