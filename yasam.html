@@ -110,6 +110,155 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
 .station-feedback{margin-top:12px;padding:12px 14px;background:#f4f0fb;border-radius:12px;line-height:1.5;font-size:14px}
 @media(max-width:620px){.sim-layout,.sort-bank,.sort-zones{grid-template-columns:1fr}}
 
+
+/* HOMEOSTAZİ: GELİŞMİŞ LABORATUVAR TASARIMI */
+.station {
+  border: 1px solid #ded2f5;
+  border-radius: 22px;
+  box-shadow: 0 12px 35px #39206b12;
+  overflow: hidden;
+  background: white;
+}
+
+.station-head {
+  padding: 22px 25px;
+  background: linear-gradient(115deg,#211448,#6333ad,#8655d4);
+}
+
+.station-head h4 {
+  font-size: 21px;
+  letter-spacing: -.4px;
+}
+
+.station-body {
+  padding: 24px;
+}
+
+.sim-layout {
+  gap: 20px;
+}
+
+.sim-gauge {
+  position: relative;
+  border-radius: 22px;
+  min-height: 210px;
+  padding: 25px;
+  background: linear-gradient(145deg,#f1ebff,#fff);
+  border: 1px solid #e6dcfa;
+  transition: background .3s,border-color .3s;
+}
+
+.sim-temp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 125px;
+  height: 125px;
+  margin: 14px auto;
+  border-radius: 50%;
+  background: white;
+  border: 9px solid #8b5bd3;
+  box-shadow: 0 8px 25px #6036a322;
+  font-size: 34px;
+  color: #7138c5;
+  transition: .3s;
+}
+
+.sim-gauge.cold {
+  background: linear-gradient(145deg,#e4f2ff,#f8fcff);
+  border-color: #8fc9f5;
+}
+
+.sim-gauge.cold .sim-temp {
+  border-color: #3696db;
+  color: #2878c8;
+}
+
+.sim-gauge.normal {
+  background: linear-gradient(145deg,#e6f8ee,#fbfffc);
+  border-color: #a3dfbb;
+}
+
+.sim-gauge.normal .sim-temp {
+  border-color: #39a76c;
+  color: #168653;
+}
+
+.sim-gauge.hot {
+  background: linear-gradient(145deg,#fff0e5,#fffaf6);
+  border-color: #ffc49c;
+}
+
+.sim-gauge.hot .sim-temp {
+  border-color: #ef873e;
+  color: #d66b24;
+}
+
+.sim-range {
+  width: 100%;
+  height: 9px;
+  cursor: pointer;
+}
+
+.sim-readout {
+  min-height: 205px;
+  padding: 22px;
+  border: 1px solid #e8def8;
+  border-radius: 20px;
+  background: #faf8ff;
+  transition: background .3s;
+}
+
+.sim-readout strong {
+  font-size: 17px;
+  color: #54308e;
+}
+
+.sim-readout p {
+  line-height: 1.7;
+}
+
+#thermoActions {
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 13px;
+  background: white;
+  line-height: 2;
+  font-weight: 700;
+}
+
+.sort-chip {
+  padding: 19px;
+  border-radius: 16px;
+  border: 2px solid #e5d9f7;
+  background: linear-gradient(145deg,#fff,#f6f0ff);
+  box-shadow: 0 5px 14px #38205b0d;
+  transition: .2s;
+}
+
+.sort-chip:hover {
+  transform: translateY(-3px);
+  border-color: #8655d4;
+}
+
+.sort-zone {
+  min-height: 125px;
+  border-radius: 18px;
+  border-width: 2px;
+  background: linear-gradient(145deg,#faf7ff,#fff);
+  transition: .2s;
+}
+
+.station-feedback {
+  padding: 16px;
+  border-radius: 15px;
+  font-weight: 700;
+}
+
+@media(max-width:620px) {
+  .station-body { padding: 15px; }
+  .sim-temp { width: 110px; height: 110px; }
+}
 </style>
 </head>
 <body>
@@ -377,7 +526,14 @@ function renderInteractiveStation(topicIndex){
  }
 }
 function updateThermo(value){
- const v=Number(value),val=document.getElementById('ambientValue');if(!val)return;val.textContent=v;
+const v=Number(value);
+const val=document.getElementById('ambientValue');
+if(!val)return;
+val.textContent=v;
+
+const gauge=document.querySelector('.sim-gauge');
+gauge.classList.remove('cold','normal','hot');
+gauge.classList.add(v<20?'cold':v<=30?'normal':'hot');
  const title=document.getElementById('thermoTitle'),txt=document.getElementById('thermoText'),actions=document.getElementById('thermoActions');
  if(v<20){title.textContent='Soğuk ortam: ısı kaybını azalt';txt.textContent='Vücut ısı kaybını azaltmaya ve ısı üretimini artırmaya yönelik tepkiler oluşturur.';actions.innerHTML='🧊 Titreme: artabilir<br>🩸 Deri damarları: daralabilir';}
  else if(v<=30){title.textContent='Denge korunuyor';txt.textContent='Isı üretimi ve ısı kaybı arasındaki denge iç sıcaklığın korunmasına yardım eder.';actions.innerHTML='💧 Terleme: düşük/normal<br>🩸 Deri damarları: normal';}
