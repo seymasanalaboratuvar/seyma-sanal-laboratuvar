@@ -118,12 +118,13 @@ function setupLanguage(){
       $('moduleTitle').textContent=
         `${grade}. Sınıf Biyoloji Modülleri`;
 
-      $('moduleList').innerHTML=modules.map((name,index)=>`
-        <div style="background:white;padding:15px;margin:10px 0;border-radius:12px;border:1px solid #e8defb;">
-          <strong>${index+1}. ${name}</strong>
-        </div>
-      `).join('');
-    });
+     $('moduleList').innerHTML = modules.map((name,index) => `
+  <div onclick="document.getElementById('laboratuvar').style.display='block';document.getElementById('laboratuvar').scrollIntoView({behavior:'smooth'});"
+       style="background:white;padding:18px;margin:10px 0;border-radius:12px;border:1px solid #e8defb;cursor:pointer;transition:0.2s;">
+    <strong>${index+1}. ${name}</strong>
+    <span style="float:right;color:#7138c5;">Laboratuvara Git →</span>
+  </div>
+`).join('');
   });
 }
 function prepareModel(gltf){
