@@ -653,14 +653,162 @@ function showTrait(i,button){
  renderInteractiveStation(i);
 }
 
+function renderMetabolismStation(host){
+ const sets={
+  easy:[
+   ['🧬 Protein sentezi','build'],
+   ['🍬 Glikozun parçalanması','break'],
+   ['🧱 Glikojen sentezi','build'],
+   ['🔥 Hücresel solunum','break'],
+   ['🌱 Fotosentezde glikoz üretimi','build'],
+   ['🍽️ Besinlerin sindirimi','break']
+  ],
+  medium:[
+   ['🧬 Protein sentezi','build'],
+   ['🍬 Glikozun parçalanması','break'],
+   ['🧱 Glikojen sentezi','build'],
+   ['🔥 Hücresel solunum','break'],
+   ['🌱 Fotosentezde glikoz üretimi','build'],
+   ['🍽️ Proteinlerin amino asitlere ayrılması','break'],
+   ['🧫 DNA sentezi','build'],
+   ['🫧 Yağların parçalanması','break']
+  ],
+  hard:[
+   ['🧬 Amino asitlerden protein oluşturulması','build'],
+   ['🔥 Glikozun hücresel solunumda parçalanması','break'],
+   ['🧱 Glikozlardan glikojen sentezi','build'],
+   ['🧪 DNA eşlenmesi','build'],
+   ['🍽️ Proteinlerin hidrolizle parçalanması','break'],
+   ['🌱 Fotosentezde organik madde sentezi','build'],
+   ['⚡ ATP hidrolizi','break'],
+   ['🫧 Trigliseritlerin gliserol ve yağ asitlerine ayrılması','break'],
+   ['🧫 Nükleotitlerden DNA zinciri oluşturulması','build'],
+   ['🥣 Nişastanın hidrolizle parçalanması','break']
+  ]
+ };
+
+ const items=sets[level]||sets.easy;
+ let selected=null;
+ let completed=0;
+ let score=0;
+
+ host.innerHTML=`
+ <div class="station">
+  <div class="station-head">
+   <div class="kicker">ÇOKLU SINIFLANDIRMA LABORATUVARI</div>
+   <h4>⚡ Metabolizmanın iki yüzü</h4>
+  </div>
+  <div class="station-body">
+   <p>Olayları incele. Her birini yapım veya yıkım tepkimeleri kutusuna yerleştir. Bütün olayları doğru sınıflandırmaya çalış.</p>
+   <div class="scoreline">
+    <span id="metProgress">Yerleştirilen: 0 / ${items.length}</span>
+    <span id="metScore">Doğru: 0</span>
+   </div>
+   <div class="progress"><div id="metBar"></div></div>
+   <div class="sort-bank" id="metBank"></div>
+   <div class="sort-zones" style="margin-top:16px">
+    <div class="sort-zone" data-target="build">
+     <strong>🧱 ANABOLİZMA</strong>
+     <span>Yapım tepkimeleri</span>
+     <div class="met-placed"></div>
+    </div>
+    <div class="sort-zone" data-target="break">
+     <strong>🔨 KATABOLİZMA</strong>
+     <span>Yıkım tepkimeleri</span>
+     <div class="met-placed"></div>
+    </div>
+   </div>
+   <div class="station-feedback" id="metFeedback">Bir olaya dokun, ardından uygun kutuyu seç.</div>
+   <button class="secondary" id="metReset" style="margin-top:12px">Etkinliği yeniden başlat</button>
+  </div>
+ </div>`;
+
+ const bank=host.querySelector('#metBank');
+ const zones=host.querySelectorAll('.sort-zone');
+ const feedback=host.querySelector('#metFeedback');
+
+ items.forEach((item,i)=>{
+  const chip=document.createElement('button');
+  chip.className='sort-chip';
+  chip.type='button';
+  chip.textContent=item[0];
+  chip.draggable=true;
+  chip.dataset.kind=item[1];
+  chip.dataset.index=i;
+  chip.addEventListener('click',()=>{
+   if(chip.dataset.done)return;
+   bank.querySelectorAll('.sort-chip').forEach(x=>x.style.outline='');
+   selected=chip;
+   chip.style.outline='3px solid #8655d4';
+   feedback.textContent='Şimdi uygun sınıflandırma kutusuna dokun.';
+  });
+  chip.addEventListener('dragstart',e=>{
+   selected=chip;
+   e.dataTransfer.setData('text/plain',String(i));
+  });
+  bank.appendChild(chip);
+ });
+
+ function place(chip,zone){
+  if(!chip||chip.dataset.done)return;
+  const correct=chip.dataset.kind===zone.dataset.target;
+  completed++;
+
+  if(correct){
+   score++;
+   chip.dataset.done='true';
+   chip.style.outline='none';
+   chip.style.cursor='default';
+   chip.style.background='#eaf8f0';
+   chip.style.borderColor='#299b64';
+   const tag=document.createElement('div');
+   tag.textContent='✓ '+chip.textContent;
+   tag.style.cssText='padding:8px;margin-top:7px;background:#eaf8f0;border-radius:9px;font-size:13px;color:#17643e;text-align:left';
+   zone.querySelector('.met-placed').appendChild(tag);
+   chip.remove();
+   feedback.textContent='Doğru sınıflandırma! '+(zone.dataset.target==='build'?'Bu olayda daha büyük veya karmaşık moleküller oluşturulur.':'Bu olayda moleküller parçalanır.');
+   feedback.style.background='#eaf8f0';
+   feedback.style.color='#17643e';
+  }else{
+   completed--;
+   feedback.textContent='Bu kutu doğru değil. Olayda molekül sentezleniyor mu, yoksa parçalanıyor mu? Tekrar düşün.';
+   feedback.style.background='#fff0f1';
+   feedback.style.color='#9f2637';
+  }
+
+  selected=null;
+  host.querySelector('#metProgress').textContent=`Yerleştirilen: ${score} / ${items.length}`;
+  host.querySelector('#metScore').textContent=`Doğru: ${score}`;
+  host.querySelector('#metBar').style.width=(score/items.length*100)+'%';
+
+  if(score===items.length){
+   feedback.textContent=`🎉 Harika! ${items.length} olayın tamamını doğru sınıflandırdın.`;
+  }
+ }
+
+ zones.forEach(zone=>{
+  zone.addEventListener('click',()=>place(selected,zone));
+  zone.addEventListener('dragover',e=>e.preventDefault());
+  zone.addEventListener('drop',e=>{
+   e.preventDefault();
+   const index=e.dataTransfer.getData('text/plain');
+   const chip=bank.querySelector(`[data-index="${index}"]`);
+   place(chip,zone);
+  });
+ });
+
+ host.querySelector('#metReset').addEventListener('click',()=>{
+  renderMetabolismStation(host);
+ });
+}
+
 function renderInteractiveStation(topicIndex){
  const host=document.getElementById('interactiveStation');if(!host)return;
  if(topicIndex===8){
   host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ SİMÜLASYON</div><h4>🌡️ Vücut sıcaklığını dengele</h4></div><div class="station-body"><p>Ortam sıcaklığını değiştir ve vücudun ısı dengesini korumak için verdiği tepkileri gözlemle.</p><div class="sim-layout"><div class="sim-gauge"><div class="kicker">ORTAM SICAKLIĞI</div><div class="sim-temp"><span id="ambientValue">25</span>°C</div><input class="sim-range" id="ambientRange" type="range" min="15" max="40" value="25" oninput="updateThermo(this.value)"><div class="note">15–40 °C arasında ayarla.</div></div><div class="sim-readout"><strong id="thermoTitle">Denge korunuyor</strong><p id="thermoText">Vücut, ısı üretimi ve ısı kaybını dengeleyerek iç sıcaklığını belirli sınırlar içinde tutar.</p><div id="thermoActions">💧 Terleme: normal<br>🩸 Deri damarları: normal</div></div></div></div></div>`;
   updateThermo(25);
  }else if(topicIndex===9){
-  host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">SÜRÜKLE-BIRAK / DOKUNARAK YERLEŞTİR</div><h4>⚡ Yapım mı, yıkım mı?</h4></div><div class="station-body"><p>Olayları doğru metabolizma kutusuna sürükle. Dokunmatik ekranda önce olaya, sonra hedef kutuya dokun.</p><div class="sort-bank" id="sortBank"><div class="sort-chip" draggable="true" data-kind="build" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🧬 Protein sentezi</div><div class="sort-chip" draggable="true" data-kind="break" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🍬 Glikozun parçalanması</div></div><div class="sort-zones" style="margin-top:13px"><div class="sort-zone" data-target="build" ondragover="allowSort(event)" ondrop="dropSort(event)" onclick="tapSortTarget(this)"><strong>🧱 Anabolizma</strong><span>Yapım tepkimeleri</span></div><div class="sort-zone" data-target="break" ondragover="allowSort(event)" ondrop="dropSort(event)" onclick="tapSortTarget(this)"><strong>🔨 Katabolizma</strong><span>Yıkım tepkimeleri</span></div></div><div class="station-feedback" id="sortFeedback">İki olayı doğru kutulara yerleştir.</div><button class="secondary" style="margin-top:12px" onclick="resetSort()">Etkinliği sıfırla</button></div></div>`;
-  selectedSort=null;
+  renderMetabolismStation(host);
  }else{
   host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ UYGULAMA</div><h4>🔎 Bilimsel düşünme görevi</h4></div><div class="station-body"><p>${traits[topicIndex][4]}</p><p class="note">Önce kendi açıklamanı oluştur, sonra mini laboratuvardaki seçeneklerle kontrol et.</p></div></div>`;
  }
@@ -679,25 +827,177 @@ gauge.classList.add(v<20?'cold':v<=30?'normal':'hot');
  else if(v<=30){title.textContent='Denge korunuyor';txt.textContent='Isı üretimi ve ısı kaybı arasındaki denge iç sıcaklığın korunmasına yardım eder.';actions.innerHTML='💧 Terleme: düşük/normal<br>🩸 Deri damarları: normal';}
  else{title.textContent='Sıcak ortam: ısı kaybını artır';txt.textContent='Terleme ve deri damarlarının genişlemesi ısı kaybını artırmaya katkı sağlar.';actions.innerHTML='💧 Terleme: artar<br>🩸 Deri damarları: genişleyebilir';}
 }
-let selectedSort=null;
-function selectSortChip(chip){if(chip.classList.contains('placed'))return;document.querySelectorAll('.sort-chip').forEach(x=>x.style.outline='');selectedSort=chip;chip.style.outline='3px solid #b99ae8';document.getElementById('sortFeedback').textContent='Şimdi uygun hedef kutusuna dokun.';}
-function dragSort(event){selectedSort=event.currentTarget;event.dataTransfer.setData('text/plain',event.currentTarget.dataset.kind);}
-function allowSort(event){event.preventDefault();event.currentTarget.classList.add('over');}
-function dropSort(event){event.preventDefault();event.currentTarget.classList.remove('over');const kind=event.dataTransfer.getData('text/plain');const chip=[...document.querySelectorAll('.sort-chip')].find(x=>x.dataset.kind===kind);if(chip)placeSort(chip,event.currentTarget);}
-function tapSortTarget(zone){if(selectedSort)placeSort(selectedSort,zone);}
-function placeSort(chip,zone){
- if(!chip||chip.classList.contains('placed'))return;
- const feedback=document.getElementById('sortFeedback');
- if(chip.dataset.kind===zone.dataset.target){chip.classList.add('placed');chip.draggable=false;chip.style.outline='none';zone.querySelector('span').textContent=chip.textContent+' ✓';zone.style.borderColor='#2d9b65';zone.style.background='#eaf8f0';feedback.textContent=chip.dataset.kind==='build'?'Doğru! Protein sentezi yapım tepkimesidir (anabolizma).':'Doğru! Glikozun parçalanması yıkım tepkimesidir (katabolizma).';feedback.style.background='#eaf8f0';feedback.style.color='#17643e';selectedSort=null;if(document.querySelectorAll('.sort-chip.placed').length===2)feedback.textContent+=' İki olayı da doğru sınıflandırdın!';}
- else{feedback.textContent='Bu kutu uygun değil. Yapımda daha büyük moleküller oluşur; yıkımda moleküller parçalanır.';feedback.style.background='#fff0f1';feedback.style.color='#9f2637';}
+
+let selectedSort = null;
+let metabolismScore = 0;
+
+const metabolismItems = [
+  { text: "🧬 Protein sentezi", kind: "build" },
+  { text: "🍬 Glikozun hücresel solunumda parçalanması", kind: "break" },
+  { text: "🌱 Fotosentezle glikoz üretimi", kind: "build" },
+  { text: "🥩 Proteinlerin sindirimle amino asitlere ayrılması", kind: "break" },
+  { text: "🧫 DNA sentezi", kind: "build" },
+  { text: "🧈 Yağların yağ asitleri ve gliserole parçalanması", kind: "break" },
+  { text: "🌾 Glikojen sentezi", kind: "build" },
+  { text: "⚡ Glikojenin glikoza parçalanması", kind: "break" }
+];
+
+function renderMetabolismStation(host) {
+  metabolismScore = 0;
+  selectedSort = null;
+
+  const shuffled = [...metabolismItems].sort(() => Math.random() - 0.5);
+
+  host.innerHTML = `
+    <div class="station">
+      <div class="station-head">
+        <div class="kicker">ÇOKLU SINIFLANDIRMA GÖREVİ</div>
+        <h4>⚡ Metabolizma Dedektifi</h4>
+      </div>
+
+      <div class="station-body">
+        <p>Olayları incele ve yapım ya da yıkım tepkimesi olmalarına göre doğru kutuya yerleştir.</p>
+
+        <div class="station-feedback" id="metFeedback">
+          8 olayı doğru sınıflandır. Başarı puanını tamamla!
+        </div>
+
+        <div class="sort-bank" id="sortBank">
+          ${shuffled.map((item, index) => `
+            <div class="sort-chip"
+              draggable="true"
+              data-kind="${item.kind}"
+              data-index="${index}"
+              onclick="selectSortChip(this)"
+              ondragstart="dragSort(event)">
+              ${item.text}
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="sort-zones" style="margin-top:16px">
+          <div class="sort-zone" data-target="build"
+            ondragover="allowSort(event)"
+            ondrop="dropSort(event)"
+            onclick="tapSortTarget(this)">
+            <strong>🧱 ANABOLİZMA</strong>
+            <span>Yapım tepkimeleri</span>
+            <div class="placed-list"></div>
+          </div>
+
+          <div class="sort-zone" data-target="break"
+            ondragover="allowSort(event)"
+            ondrop="dropSort(event)"
+            onclick="tapSortTarget(this)">
+            <strong>🔨 KATABOLİZMA</strong>
+            <span>Yıkım tepkimeleri</span>
+            <div class="placed-list"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px;flex-wrap:wrap">
+          <strong id="metProgress">Yerleştirilen: 0 / 8</strong>
+          <strong id="metScore">Puan: 0</strong>
+        </div>
+
+        <button class="secondary" style="margin-top:12px"
+          onclick="renderMetabolismStation(document.getElementById('interactiveStation'))">
+          Etkinliği yeniden başlat
+        </button>
+      </div>
+    </div>
+  `;
 }
-function resetSort(){
- const bank=document.getElementById('sortBank');if(!bank)return;
- bank.innerHTML='<div class="sort-chip" draggable="true" data-kind="build" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🧬 Protein sentezi</div><div class="sort-chip" draggable="true" data-kind="break" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🍬 Glikozun parçalanması</div>';
- document.querySelectorAll('.sort-zone').forEach(z=>{z.style.borderColor='';z.style.background='';z.querySelector('span').textContent=z.dataset.target==='build'?'Yapım tepkimeleri':'Yıkım tepkimeleri';});
- const f=document.getElementById('sortFeedback');f.textContent='İki olayı doğru kutulara yerleştir.';f.style='';
- selectedSort=null;
+
+function selectSortChip(chip) {
+  if (chip.classList.contains("placed")) return;
+
+  document.querySelectorAll(".sort-chip").forEach(x => {
+    x.style.outline = "";
+  });
+
+  selectedSort = chip;
+  chip.style.outline = "3px solid #b99ae8";
+
+  document.getElementById("metFeedback").textContent =
+    "Şimdi uygun hedef kutusuna dokun.";
 }
+
+function dragSort(event) {
+  selectedSort = event.currentTarget;
+  event.dataTransfer.setData(
+    "text/plain",
+    event.currentTarget.dataset.index
+  );
+}
+
+function allowSort(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add("over");
+}
+
+function dropSort(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove("over");
+
+  const index = event.dataTransfer.getData("text/plain");
+  const chip = document.querySelector(
+    `.sort-chip[data-index="${index}"]`
+  );
+
+  if (chip) placeSort(chip, event.currentTarget);
+}
+
+function tapSortTarget(zone) {
+  if (selectedSort) placeSort(selectedSort, zone);
+}
+
+function placeSort(chip, zone) {
+  if (!chip || chip.classList.contains("placed")) return;
+
+  const feedback = document.getElementById("metFeedback");
+
+  if (chip.dataset.kind !== zone.dataset.target) {
+    feedback.textContent =
+      "Bu sınıflandırma doğru değil. Tepkimenin yapım mı, yıkım mı olduğunu yeniden düşün.";
+    feedback.style.background = "#fff0f1";
+    feedback.style.color = "#9f2637";
+    return;
+  }
+
+  chip.classList.add("placed");
+  chip.draggable = false;
+  chip.style.outline = "none";
+  chip.style.opacity = "0.65";
+
+  const label = document.createElement("div");
+  label.textContent = chip.textContent + " ✓";
+  label.style.padding = "7px 0";
+  label.style.fontSize = "13px";
+  label.style.borderTop = "1px solid #e8defb";
+
+  zone.querySelector(".placed-list").appendChild(label);
+
+  metabolismScore++;
+  selectedSort = null;
+
+  document.getElementById("metProgress").textContent =
+    `Yerleştirilen: ${metabolismScore} / 8`;
+
+  document.getElementById("metScore").textContent =
+    `Puan: ${metabolismScore * 12.5}`;
+
+  feedback.style.background = "#eaf8f0";
+  feedback.style.color = "#17643e";
+  feedback.textContent =
+    "Doğru sınıflandırma! Bu olayın metabolizmadaki yerini buldun.";
+
+  if (metabolismScore === 8) {
+    feedback.textContent =
+      "🏆 Harika! Sekiz olayın tamamını doğru sınıflandırdın. Metabolizma dedektifi görevini tamamladın!";
+  }
+}
+
 
 function checkTopicAnswer(topicIndex,choice,button){
  const task=topicTasks[topicIndex][level==='easy'?0:level==='medium'?1:2];
