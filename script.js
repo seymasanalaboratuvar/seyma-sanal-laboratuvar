@@ -128,17 +128,20 @@ function setupLanguage(){
 document.querySelectorAll('.module-card').forEach(card => {
   card.addEventListener('click', () => {
     const moduleName = card.querySelector('strong').textContent;
+if (grade === "9" && moduleName.includes("Yaşam")) {
+  window.location.href = "yasam.html";
 
-    if (grade === "9" && moduleName.includes("Organizasyon")) {
-      $('laboratuvar').style.display = 'block';
-      $('laboratuvar').scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    } else {
-      $('gradeMessage').textContent =
-        `${moduleName} etkinliği hazırlanıyor.`;
-    }
+} else if (grade === "9" && moduleName.includes("Organizasyon")) {
+  $('laboratuvar').style.display = 'block';
+  $('laboratuvar').scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
+
+} else {
+  $('gradeMessage').textContent =
+    `${moduleName} etkinliği hazırlanıyor.`;
+}
    });
 });
   });
