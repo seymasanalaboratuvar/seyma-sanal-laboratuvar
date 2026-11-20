@@ -91,94 +91,25 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
 @media(max-width:760px){.level-grid{grid-template-columns:1fr}.trait-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.task-grid{grid-template-columns:1fr}}
 @media(max-width:480px){header{padding:12px 15px}.brand{font-size:12px}main{padding:15px 13px 35px}.hero{padding:28px 22px}.panel{padding:18px}.trait-grid{grid-template-columns:1fr 1fr}.answers{grid-template-columns:1fr}.current-level{align-items:flex-start;flex-direction:column}}
 
-/* Mini laboratuvar tasarımı */
-.mini-lab {
-  margin-top: 18px;
-  padding: 20px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #f3edff, #fbf9ff);
-  border: 1px solid #e4d8fa;
-}
+.station{margin-top:16px;border:1px solid #e3d7f6;border-radius:17px;background:#fff;overflow:hidden}
+.station-head{padding:15px 18px;background:#2d1d62;color:#fff}
+.station-head .kicker{color:#e3d6ff}
+.station-head h4{margin:5px 0 0;font-size:18px}
+.station-body{padding:18px}
+.sim-layout{display:grid;grid-template-columns:1fr 1fr;gap:15px;align-items:center}
+.sim-gauge{border-radius:16px;padding:18px;text-align:center;background:linear-gradient(145deg,#f2edff,#fff)}
+.sim-temp{font-size:38px;font-weight:900;color:#7138c5}
+.sim-range{width:100%;accent-color:#7138c5;margin:15px 0}
+.sim-readout{padding:14px;border-radius:13px;background:#f7f3ff;line-height:1.55}
+.sort-bank,.sort-zones{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sort-chip{padding:13px;border:1.5px solid #d9c9f1;border-radius:12px;background:#faf7ff;font-weight:800;text-align:center;cursor:grab;user-select:none}
+.sort-chip.placed{cursor:default;background:#eaf8f0;border-color:#2d9b65}
+.sort-zone{min-height:105px;padding:12px;border:2px dashed #cbb8e9;border-radius:14px;background:#fbf9ff;text-align:center;cursor:pointer}
+.sort-zone strong{display:block;color:#7138c5;margin-bottom:8px}
+.sort-zone.over{background:#f0e8ff;border-color:#7138c5}
+.station-feedback{margin-top:12px;padding:12px 14px;background:#f4f0fb;border-radius:12px;line-height:1.5;font-size:14px}
+@media(max-width:620px){.sim-layout,.sort-bank,.sort-zones{grid-template-columns:1fr}}
 
-.mini-lab h4 {
-  color: #7138c5;
-  font-size: 18px;
-  margin: 12px 0;
-}
-
-.mini-lab .task-prompt {
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.6;
-  margin: 12px 0;
-}
-
-.mini-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 15px;
-}
-
-.mini-option {
-  padding: 15px;
-  border: 2px solid #e4d8fa;
-  border-radius: 14px;
-  background: white;
-  color: #21164e;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 800;
-  text-align: left;
-  cursor: pointer;
-  transition: .2s;
-}
-
-.mini-option:hover:not(:disabled) {
-  border-color: #7138c5;
-  background: #f7f1ff;
-  transform: translateY(-2px);
-}
-
-.mini-option:disabled {
-  cursor: default;
-}
-
-.mini-option.correct {
-  border-color: #2d9b65;
-  background: #eaf8f0;
-}
-
-.mini-option.wrong {
-  border-color: #d85a68;
-  background: #fff0f1;
-}
-
-.mini-feedback {
-  margin-top: 14px;
-  padding: 14px;
-  border-radius: 12px;
-  background: white;
-  color: #51486f;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.mini-feedback.good {
-  background: #eaf8f0;
-  color: #17643e;
-}
-
-.mini-feedback.bad {
-  background: #fff0f1;
-  color: #9f2637;
-}
-
-@media(max-width:600px) {
-  .mini-options {
-    grid-template-columns: 1fr;
-  }
-}
 </style>
 </head>
 <body>
@@ -428,8 +359,50 @@ function showTrait(i,button){
    <div class="mini-options">${task.a.map((a,j)=>`<button class="mini-option" onclick="checkTopicAnswer(${i},${j},this)">${String.fromCharCode(65+j)}. ${a}</button>`).join('')}</div>
    <div class="mini-feedback" id="topicFeedback">Yanıtını seç. Açıklama cevabından sonra gösterilecek.</div>
   </div>
+  <div id="interactiveStation"></div>
  </div>`;
+ renderInteractiveStation(i);
 }
+
+function renderInteractiveStation(topicIndex){
+ const host=document.getElementById('interactiveStation');if(!host)return;
+ if(topicIndex===8){
+  host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ SİMÜLASYON</div><h4>🌡️ Vücut sıcaklığını dengele</h4></div><div class="station-body"><p>Ortam sıcaklığını değiştir ve vücudun ısı dengesini korumak için verdiği tepkileri gözlemle.</p><div class="sim-layout"><div class="sim-gauge"><div class="kicker">ORTAM SICAKLIĞI</div><div class="sim-temp"><span id="ambientValue">25</span>°C</div><input class="sim-range" id="ambientRange" type="range" min="15" max="40" value="25" oninput="updateThermo(this.value)"><div class="note">15–40 °C arasında ayarla.</div></div><div class="sim-readout"><strong id="thermoTitle">Denge korunuyor</strong><p id="thermoText">Vücut, ısı üretimi ve ısı kaybını dengeleyerek iç sıcaklığını belirli sınırlar içinde tutar.</p><div id="thermoActions">💧 Terleme: normal<br>🩸 Deri damarları: normal</div></div></div></div></div>`;
+  updateThermo(25);
+ }else if(topicIndex===9){
+  host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">SÜRÜKLE-BIRAK / DOKUNARAK YERLEŞTİR</div><h4>⚡ Yapım mı, yıkım mı?</h4></div><div class="station-body"><p>Olayları doğru metabolizma kutusuna sürükle. Dokunmatik ekranda önce olaya, sonra hedef kutuya dokun.</p><div class="sort-bank" id="sortBank"><div class="sort-chip" draggable="true" data-kind="build" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🧬 Protein sentezi</div><div class="sort-chip" draggable="true" data-kind="break" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🍬 Glikozun parçalanması</div></div><div class="sort-zones" style="margin-top:13px"><div class="sort-zone" data-target="build" ondragover="allowSort(event)" ondrop="dropSort(event)" onclick="tapSortTarget(this)"><strong>🧱 Anabolizma</strong><span>Yapım tepkimeleri</span></div><div class="sort-zone" data-target="break" ondragover="allowSort(event)" ondrop="dropSort(event)" onclick="tapSortTarget(this)"><strong>🔨 Katabolizma</strong><span>Yıkım tepkimeleri</span></div></div><div class="station-feedback" id="sortFeedback">İki olayı doğru kutulara yerleştir.</div><button class="secondary" style="margin-top:12px" onclick="resetSort()">Etkinliği sıfırla</button></div></div>`;
+  selectedSort=null;
+ }else{
+  host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ UYGULAMA</div><h4>🔎 Bilimsel düşünme görevi</h4></div><div class="station-body"><p>${traits[topicIndex][4]}</p><p class="note">Önce kendi açıklamanı oluştur, sonra mini laboratuvardaki seçeneklerle kontrol et.</p></div></div>`;
+ }
+}
+function updateThermo(value){
+ const v=Number(value),val=document.getElementById('ambientValue');if(!val)return;val.textContent=v;
+ const title=document.getElementById('thermoTitle'),txt=document.getElementById('thermoText'),actions=document.getElementById('thermoActions');
+ if(v<20){title.textContent='Soğuk ortam: ısı kaybını azalt';txt.textContent='Vücut ısı kaybını azaltmaya ve ısı üretimini artırmaya yönelik tepkiler oluşturur.';actions.innerHTML='🧊 Titreme: artabilir<br>🩸 Deri damarları: daralabilir';}
+ else if(v<=30){title.textContent='Denge korunuyor';txt.textContent='Isı üretimi ve ısı kaybı arasındaki denge iç sıcaklığın korunmasına yardım eder.';actions.innerHTML='💧 Terleme: düşük/normal<br>🩸 Deri damarları: normal';}
+ else{title.textContent='Sıcak ortam: ısı kaybını artır';txt.textContent='Terleme ve deri damarlarının genişlemesi ısı kaybını artırmaya katkı sağlar.';actions.innerHTML='💧 Terleme: artar<br>🩸 Deri damarları: genişleyebilir';}
+}
+let selectedSort=null;
+function selectSortChip(chip){if(chip.classList.contains('placed'))return;document.querySelectorAll('.sort-chip').forEach(x=>x.style.outline='');selectedSort=chip;chip.style.outline='3px solid #b99ae8';document.getElementById('sortFeedback').textContent='Şimdi uygun hedef kutusuna dokun.';}
+function dragSort(event){selectedSort=event.currentTarget;event.dataTransfer.setData('text/plain',event.currentTarget.dataset.kind);}
+function allowSort(event){event.preventDefault();event.currentTarget.classList.add('over');}
+function dropSort(event){event.preventDefault();event.currentTarget.classList.remove('over');const kind=event.dataTransfer.getData('text/plain');const chip=[...document.querySelectorAll('.sort-chip')].find(x=>x.dataset.kind===kind);if(chip)placeSort(chip,event.currentTarget);}
+function tapSortTarget(zone){if(selectedSort)placeSort(selectedSort,zone);}
+function placeSort(chip,zone){
+ if(!chip||chip.classList.contains('placed'))return;
+ const feedback=document.getElementById('sortFeedback');
+ if(chip.dataset.kind===zone.dataset.target){chip.classList.add('placed');chip.draggable=false;chip.style.outline='none';zone.querySelector('span').textContent=chip.textContent+' ✓';zone.style.borderColor='#2d9b65';zone.style.background='#eaf8f0';feedback.textContent=chip.dataset.kind==='build'?'Doğru! Protein sentezi yapım tepkimesidir (anabolizma).':'Doğru! Glikozun parçalanması yıkım tepkimesidir (katabolizma).';feedback.style.background='#eaf8f0';feedback.style.color='#17643e';selectedSort=null;if(document.querySelectorAll('.sort-chip.placed').length===2)feedback.textContent+=' İki olayı da doğru sınıflandırdın!';}
+ else{feedback.textContent='Bu kutu uygun değil. Yapımda daha büyük moleküller oluşur; yıkımda moleküller parçalanır.';feedback.style.background='#fff0f1';feedback.style.color='#9f2637';}
+}
+function resetSort(){
+ const bank=document.getElementById('sortBank');if(!bank)return;
+ bank.innerHTML='<div class="sort-chip" draggable="true" data-kind="build" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🧬 Protein sentezi</div><div class="sort-chip" draggable="true" data-kind="break" onclick="selectSortChip(this)" ondragstart="dragSort(event)">🍬 Glikozun parçalanması</div>';
+ document.querySelectorAll('.sort-zone').forEach(z=>{z.style.borderColor='';z.style.background='';z.querySelector('span').textContent=z.dataset.target==='build'?'Yapım tepkimeleri':'Yıkım tepkimeleri';});
+ const f=document.getElementById('sortFeedback');f.textContent='İki olayı doğru kutulara yerleştir.';f.style='';
+ selectedSort=null;
+}
+
 function checkTopicAnswer(topicIndex,choice,button){
  const task=topicTasks[topicIndex][level==='easy'?0:level==='medium'?1:2];
  const buttons=button.parentElement.querySelectorAll('.mini-option');
