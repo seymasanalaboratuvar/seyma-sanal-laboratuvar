@@ -1,189 +1,307 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yaşam Laboratuvarı | Şeyma Hocanın Sanal Laboratuvarı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+:root{--ink:#21164e;--muted:#716b89;--purple:#7138c5;--line:#e8defb;--paper:#fff;--lav:#f5f0ff;--green:#168451;--amber:#a96508;--red:#b83245}
 *{box-sizing:border-box}
-body{margin:0;font-family:Nunito,sans-serif;color:#21164e;background:linear-gradient(180deg,#fff,#f4efff)}
-header{padding:18px 6%;background:white;border-bottom:1px solid #e8defb;display:flex;justify-content:space-between;align-items:center;gap:12px}
-header a{color:#7138c5;text-decoration:none;font-weight:900}
-main{max-width:1050px;margin:35px auto;padding:0 20px}
-.hero{text-align:center;padding:35px 15px}
-.eyebrow{color:#7138c5;font-size:12px;font-weight:900;letter-spacing:2px}
-h1{font-size:clamp(30px,5vw,48px);margin:10px 0}
-.hero p{color:#77718e;font-size:17px}
-.panel{background:white;border:1px solid #e8defb;border-radius:22px;padding:25px;margin:22px 0;box-shadow:0 12px 35px #50318b10}
-h2{margin-top:0}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px}
-.choice,.trait,.answer{border:1px solid #e8defb;background:#faf8ff;border-radius:15px;padding:17px;cursor:pointer;font:700 15px Nunito;color:#21164e;text-align:center}
-.choice:hover,.trait:hover,.answer:hover{border-color:#7138c5;background:#f3ecff}
-.choice span{display:block;font-size:35px;margin-bottom:8px}
-button{font-family:Nunito}
-.feedback{margin-top:15px;padding:14px;border-radius:12px;background:#f4efff;min-height:48px;font-weight:700}
-.trait{text-align:left}
-.trait strong{display:block;color:#7138c5;margin-bottom:5px}
-.trait p{margin:0;color:#716b89;font-weight:600}
-.trait.active{background:#eee5ff;border-color:#7138c5}
-.answers{display:grid;gap:10px}
-.answer{text-align:left}
-.answer:disabled{cursor:default;opacity:.8}
-.primary{border:0;background:#7138c5;color:white;padding:13px 23px;border-radius:12px;font-weight:900;cursor:pointer}
-.primary:hover{background:#5726a5}
-.progress{height:9px;background:#eee5ff;border-radius:20px;overflow:hidden;margin:15px 0}
-.progress div{height:100%;width:0;background:#7138c5;transition:.3s}
-footer{text-align:center;padding:25px;color:#77718e}
-@media(max-width:600px){header{padding:15px}.panel{padding:18px}.hero{padding:20px 5px}}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 4%,#eee4ff 0,transparent 25%),linear-gradient(180deg,#fff 0,#f7f3ff 48%,#fff 100%)}
+button{font:inherit}
+header{height:auto;min-height:70px;padding:14px max(calc((100vw - 1160px)/2),22px);display:flex;align-items:center;justify-content:space-between;gap:16px;background:#ffffffed;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+header a{color:var(--purple);text-decoration:none;font-weight:900}
+.brand{font-weight:900;letter-spacing:.3px}
+main{max-width:1160px;margin:0 auto;padding:24px 22px 55px}
+.hero{position:relative;overflow:hidden;border-radius:28px;padding:38px 34px;background:linear-gradient(120deg,#29185d,#7138c5 62%,#a57ae8);color:white;box-shadow:0 18px 45px #50318b25}
+.hero:after{content:"🧬";position:absolute;right:5%;top:8%;font-size:clamp(80px,15vw,170px);opacity:.16;transform:rotate(-18deg)}
+.eyebrow{font-size:11px;font-weight:900;letter-spacing:2px;opacity:.82}
+.hero h1{font-size:clamp(32px,5vw,54px);line-height:1.05;margin:10px 0}
+.hero p{max-width:650px;font-size:17px;line-height:1.6;color:#eee5ff;margin:0}
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.pill{border:1px solid #ffffff55;background:#ffffff18;padding:7px 12px;border-radius:30px;font-size:12px;font-weight:800}
+.panel{background:white;border:1px solid var(--line);border-radius:22px;padding:25px;margin:22px 0;box-shadow:0 12px 35px #50318b0c}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+.section-head h2{margin:5px 0 6px;font-size:clamp(21px,3vw,28px)}
+.section-head p{margin:0;color:var(--muted);line-height:1.5}
+.kicker{font-size:11px;color:var(--purple);font-weight:900;letter-spacing:1.8px}
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:20px}
+.level{border:2px solid var(--line);background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;transition:.18s}
+.level:hover{transform:translateY(-2px);border-color:#b99ae8}
+.level.active{border-color:var(--purple);background:#f6f0ff;box-shadow:0 0 0 3px #7138c51a}
+.level .symbol{font-size:27px}
+.level strong{display:block;font-size:17px;margin:7px 0 3px}
+.level small{display:block;color:var(--muted);line-height:1.45}
+.level .tag{display:inline-block;margin-top:10px;padding:4px 9px;border-radius:20px;font-size:10px;font-weight:900;background:#eee5ff;color:var(--purple)}
+.level[data-level="easy"] .tag{background:#e7f7ee;color:var(--green)}
+.level[data-level="medium"] .tag{background:#fff3dc;color:var(--amber)}
+.level[data-level="hard"] .tag{background:#ffebee;color:var(--red)}
+.current-level{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;background:var(--lav);border-radius:14px;margin-top:16px}
+.current-level strong{color:var(--purple)}
+.task-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.task-card{border:1px solid var(--line);border-radius:17px;padding:17px;background:linear-gradient(145deg,#fff,#fbf9ff)}
+.task-card .emoji{font-size:28px}
+.task-card h3{margin:7px 0 5px;font-size:17px}
+.task-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.sample-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-top:16px}
+.sample{border:1.5px solid var(--line);background:#fcfaff;border-radius:16px;padding:15px;cursor:pointer;text-align:center;color:var(--ink);transition:.15s}
+.sample:hover{border-color:var(--purple);transform:translateY(-2px)}
+.sample:disabled{cursor:default;opacity:.88;transform:none}
+.sample .emoji{display:block;font-size:34px;margin-bottom:5px}
+.sample strong{display:block}
+.sample small{color:var(--muted)}
+.sample.correct{border-color:#3ba875;background:#edfaf2}
+.sample.wrong{border-color:#d85a68;background:#fff0f1}
+.feedback{padding:14px 16px;background:var(--lav);border-radius:13px;margin-top:15px;line-height:1.5;min-height:48px}
+.feedback.good{background:#eaf8f0;color:#17643e}
+.feedback.bad{background:#fff0f1;color:#9f2637}
+.scoreline{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:13px;font-weight:800}
+.trait-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.trait{border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer;min-height:125px;transition:.15s;color:var(--ink)}
+.trait:hover,.trait.active{border-color:var(--purple);background:#f8f4ff}
+.trait .emoji{font-size:25px}
+.trait strong{display:block;margin:7px 0 4px}
+.trait small{display:block;color:var(--muted);line-height:1.4}
+.detail{margin-top:15px;border-radius:17px;background:linear-gradient(120deg,#f3edff,#fbf9ff);padding:20px;border-left:4px solid var(--purple)}
+.detail h3{margin:0 0 8px}
+.detail p{margin:7px 0;line-height:1.6;color:#51486f}
+.detail .challenge{padding:11px 13px;background:white;border-radius:12px;margin-top:12px;font-weight:800}
+.quiz-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.progress{height:9px;background:#eee8fa;border-radius:20px;overflow:hidden;margin:14px 0}
+.progress div{height:100%;width:0;background:linear-gradient(90deg,#7138c5,#b38be9);transition:.25s}
+.question-box{padding:20px;border:1px solid var(--line);border-radius:17px;background:#fdfcff;margin-top:16px}
+.question-box h3{font-size:19px;line-height:1.5;margin:8px 0 16px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer{border:1.5px solid var(--line);border-radius:13px;background:white;padding:13px;text-align:left;cursor:pointer;color:var(--ink);font-weight:800}
+.answer:hover:not(:disabled){border-color:var(--purple);background:#f8f4ff}
+.answer:disabled{cursor:default}
+.answer.correct{border-color:#2d9b65;background:#eaf8f0}
+.answer.wrong{border-color:#d85a68;background:#fff0f1}
+.primary{border:0;border-radius:12px;background:var(--purple);color:white;padding:12px 20px;font-weight:900;cursor:pointer}
+.primary:disabled{opacity:.4;cursor:not-allowed}
+.secondary{border:1px solid var(--line);border-radius:12px;background:white;color:var(--purple);padding:11px 16px;font-weight:900;cursor:pointer}
+.result{display:none;text-align:center;padding:24px;background:#f7f2ff;border-radius:18px;margin-top:16px}
+.result strong{display:block;font-size:36px;color:var(--purple)}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
+@media(max-width:760px){.level-grid{grid-template-columns:1fr}.trait-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.task-grid{grid-template-columns:1fr}}
+@media(max-width:480px){header{padding:12px 15px}.brand{font-size:12px}main{padding:15px 13px 35px}.hero{padding:28px 22px}.panel{padding:18px}.trait-grid{grid-template-columns:1fr 1fr}.answers{grid-template-columns:1fr}.current-level{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
 <header>
-  <a href="index.html">← Ana laboratuvara dön</a>
-  <strong>🧬 YAŞAM LABORATUVARI</strong>
+<a href="index.html">← Ana laboratuvara dön</a>
+<div class="brand">🧬 YAŞAM LABORATUVARI</div>
 </header>
 <main>
 <section class="hero">
-  <span class="eyebrow">9. SINIF BİYOLOJİ · KEŞFET VE ÖĞREN</span>
-  <h1>Yaşamın İzini Sür</h1>
-  <p>Canlıları tanı, ortak özelliklerini keşfet ve bilimsel düşünme becerini dene.</p>
+<div class="eyebrow">9. SINIF BİYOLOJİ · ETKİLEŞİMLİ KEŞİF</div>
+<h1>Yaşamın İzini Sür</h1>
+<p>Canlılığı yalnızca tanımlama. Kanıtları incele, deney sonuçlarını yorumla ve biyolojik düşünme becerini geliştir.</p>
+<div class="hero-meta"><span class="pill">🔎 Bilimsel keşif</span><span class="pill">🧠 Seviye bazlı görevler</span><span class="pill">📊 Anında geri bildirim</span></div>
+</section>
+
+<section class="panel" id="difficulty">
+<div class="section-head"><div><div class="kicker">ÖĞRENME PROFİLİNİ SEÇ</div><h2>Hangi seviyede çalışacaksın?</h2><p>Seçtiğin seviyeye göre etkinlikler, örnekler ve soru havuzu değişir.</p></div></div>
+<div class="level-grid">
+<button class="level active" data-level="easy" onclick="setLevel('easy')"><span class="symbol">🌱</span><strong>Kolay</strong><small>Temel kavramları tanı, örnekleri sınıflandır ve bilgini pekiştir.</small><span class="tag">Başlangıç</span></button>
+<button class="level" data-level="medium" onclick="setLevel('medium')"><span class="symbol">🧩</span><strong>Orta</strong><small>Benzer durumları karşılaştır, günlük yaşamdan çıkarım yap.</small><span class="tag">Yorumlama</span></button>
+<button class="level" data-level="hard" onclick="setLevel('hard')"><span class="symbol">🧪</span><strong>İleri</strong><small>Deney tasarla, değişkenleri değerlendir ve bilimsel kanıt kullan.</small><span class="tag">Analiz ve sentez</span></button>
+</div>
+<div class="current-level"><span>Aktif çalışma seviyesi: <strong id="levelName">Kolay</strong></span><span id="levelSummary">Temel kavramlar ve doğrudan sınıflandırma</span></div>
 </section>
 
 <section class="panel">
-  <span class="eyebrow">DENEY 01</span>
-  <h2>Canlı mı, cansız mı?</h2>
-  <p>Aşağıdaki örnekleri incele. Sence hangileri canlıdır?</p>
-  <div class="cards">
-    <button class="choice" onclick="classify(this,'canli','canli')"><span>🌳</span>Ağaç</button>
-    <button class="choice" onclick="classify(this,'cansiz','cansiz')"><span>🪨</span>Taş</button>
-    <button class="choice" onclick="classify(this,'canli','canli')"><span>🐈</span>Kedi</button>
-    <button class="choice" onclick="classify(this,'cansiz','cansiz')"><span>🤖</span>Robot</button>
-    <button class="choice" onclick="classify(this,'canli','canli')"><span>🍄</span>Mantar</button>
-    <button class="choice" onclick="classify(this,'canli','canli')"><span>🦠</span>Bakteri</button>
-  </div>
-  <div class="feedback" id="classFeedback">Bir örnek seçerek sınıflandırmaya başla.</div>
-  <p><strong>Doğru sınıflandırma:</strong> <span id="score">0 / 6</span></p>
+<div class="section-head"><div><div class="kicker">GÖREV 01 · SINIFLANDIRMA</div><h2>Canlılığın kanıtlarını değerlendir</h2><p id="activityIntro">Örnekleri canlı veya cansız olarak sınıflandır. Her seçimden sonra bilimsel geri bildirim al.</p></div></div>
+<div class="task-grid" id="taskContext"></div>
+<div class="sample-grid" id="sampleArea"></div>
+<div class="feedback" id="classFeedback">Bir örnek seçerek göreve başla.</div>
+<div class="scoreline"><span id="classProgress">Yanıtlanan: 0 / 6</span><span id="classScore">Doğru: 0</span></div>
 </section>
 
 <section class="panel">
-  <span class="eyebrow">KEŞİF ALANI</span>
-  <h2>Canlıların ortak özellikleri</h2>
-  <p>Bir özelliğe dokun. Açıklamasını keşfet.</p>
-  <div class="cards" id="traits">
-    <button class="trait" onclick="showTrait(this,0)"><strong>🧫 Hücresel yapı</strong><p>Canlılar hücrelerden oluşur.</p></button>
-    <button class="trait" onclick="showTrait(this,1)"><strong>🍎 Beslenme</strong><p>Enerji ve yapı taşı ihtiyacını karşılar.</p></button>
-    <button class="trait" onclick="showTrait(this,2)"><strong>⚡ Enerji üretimi</strong><p>Metabolik faaliyetleri için enerji dönüşümü gerçekleştirir.</p></button>
-    <button class="trait" onclick="showTrait(this,3)"><strong>🌱 Büyüme ve gelişme</strong><p>Yapı ve işlev bakımından değişim gösterir.</p></button>
-    <button class="trait" onclick="showTrait(this,4)"><strong>🏃 Hareket</strong><p>Canlılarda hareketin farklı biçimleri görülür.</p></button>
-    <button class="trait" onclick="showTrait(this,5)"><strong>🌡️ Uyarılara tepki</strong><p>Çevresel değişimleri algılar ve yanıt verir.</p></button>
-    <button class="trait" onclick="showTrait(this,6)"><strong>♻️ Boşaltım</strong><p>Metabolizma sonucu oluşan atıkların uzaklaştırılmasını sağlar.</p></button>
-    <button class="trait" onclick="showTrait(this,7)"><strong>🧬 Üreme</strong><p>Türün devamlılığını sağlar.</p></button>
-    <button class="trait" onclick="showTrait(this,8)"><strong>⚖️ Homeostazi</strong><p>İç dengenin belirli sınırlar içinde korunmasıdır.</p></button>
-    <button class="trait" onclick="showTrait(this,9)"><strong>🧪 Metabolizma</strong><p>Canlıdaki yapım ve yıkım tepkimelerinin tümüdür.</p></button>
-    <button class="trait" onclick="showTrait(this,10)"><strong>🌍 Adaptasyon</strong><p>Popülasyonların nesiller boyunca çevreye uyum sağlayan kalıtsal özellikler kazanmasıdır.</p></button>
-  </div>
-  <div class="feedback" id="traitFeedback">Keşfetmek istediğin özelliği seç.</div>
+<div class="section-head"><div><div class="kicker">KEŞİF ALANI · KAVRAMLAR</div><h2>Canlıların ortak özelliklerini derinlemesine incele</h2><p>Bir kavram seç. Bilimsel açıklamayı, örneği ve seviyene uygun düşünme görevini incele.</p></div></div>
+<div class="trait-grid" id="traitGrid"></div>
+<div class="detail" id="traitDetail"><h3>🔬 Keşfe başla</h3><p>Yukarıdaki kavram kartlarından birini seç. Her kartta ayrıntılı açıklama ve bilimsel düşünme görevi bulunur.</p></div>
 </section>
 
-<section class="panel">
-  <span class="eyebrow">DENEY 02 · ÖĞRENME KONTROLÜ</span>
-  <h2>Bilgini test et</h2>
-  <div class="progress"><div id="bar"></div></div>
-  <p id="questionCount">Soru 1 / 5</p>
-  <h3 id="question"></h3>
-  <div class="answers" id="answers"></div>
-  <div class="feedback" id="quizFeedback">Doğru cevabı seç.</div>
-  <p><strong id="quizScore">Puan: 0</strong></p>
-  <button class="primary" id="next" onclick="nextQuestion()" disabled>Sonraki soru</button>
+<section class="panel" id="quizPanel">
+<div class="quiz-top"><div><div class="kicker">GÖREV 02 · BİLİMSEL DÜŞÜNME</div><h2 style="margin:5px 0">Seviyene özel değerlendirme</h2><p class="note" id="quizIntro">Sorular seçtiğin seviyeye göre hazırlanır.</p></div><span class="pill" style="background:#f1eaff;color:#7138c5;border:0" id="quizLevel">KOLAY SEVİYE</span></div>
+<div class="progress"><div id="bar"></div></div>
+<div class="scoreline"><span id="questionCount">Soru 1</span><span id="liveScore">Puan: 0</span></div>
+<div class="question-box" id="questionBox">
+<div class="kicker" id="questionType">KAVRAM BİLGİSİ</div>
+<h3 id="question"></h3>
+<div class="answers" id="answers"></div>
+<div class="feedback" id="quizFeedback">En uygun yanıtı seç.</div>
+<div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="primary" id="next" onclick="nextQuestion()" disabled>Sonraki soru →</button></div>
+</div>
+<div class="result" id="result"><div class="kicker">GÖREV TAMAMLANDI</div><strong id="resultScore">0 / 5</strong><h3 id="resultTitle">Değerlendirme</h3><p id="resultText"></p><button class="primary" onclick="restartQuiz()">Tekrar çöz</button></div>
 </section>
+<p class="note">Bilimsel not: Adaptasyon, tek bir bireyin isteyerek kazandığı özellik değil; popülasyonlarda nesiller boyunca doğal seçilimle yaygınlaşabilen kalıtsal özelliklerle ilişkilidir. Üreme bireyin yaşaması için değil, türün devamlılığı için önemlidir.</p>
 </main>
-<footer>🧬 Şeyma Hocanın Sanal Laboratuvarı · Keşfet · İncele · Öğren</footer>
+<footer>🧬 Şeyma Hocanın Sanal Laboratuvarı · Keşfet · İncele · Sorgula</footer>
 
 <script>
-let classified = new Set();
-function classify(button,answer,correct){
-  const name=button.innerText.trim();
-  if(classified.has(name))return;
-  classified.add(name);
-  const right=answer===correct;
-  button.style.background=right?'#e6f7ed':'#fff0f0';
-  button.style.borderColor=right?'#36a269':'#d65b5b';
-  document.getElementById('classFeedback').textContent=
-    right?'Doğru sınıflandırma!':'Bu örneği tekrar düşün. Bilimsel ölçütleri hatırla.';
-  document.getElementById('score').textContent=classified.size+' / 6';
-}
-const traitDetails=[
-'Hücre, canlıların temel yapısal ve işlevsel birimidir. Tek hücreli ve çok hücreli canlılar bulunur.',
-'Canlılar enerji elde etmek ve hücresel yapılarını sürdürmek için besin alır veya üretir.',
-'Hücresel faaliyetlerde enerji dönüşümü gerçekleşir. ATP, hücrede enerji aktarımında görev alır.',
-'Büyüme canlıda kütle ve hacim artışını; gelişme ise yapı ve işlev değişimlerini kapsar.',
-'Canlılarda yer değiştirme veya hücre ve organ düzeyinde hareket görülebilir.',
-'Işık, sıcaklık, ses ve kimyasal maddeler gibi uyaranlara tepki verilebilir.',
-'Metabolik faaliyetler sonucunda oluşan atık maddeler uzaklaştırılır.',
-'Üreme bireyin yaşamını sürdürmesi için değil, türün devamı için önemlidir.',
-'Homeostazi, iç ortam koşullarının belirli sınırlar içinde dengede tutulmasıdır.',
-'Metabolizma, canlıdaki tüm yapım (anabolizma) ve yıkım (katabolizma) olaylarını kapsar.',
-'Adaptasyon, popülasyonlarda nesiller boyunca doğal seçilimle yaygınlaşabilen kalıtsal özelliklerdir.'
+const levels={
+easy:{name:'Kolay',summary:'Temel kavramlar ve doğrudan sınıflandırma',intro:'Örnekleri canlı veya cansız olarak sınıflandır. Her seçimden sonra bilimsel geri bildirim al.',context:[['🎯','Görev','Canlılık özelliklerini temel düzeyde tanı.'],['📌','İpucu','Canlıların hücresel yapıya ve metabolik faaliyetlere sahip olduğunu hatırla.']]},
+medium:{name:'Orta',summary:'Karşılaştırma, günlük yaşam ve yorumlama',intro:'Sadece görünüşe göre karar verme. Üreme, hareket ve büyüme gibi özelliklerin bilimsel anlamını değerlendir.',context:[['🧠','Görev','Gözlenen bir özelliğin tek başına canlılık kanıtı olup olmadığını sorgula.'],['🔍','İpucu','Ateşin yayılması veya otomobilin hareket etmesi, canlılık anlamına gelmez.']]},
+hard:{name:'İleri',summary:'Deney tasarımı, değişkenler ve kanıta dayalı çıkarım',intro:'Her örneği kanıtlarla değerlendir. Biyolojik ölçütleri kullanarak sınıflandırma yap ve deneysel düşün.',context:[['🧪','Görev','Canlılık iddiasını test etmek için hangi gözlem veya ölçümün gerekli olduğunu düşün.'],['📊','İpucu','Tek bir belirti yerine hücresel organizasyon ve metabolik süreçlere ilişkin kanıtları birlikte değerlendir.']]}
+};
+const specimens={
+easy:[['🌳','Ağaç','live','Çok hücreli, fotosentez yapabilen bir canlıdır.'],['🪨','Taş','nonlive','Hücresel yapısı ve metabolizması yoktur.'],['🐈','Kedi','live','Hücresel yapıya ve metabolik faaliyetlere sahiptir.'],['🤖','Robot','nonlive','Hareket edebilir ancak hücresel yapısı ve metabolizması yoktur.'],['🍄','Mantar','live','Hücrelerden oluşur ve heterotrof beslenir.'],['🦠','Bakteri','live','Tek hücreli prokaryot bir canlıdır.']],
+medium:[['🔥','Yayılan ateş','nonlive','Büyüyor gibi görünse de hücrelerden oluşmaz ve metabolizması yoktur.'],['🌱','Çimlenen tohum','live','Tohum uygun koşullarda metabolik faaliyetlerini sürdürür ve gelişir.'],['🚗','Hareket eden otomobil','nonlive','Hareket etmesi onu canlı yapmaz; hücresel organizasyonu yoktur.'],['🦠','Aktif bakteri','live','Tek hücrelidir; beslenme ve metabolizma gibi yaşamsal faaliyetler gösterir.'],['💎','Kristal','nonlive','Dışarıdan madde eklenmesiyle büyüyebilir; ancak hücresel yapısı ve metabolizması yoktur.'],['🥚','Döllenmiş kuş yumurtası','live','Uygun koşullarda embriyonik gelişim ve metabolik faaliyetler gerçekleşir.']],
+hard:[['🧫','Besiyerinde çoğalan bakteri','live','Koloni artışı tek başına tüm açıklama değildir; mikroskobik ve metabolik kanıtlarla birlikte değerlendirilir.'],['🧪','Enzim içeren hücresiz özüt','nonlive','Kimyasal tepkimeleri katalizleyebilir; ancak hücresel organizasyonu ve bağımsız metabolik bütünlüğü yoktur.'],['🦠','Konak hücre dışında virüs','nonlive','Hücresel yapısı ve bağımsız metabolizması yoktur; çoğalmak için konak hücreye ihtiyaç duyar.'],['🌰','Uygun koşullarda çimlenen tohum','live','Çimlenme sırasında metabolik etkinlik ve gelişim gözlenir.'],['🧬','Metabolik etkinliği ölçülen hücre kültürü','live','Hücresel organizasyon ve metabolik süreçler birlikte canlılık kanıtı sağlar.'],['🪨','Zamanla şekli değişen kaya','nonlive','Fiziksel ve kimyasal değişim geçirmesi canlı olduğu anlamına gelmez.']]
+};
+const traits=[
+['🧫','Hücresel yapı','Canlıların temel yapısal ve işlevsel birimi hücredir. Tek hücreli canlılarda yaşamsal faaliyetlerin tamamı tek hücrede yürütülür; çok hücrelilerde hücreler özelleşerek doku ve organları oluşturabilir.','Bakteri tek hücrelidir. İnsan ise farklı görevlerde özelleşmiş çok sayıda hücreden oluşur.','Bir hücreyi canlı yapan özellikler nelerdir? Hücresiz bir yapı aynı işlevleri bağımsız sürdürebilir mi?'],
+['🍎','Beslenme','Canlılar enerji elde etmek ve yapısal bileşenlerini üretmek için madde alır veya sentezler. Ototroflar organik besin üretebilir; heterotroflar besinlerini dışarıdan alır.','Yeşil bitkiler fotosentezle organik madde üretirken hayvanlar besinlerini dışarıdan alır.','Bir mantarın beslenme biçimi bitkilerden hangi yönüyle ayrılır?'],
+['⚡','Enerji dönüşümü','Hücreler yaşamsal faaliyetlerini sürdürmek için enerji dönüşümü gerçekleştirir. ATP, hücrede enerji aktarımında kullanılan temel moleküldür.','Kas hücresinin kasılması, aktif taşıma ve biyosentez tepkimeleri enerji gerektirir.','Bir hücrede ATP üretimi durursa hangi faaliyetler önce etkilenebilir? Gerekçelendir.'],
+['🌱','Büyüme ve gelişme','Büyüme, hücre sayısı veya hücre hacmindeki artışla gerçekleşebilir. Gelişme ise yapı ve işlev bakımından farklılaşma ve olgunlaşmayı kapsar.','Bir tohumun fideye dönüşmesi büyüme ve gelişme süreçlerini birlikte içerir.','Tek hücreli bir canlıda büyüme nasıl gerçekleşebilir? Çok hücreli canlıdan farkını açıkla.'],
+['🏃','Hareket','Canlılarda hareket yalnızca yer değiştirme değildir. Hücre içi hareketler, organ hareketleri ve bitkilerde yönelim hareketleri de görülebilir.','Amip yalancı ayak oluşturabilir; bitki sürgünleri ışığa yönelim gösterebilir.','Bir bitkinin ışığa yönelmesi hareket sayılır mı? Hareket türünü açıklayarak savun.'],
+['🌡️','Uyarılara tepki','Canlılar çevrelerindeki fiziksel ve kimyasal değişimleri algılayabilir ve bu uyaranlara uygun tepkiler oluşturabilir.','Göz bebeğinin ışıkta küçülmesi ve bitki köklerinin yer çekimine yönelmesi örnektir.','Uyarana tepki ile bilinçli davranış aynı şey midir? İki örnekle açıkla.'],
+['♻️','Boşaltım','Metabolizma sonucu oluşan atıkların ve fazla maddelerin hücre veya organizmadan uzaklaştırılmasıdır. Boşaltım, sindirim artığının atılmasından farklıdır.','İnsanlarda karbondioksit akciğerlerle, üre böbreklerle uzaklaştırılır. Bitkilerde farklı atık uzaklaştırma yolları bulunur.','Dışkılama ile boşaltım neden aynı kavram değildir?'],
+['🧬','Üreme','Üreme, bireyin yaşamını sürdürmesi için zorunlu değildir; türün devamlılığını sağlar. Eşeyli ve eşeysiz üreme biçimleri bulunur.','Bakteriler ikiye bölünerek, birçok canlı ise eşeyli üremeyle yeni bireyler oluşturur.','Üreyemeyen bir birey canlı kabul edilir mi? Hücresel ve metabolik özellikleri üzerinden yanıtla.'],
+['⚖️','Homeostazi','Homeostazi, iç ortam koşullarının değişen dış koşullara rağmen belirli sınırlar içinde tutulmasıdır. Bu süreçte düzenleyici mekanizmalar görev alır.','İnsan vücut sıcaklığının terleme ve titreme mekanizmalarıyla düzenlenmesi örnektir.','Sıcak ortamda terleme artışının vücut iç dengesine katkısını neden-sonuç ilişkisiyle açıkla.'],
+['🧪','Metabolizma','Metabolizma, canlıdaki tüm kimyasal tepkimelerin bütünüdür. Yapım tepkimeleri (anabolizma) ve yıkım tepkimeleri (katabolizma) olarak incelenir.','Protein sentezi yapım; hücresel solunumda glikozun parçalanması yıkım tepkimesidir.','Kas gelişimi sırasında yapım ve yıkım olayları nasıl birlikte gerçekleşir?'],
+['🌍','Adaptasyon','Adaptasyon, popülasyonların nesiller boyunca çevre koşullarında avantaj sağlayan kalıtsal özelliklerinin doğal seçilimle yaygınlaşmasıdır. Bireyin yaşamı sırasında kazandığı geçici değişim adaptasyon değildir.','Kurak ortam bitkilerindeki su kaybını azaltan kalıtsal özellikler doğal seçilimle yaygınlaşabilir.','Spor yapan bir insanın kaslarının gelişmesi neden evrimsel adaptasyon değildir?']
 ];
-function showTrait(button,index){
- document.querySelectorAll('.trait').forEach(x=>x.classList.remove('active'));
- button.classList.add('active');
- document.getElementById('traitFeedback').textContent=traitDetails[index];
+const questionBanks={
+easy:[
+{type:'Kavram',q:'Canlıların temel yapısal ve işlevsel birimi hangisidir?',a:['Doku','Hücre','Organ','Sistem'],c:1,e:'Hücre, canlıların temel yapısal ve işlevsel birimidir.'},
+{type:'Kavram',q:'Türün devamlılığını sağlayan özellik hangisidir?',a:['Boşaltım','Hareket','Üreme','Beslenme'],c:2,e:'Üreme bireyin değil, türün devamlılığı açısından önemlidir.'},
+{type:'Kavram',q:'Yapım ve yıkım tepkimelerinin tümüne ne ad verilir?',a:['Homeostazi','Metabolizma','Adaptasyon','Uyarılma'],c:1,e:'Metabolizma anabolizma ve katabolizma olaylarını kapsar.'},
+{type:'Kavram',q:'İç dengenin belirli sınırlar içinde korunması hangisidir?',a:['Homeostazi','Üreme','Hareket','Boşaltım'],c:0,e:'Homeostazi iç ortamın dengede tutulmasıdır.'},
+{type:'Uygulama',q:'Aşağıdakilerden hangisi hücresel yapıya sahip canlıdır?',a:['Kristal','Robot','Bakteri','Ateş'],c:2,e:'Bakteriler tek hücreli prokaryot canlılardır.'}
+],
+medium:[
+{type:'Yorumlama',q:'Bir otomobil hareket eder, yakıt tüketir ve ısı açığa çıkarır. Neden canlı kabul edilmez?',a:['Hareket etmediği için','Hücresel organizasyonu ve metabolik bütünlüğü olmadığı için','Enerji kullanmadığı için','Madde alışverişi yapmadığı için'],c:1,e:'Hareket ve enerji kullanımı tek başına canlılık ölçütü değildir. Hücresel organizasyon ve biyolojik metabolik bütünlük gerekir.'},
+{type:'Karşılaştırma',q:'Üreyemeyen ancak hücresel yapısını ve metabolizmasını sürdüren bir birey için hangisi doğrudur?',a:['Canlı değildir','Canlıdır; üreme bireyin yaşaması için zorunlu değildir','Yalnızca tek hücreliyse canlıdır','Metabolizması durmuştur'],c:1,e:'Üreme türün devamlılığını sağlar; her bireyin yaşamı boyunca üremesi gerekmez.'},
+{type:'Yorumlama',q:'Bir bitkinin ışığa doğru yönelmesi hangi özelliğe örnektir?',a:['Uyarılara tepki ve hareket','Boşaltım','Üreme','Yalnızca metabolizma'],c:0,e:'Bitki ışık uyaranını algılayarak yönelim tepkisi oluşturur.'},
+{type:'Kavram ilişkisi',q:'Terleme ile vücut sıcaklığının dengelenmesi öncelikle hangi özellikle ilişkilidir?',a:['Adaptasyon','Homeostazi','Üreme','Hücresel yapı'],c:1,e:'Terleme vücut sıcaklığının belirli sınırlar içinde tutulmasına katkı sağlar.'},
+{type:'Ayırt etme',q:'Aşağıdakilerden hangisi boşaltıma örnektir?',a:['Sindirilmemiş besin artıklarının atılması','Böbreklerle ürenin uzaklaştırılması','Besinin ağızda parçalanması','Yeni hücre oluşumu'],c:1,e:'Üre metabolik atıktır ve böbreklerle uzaklaştırılır. Dışkılama sindirim kanalındaki artıkların atılmasıdır.'},
+{type:'Yorumlama',q:'Spor yapan bir kişinin kaslarının gelişmesi neden adaptasyon olarak değerlendirilmez?',a:['Kalıtsal olmadığı ve bireyin yaşamı içinde oluştuğu için','Hareket içermediği için','Metabolizma gerçekleşmediği için','Hücre sayısı değişmediği için'],c:0,e:'Bireyin yaşamı sırasında kazandığı kas gelişimi evrimsel adaptasyon değildir.'}
+],
+hard:[
+{type:'Deney analizi',q:'Bir araştırmacı iki özdeş bitkiyi farklı ışık koşullarında yetiştiriyor. Bitkilerin gelişimini karşılaştırmak istiyor. Bağımsız değişken hangisidir?',a:['Bitki türü','Işık koşulu','Toprak türü','Saksı büyüklüğü'],c:1,e:'Araştırmacının bilinçli olarak değiştirdiği değişken ışık koşuludur. Diğer koşullar sabit tutulmalıdır.'},
+{type:'Bilimsel çıkarım',q:'Bir hücresiz özüt, uygun koşullarda bazı kimyasal tepkimeleri katalizliyor. Bu gözlem neden tek başına canlılık kanıtı değildir?',a:['Tepkimeler enerji gerektirmez','Enzim etkinliği hücresel organizasyon ve bağımsız metabolik bütünlük anlamına gelmez','Kimyasal tepkimeler yalnızca canlılarda görülür','Özüt madde içermez'],c:1,e:'Hücresiz sistemlerde enzim etkinliği görülebilir; bu durum tek başına canlı bir organizma bulunduğunu göstermez.'},
+{type:'Veri yorumlama',q:'Bir popülasyonda kuraklığa dayanıklılık sağlayan kalıtsal özelliklerin nesiller boyunca arttığı gözleniyor. En uygun açıklama hangisidir?',a:['Bireyler ihtiyaç duydukları için özelliği kazanmıştır','Doğal seçilim, avantaj sağlayan kalıtsal özelliğin sıklığını artırmış olabilir','Tüm bireyler aynı anda mutasyona uğramıştır','Bu değişim homeostazidir'],c:1,e:'Popülasyon düzeyinde kalıtsal özelliklerin nesiller boyunca sıklığının değişmesi doğal seçilimle açıklanabilir.'},
+{type:'Deney tasarımı',q:'Bir öğrencinin maya hücrelerinde sıcaklığın metabolik etkinliğe etkisini araştırması için hangi düzenleme en uygundur?',a:['Her sıcaklıkta farklı maya miktarı kullanmak','Yalnızca sıcaklığı değiştirip diğer koşulları sabit tutmak','Sıcaklıkla birlikte şeker miktarını da değiştirmek','Tek ölçüm yapıp genellemek'],c:1,e:'Güvenilir deney için bağımsız değişken sıcaklık olmalı; maya miktarı, besin miktarı ve süre gibi değişkenler kontrol edilmelidir.'},
+{type:'Kavram analizi',q:'Bir bireyin yaşamı boyunca güneşte bronzlaşması neden adaptasyon değildir?',a:['Çevresel etkiyle bireyde oluşur; kalıtsal popülasyon değişimi değildir','Güneş ışığı canlıları etkilemez','Adaptasyon yalnızca bitkilerde görülür','Bronzlaşma metabolizmayı durdurur'],c:0,e:'Adaptasyon, bireyin yaşamı sırasında edindiği değişim değil, popülasyonda nesiller boyunca yaygınlaşan kalıtsal özelliklerle ilişkilidir.'},
+{type:'Çoklu kanıt',q:'Bir örneğin canlı olduğunu değerlendirmek için en güçlü kanıt kümesi hangisidir?',a:['Yer değiştirmesi ve büyüklüğünün artması','Hücresel organizasyon, düzenli metabolik faaliyet ve yaşam döngüsüyle ilişkili süreçler','Isı yayması ve çevresinden madde alması','Şeklinin zamanla değişmesi'],c:1,e:'Tekil fiziksel belirtiler yanıltıcı olabilir. Hücresel organizasyon ve biyolojik metabolik bütünlük daha güçlü kanıtlardır.'},
+{type:'Deney değişkeni',q:'Fotosentez hızının ışık şiddetine bağlılığını araştıran deneyde bağımlı değişken hangisi olabilir?',a:['Işık şiddeti','Bitkinin türü','Birim zamanda oluşan oksijen miktarı','Deney kabının hacmi'],c:2,e:'Bağımlı değişken, ışık şiddetine bağlı olarak ölçülen sonuçtur; örneğin birim zamanda oluşan oksijen miktarı.'}
+]
+};
+let level='easy',classAnswers=new Map(),qIndex=0,points=0,answered=false,currentQuestions=[];
+function setLevel(next){
+ level=next;
+ document.querySelectorAll('.level').forEach(b=>b.classList.toggle('active',b.dataset.level===level));
+ document.getElementById('levelName').textContent=levels[level].name;
+ document.getElementById('levelSummary').textContent=levels[level].summary;
+ document.getElementById('activityIntro').textContent=levels[level].intro;
+ document.getElementById('taskContext').innerHTML=levels[level].context.map(x=>`<div class="task-card"><div class="emoji">${x[0]}</div><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join('');
+ document.getElementById('quizLevel').textContent=levels[level].name.toLocaleUpperCase('tr-TR')+' SEVİYE';
+ document.getElementById('quizIntro').textContent=level==='easy'?'5 temel kavram ve uygulama sorusu.':level==='medium'?'6 yorumlama ve karşılaştırma sorusu.':'7 deney analizi, değişken ve bilimsel çıkarım sorusu.';
+ classAnswers.clear();
+ renderSamples();
+ renderQuiz();
 }
-const questions=[
-{q:'Canlıların temel yapısal ve işlevsel birimi hangisidir?',a:['Doku','Hücre','Organ','Sistem'],c:1,e:'Hücre, canlıların temel yapısal ve işlevsel birimidir.'},
-{q:'Aşağıdakilerden hangisi türün devamlılığını sağlar?',a:['Boşaltım','Hareket','Üreme','Beslenme'],c:2,e:'Üreme, türün devamlılığını sağlar.'},
-{q:'Metabolizma hangi olayların bütünüdür?',a:['Yalnızca solunum','Yapım ve yıkım tepkimeleri','Yalnızca büyüme','Sadece hareket'],c:1,e:'Metabolizma anabolizma ve katabolizma olaylarını kapsar.'},
-{q:'İç dengenin korunmasına ne ad verilir?',a:['Adaptasyon','Homeostazi','Üreme','Gelişme'],c:1,e:'Homeostazi iç dengenin korunmasıdır.'},
-{q:'Adaptasyonla ilgili doğru ifade hangisidir?',a:['Bir bireyin anlık değişimidir','Her zaman bilinçli gerçekleşir','Popülasyonda nesiller boyunca yaygınlaşabilir','Sadece hayvanlarda görülür'],c:2,e:'Adaptasyon, kalıtsal özelliklerin nesiller boyunca popülasyonda yaygınlaşmasıyla ilişkilidir.'}
-];
-let qIndex=0,points=0,answered=false;
+function renderSamples(){
+ const area=document.getElementById('sampleArea');
+ area.innerHTML='';
+ specimens[level].forEach((item,i)=>{
+  const b=document.createElement('div');b.className='sample';
+  b.innerHTML=`<span class="emoji">${item[0]}</span><strong>${item[1]}</strong><small>Canlı mı, cansız mı?</small><div class="sample-actions"><button type="button" class="secondary" style="padding:6px 9px;margin-top:9px" onclick="event.stopPropagation();classify(${i},this.closest('.sample'),'live')">Canlı</button> <button type="button" class="secondary" style="padding:6px 9px;margin-top:9px" onclick="event.stopPropagation();classify(${i},this.closest('.sample'),'nonlive')">Cansız</button></div>`;
+  area.appendChild(b);
+ });
+ document.getElementById('classFeedback').className='feedback';
+ document.getElementById('classFeedback').textContent='Bir örnek seçerek göreve başla.';
+ updateClassScore();
+}
+function classify(i,button,response){
+ if(classAnswers.has(i))return;
+ const item=specimens[level][i];
+ const correct=response===item[2];
+ classAnswers.set(i,correct);
+ button.classList.add(correct?'correct':'wrong');
+ button.querySelectorAll('button').forEach(b=>b.disabled=true);
+ button.querySelector('small').textContent=correct?'Doğru karar':'Yanlış karar';
+ const fb=document.getElementById('classFeedback');fb.className='feedback '+(correct?'good':'bad');
+ fb.textContent=(correct?'Bilimsel olarak doğru. ':'Bu örnekte sınıflandırman doğru değil. ')+item[3];
+ updateClassScore();
+}
+function updateClassScore(){
+ const correct=[...classAnswers.values()].filter(Boolean).length;
+ document.getElementById('classProgress').textContent=`Yanıtlanan: ${classAnswers.size} / ${specimens[level].length}`;
+ document.getElementById('classScore').textContent=`Doğru: ${correct}`;
+}
+function renderTraits(){
+ const grid=document.getElementById('traitGrid');grid.innerHTML='';
+ traits.forEach((t,i)=>{
+  const b=document.createElement('button');b.className='trait';
+  b.innerHTML=`<span class="emoji">${t[0]}</span><strong>${t[1]}</strong><small>${t[2].slice(0,92)}...</small>`;
+  b.onclick=()=>showTrait(i,b);grid.appendChild(b);
+ });
+}
+function showTrait(i,button){
+ document.querySelectorAll('.trait').forEach(x=>x.classList.remove('active'));button.classList.add('active');
+ const t=traits[i];
+ const prompts={
+ easy:`Temel görev: ${t[4]}`,
+ medium:`Yorumlama görevi: ${t[4]} Verdiğin yanıtı bir örnekle destekle.`,
+ hard:`Analiz görevi: ${t[4]} Bu özelliğin tek başına canlılığı kanıtlayıp kanıtlamadığını tartış; başka hangi kanıtlarla birlikte değerlendirilmesi gerektiğini belirt.`
+ };
+ document.getElementById('traitDetail').innerHTML=`<div class="kicker">BİLİMSEL AÇIKLAMA</div><h3>${t[0]} ${t[1]}</h3><p>${t[2]}</p><p><strong>Örnek:</strong> ${t[3]}</p><div class="challenge">${prompts[level]}</div>`;
+}
+function renderQuiz(){
+ currentQuestions=questionBanks[level];qIndex=0;points=0;answered=false;
+ document.getElementById('questionBox').style.display='block';
+ document.getElementById('result').style.display='none';
+ document.getElementById('next').textContent='Sonraki soru →';
+ document.getElementById('next').onclick=nextQuestion;
+ document.getElementById('liveScore').textContent='Puan: 0';
+ renderQuestion();
+}
 function renderQuestion(){
- const q=questions[qIndex];
- document.getElementById('questionCount').textContent=`Soru ${qIndex+1} / ${questions.length}`;
- document.getElementById('bar').style.width=(qIndex/questions.length*100)+'%';
+ const q=currentQuestions[qIndex];
+ document.getElementById('questionCount').textContent=`Soru ${qIndex+1} / ${currentQuestions.length}`;
+ document.getElementById('bar').style.width=(qIndex/currentQuestions.length*100)+'%';
+ document.getElementById('questionType').textContent=q.type.toLocaleUpperCase('tr-TR');
  document.getElementById('question').textContent=q.q;
- document.getElementById('quizFeedback').textContent='Doğru cevabı seç.';
- document.getElementById('next').disabled=true;
- answered=false;
  const area=document.getElementById('answers');area.innerHTML='';
- q.a.forEach((answer,i)=>{
-  const b=document.createElement('button');b.className='answer';b.textContent=answer;
-  b.onclick=()=>checkAnswer(i,b);area.appendChild(b);
- });
+ q.a.forEach((answer,i)=>{const b=document.createElement('button');b.className='answer';b.textContent=String.fromCharCode(65+i)+') '+answer;b.onclick=()=>checkAnswer(i,b);area.appendChild(b);});
+ const fb=document.getElementById('quizFeedback');fb.className='feedback';fb.textContent='En uygun yanıtı seç.';
+ document.getElementById('next').disabled=true;answered=false;
 }
-function checkAnswer(index,button){
+function checkAnswer(i,button){
  if(answered)return;answered=true;
- const q=questions[qIndex];
- const correct=index===q.c;
- if(correct)points++;
- document.querySelectorAll('.answer').forEach((b,i)=>{
-  b.disabled=true;
-  if(i===q.c)b.style.borderColor='#36a269';
- });
- document.getElementById('quizFeedback').textContent=(correct?'Doğru! ':'Tekrar dene. ')+q.e;
- document.getElementById('quizScore').textContent='Puan: '+points;
- document.getElementById('next').disabled=false;
+ const q=currentQuestions[qIndex],correct=i===q.c;if(correct)points++;
+ document.querySelectorAll('.answer').forEach((b,index)=>{b.disabled=true;if(index===q.c)b.classList.add('correct');else if(index===i&&!correct)b.classList.add('wrong');});
+ const fb=document.getElementById('quizFeedback');fb.className='feedback '+(correct?'good':'bad');fb.textContent=(correct?'Doğru cevap. ':'Bu yanıt doğru değil. ')+q.e;
+ document.getElementById('liveScore').textContent=`Puan: ${points}`;document.getElementById('next').disabled=false;
+ document.getElementById('next').textContent=qIndex===currentQuestions.length-1?'Sonucu gör →':'Sonraki soru →';
 }
 function nextQuestion(){
  if(!answered)return;
  qIndex++;
- if(qIndex>=questions.length){
-  document.getElementById('question').textContent='Laboratuvar tamamlandı!';
-  document.getElementById('answers').innerHTML='';
-  document.getElementById('questionCount').textContent='Sonuç';
-  document.getElementById('bar').style.width='100%';
-  document.getElementById('quizFeedback').textContent=`5 soruda ${points} doğru yaptın.`;
-  document.getElementById('next').textContent='Yeniden başla';
-  document.getElementById('next').onclick=()=>{qIndex=0;points=0;document.getElementById('quizScore').textContent='Puan: 0';document.getElementById('next').textContent='Sonraki soru';document.getElementById('next').onclick=nextQuestion;renderQuestion();};
-  document.getElementById('next').textContent='Yeniden başla';
-  return;
- }
+ if(qIndex>=currentQuestions.length){showResult();return;}
  renderQuestion();
 }
-renderQuestion();
+function showResult(){
+ document.getElementById('questionBox').style.display='none';
+ document.getElementById('result').style.display='block';
+ document.getElementById('bar').style.width='100%';
+ document.getElementById('resultScore').textContent=`${points} / ${currentQuestions.length}`;
+ const ratio=points/currentQuestions.length;
+ document.getElementById('resultTitle').textContent=ratio>=.85?'Bilimsel düşünme becerin güçlü!':ratio>=.6?'İyi ilerliyorsun!':'Kavramları tekrar gözden geçir.';
+ document.getElementById('resultText').textContent=`${levels[level].name} seviyesinde ${currentQuestions.length} sorudan ${points} doğru yaptın. ${ratio>=.85?'Bu seviyedeki görevleri başarıyla tamamladın.': 'Özellikle yanlış yaptığın soruların açıklamalarını inceleyip yeniden dene.'}`;
+}
+function restartQuiz(){renderQuiz();}
+renderTraits();setLevel('easy');
 </script>
 </body>
 </html>
