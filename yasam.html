@@ -209,6 +209,8 @@ function setLevel(next){
  classAnswers.clear();
  renderSamples();
  renderQuiz();
+ const activeTopic=document.querySelector('.trait.active');
+ if(activeTopic) showTrait(Number(activeTopic.dataset.topic),activeTopic);
 }
 function renderSamples(){
  const area=document.getElementById('sampleArea');
@@ -239,24 +241,115 @@ function updateClassScore(){
  document.getElementById('classProgress').textContent=`Yanıtlanan: ${classAnswers.size} / ${specimens[level].length}`;
  document.getElementById('classScore').textContent=`Doğru: ${correct}`;
 }
+
 function renderTraits(){
  const grid=document.getElementById('traitGrid');grid.innerHTML='';
  traits.forEach((t,i)=>{
-  const b=document.createElement('button');b.className='trait';
-  b.innerHTML=`<span class="emoji">${t[0]}</span><strong>${t[1]}</strong><small>${t[2].slice(0,92)}...</small>`;
+  const b=document.createElement('button');b.className='trait';b.dataset.topic=i;
+  b.innerHTML=`<span class="topic-number">${String(i+1).padStart(2,'0')}</span><span class="emoji">${t[0]}</span><strong>${t[1]}</strong><small>${topicTeasers[i]}</small>`;
   b.onclick=()=>showTrait(i,b);grid.appendChild(b);
  });
 }
+const topicTeasers=[
+ 'Hücrenin canlılığın temelindeki rolünü keşfet.',
+ 'Ototrof ve heterotrof beslenmeyi karşılaştır.',
+ 'ATP ve enerji dönüşümünü incele.',
+ 'Büyüme ile gelişme arasındaki farkı çözümle.',
+ 'Hareketin yer değiştirmeden ibaret olmadığını keşfet.',
+ 'Uyaran, algılama ve tepki ilişkisini incele.',
+ 'Boşaltım ile sindirim artıklarını ayırt et.',
+ 'Üremenin birey ve tür için anlamını sorgula.',
+ 'İç dengenin nasıl korunduğunu keşfet.',
+ 'Yapım ve yıkım tepkimelerini ilişkilendir.',
+ 'Doğal seçilim ve kalıtsal uyumu analiz et.'
+];
+const topicTasks=[
+[
+{q:'Mikroskopta tek hücreli bir canlı gözleniyor. Bu hücre için hangisi doğrudur?',a:['Yaşamsal faaliyetlerin tamamını tek hücre yürütebilir.','Mutlaka doku oluşturmalıdır.'],c:0,e:'Tek hücreli canlılarda beslenme, enerji dönüşümü ve diğer yaşamsal faaliyetler tek hücrede gerçekleşir.'},
+{q:'Bir hücrede hücre zarı hasar görürse hangi sonuç en doğrudan beklenir?',a:['Madde alışverişinin düzenlenmesi bozulabilir.','Canlı otomatik olarak çok hücreli olur.'],c:0,e:'Hücre zarı, hücre ile çevresi arasındaki madde alışverişini düzenler.'},
+{q:'Hücresel organizasyonun canlılık için önemini en iyi hangi kanıt açıklar?',a:['Hücrenin düzenli metabolik süreçleri birlikte yürütmesi','Hücresiz bir karışımın renk değiştirmesi'],c:0,e:'Canlılık, hücresel organizasyon ve bu organizasyon içinde yürüyen metabolik bütünlükle ilişkilidir.'}
+],
+[
+{q:'Yeşil bitki ışıkta organik besin üretirken hangi beslenme tipini gösterir?',a:['Ototrof','Heterotrof'],c:0,e:'Fotosentezle kendi organik besinini üretebilen canlılar ototroftur.'},
+{q:'Mantarların beslenme biçimi için hangisi doğrudur?',a:['Besinlerini dış ortamdan alırlar.','Fotosentezle glikoz üretirler.'],c:0,e:'Mantarlar heterotroftur; organik maddeleri dışarıdan alırlar.'},
+{q:'Bir ekosistemde üreticilerin azalması tüketicileri neden etkileyebilir?',a:['Besin ve enerji aktarımının başlangıç basamağı zayıflar.','Tüm tüketiciler ototrof olur.'],c:0,e:'Üreticiler ekosisteme organik madde ve enerji girişinin temelini oluşturur.'}
+],
+[
+{q:'Hücrede enerji aktarımında doğrudan kullanılan molekül hangisidir?',a:['ATP','DNA'],c:0,e:'ATP, hücresel faaliyetlerde enerji aktarımında kullanılan temel moleküldür.'},
+{q:'Aktif taşıma hızla sürerken ATP üretimi durursa ne beklenir?',a:['Enerji gerektiren taşıma aksayabilir.','Taşıma enerji gerektirmeden hızlanır.'],c:0,e:'Aktif taşıma, maddelerin derişim gradyanına karşı taşınmasında enerji gerektirir.'},
+{q:'Hücresel solunum ile ATP arasındaki ilişkiyi hangi ifade açıklar?',a:['Solunumda açığa çıkan enerji ATP üretiminde kullanılabilir.','ATP yalnızca fotosentez yapan canlılarda bulunur.'],c:0,e:'Hücresel solunumda besinlerin kimyasal enerjisinin bir bölümü ATP üretiminde kullanılabilir.'}
+],
+[
+{q:'Bir tohumun fideye dönüşmesi hangi iki süreci birlikte içerir?',a:['Büyüme ve gelişme','Yalnızca boşaltım'],c:0,e:'Tohumun kütle ve hücre sayısındaki artış büyüme; yapı ve işlev kazanması gelişmedir.'},
+{q:'Tek hücreli bir canlı büyürken hangi değişim görülebilir?',a:['Hücre hacmi ve kütlesi artabilir.','Mutlaka doku ve organ oluşturur.'],c:0,e:'Tek hücrelilerde büyüme hücrenin hacim ve kütle artışıyla gerçekleşebilir.'},
+{q:'Bir canlının olgunlaşarak üreme yeteneği kazanması hangi kavramla daha yakından ilişkilidir?',a:['Gelişme','Boşaltım'],c:0,e:'Gelişme, yapı ve işlev bakımından olgunlaşma ve farklılaşmayı kapsar.'}
+],
+[
+{q:'Bitki sürgününün ışığa yönelmesi hangi özelliğe örnektir?',a:['Uyaranlara tepkiyle ilişkili hareket','Üreme'],c:0,e:'Fototropizma, ışık uyaranına verilen yönelim tepkisidir.'},
+{q:'Amibin yalancı ayak oluşturarak yer değiştirmesi neyi gösterir?',a:['Hücresel düzeyde hareket','Yalnızca büyüme'],c:0,e:'Amip, sitoplazma ve hücre zarı hareketleriyle yalancı ayak oluşturur.'},
+{q:'Bir bitki yer değiştirmeden hareket özelliği gösterebilir mi?',a:['Evet, organları yönelim veya konum değişimi gösterebilir.','Hayır, hareket sadece yer değiştirmedir.'],c:0,e:'Hareket yalnızca organizmanın bir yerden başka yere gitmesi değildir.'}
+],
+[
+{q:'Göz bebeğinin ışıkta küçülmesi hangi duruma örnektir?',a:['Uyarana tepki','Üreme'],c:0,e:'Işık şiddeti değişimi bir uyaran, göz bebeğinin küçülmesi ise tepkidir.'},
+{q:'Bitki köklerinin yer çekimi yönünde büyümesi neyi gösterir?',a:['Çevresel uyaranın algılanıp tepki oluşturulmasını','Metabolizmanın durmasını'],c:0,e:'Kökler yer çekimi uyaranına yönelim tepkisi verir.'},
+{q:'Bir uyaranın varlığı her zaman bilinçli davranış gerektirir mi?',a:['Hayır, refleks ve bitkisel tepkiler bilinçli değildir.','Evet, tüm tepkiler bilinçlidir.'],c:0,e:'Canlıların birçok tepkisi sinir sistemi veya hücresel düzeneklerle bilinç dışı gerçekleşebilir.'}
+],
+[
+{q:'Böbreklerin üreyi uzaklaştırması hangi özelliğe örnektir?',a:['Boşaltım','Sindirim'],c:0,e:'Üre, metabolizma sonucu oluşan atıktır ve böbreklerle uzaklaştırılır.'},
+{q:'Sindirilmemiş besin artıklarının dışarı atılması neden boşaltımla aynı değildir?',a:['Sindirim kanalındaki artıklar metabolik atık olarak oluşmaz.','Dışkıda hiçbir madde bulunmaz.'],c:0,e:'Boşaltım metabolik atıkların uzaklaştırılmasıdır; dışkılama sindirim kanalındaki artıkların atılmasıdır.'},
+{q:'Hücrede protein yıkımı sonucu oluşan azotlu atıkların uzaklaştırılması hangi süreçle ilişkilidir?',a:['Boşaltım','Fotosentez'],c:0,e:'Protein metabolizması sonucu oluşan azotlu atıkların uzaklaştırılması boşaltım kapsamında değerlendirilir.'}
+],
+[
+{q:'Üreyemeyen bir birey canlılığını sürdürebilir mi?',a:['Evet; üreme bireyin yaşaması için zorunlu değildir.','Hayır; üremeyen birey canlı değildir.'],c:0,e:'Üreme türün devamlılığı için önemlidir; her bireyin üremesi gerekmez.'},
+{q:'Bakterilerin ikiye bölünmesi hangi üreme biçimine örnektir?',a:['Eşeysiz üreme','Eşeyli üreme'],c:0,e:'Bakteriler genellikle ikiye bölünerek eşeysiz çoğalır.'},
+{q:'Üremenin biyolojik önemini en doğru hangi ifade açıklar?',a:['Kalıtsal bilginin nesillere aktarılmasına ve türün sürmesine katkı sağlar.','Her bireyin yaşam süresini uzatır.'],c:0,e:'Üreme, kalıtsal bilginin yeni bireylere aktarılmasıyla türün devamlılığını sağlar.'}
+],
+[
+{q:'Sıcak ortamda terleme artışı hangi amaca hizmet eder?',a:['Vücut sıcaklığının dengelenmesine','Kan şekerinin kalıtsal değişmesine'],c:0,e:'Terin buharlaşması ısı kaybına katkı sağlayarak vücut sıcaklığını düzenler.'},
+{q:'Kan glikoz düzeyinin düzenlenmesi hangi kavramla ilişkilidir?',a:['Homeostazi','Adaptasyon'],c:0,e:'Kan glikoz düzeyinin belirli sınırlar içinde tutulması iç denge mekanizmalarına örnektir.'},
+{q:'Homeostazi, dış ortam hiç değişmediği için mi gerçekleşir?',a:['Hayır, dış koşullar değişirken iç ortamın dengesi düzenlenir.','Evet, dış ortam daima sabittir.'],c:0,e:'Homeostazi değişen koşullara rağmen iç ortamın belirli sınırlar içinde tutulmasıdır.'}
+],
+[
+{q:'Protein sentezi metabolizmanın hangi bölümüdür?',a:['Anabolizma','Katabolizma'],c:0,e:'Protein sentezi daha küçük moleküllerden daha büyük molekül oluşturduğu için yapım tepkimesidir.'},
+{q:'Glikozun hücresel solunumda parçalanması hangi süreçtir?',a:['Katabolizma','Anabolizma'],c:0,e:'Büyük moleküllerin daha küçük moleküllere parçalanması yıkım, yani katabolizmadır.'},
+{q:'Bir hücrede yapım ve yıkım tepkimeleri aynı anda gerçekleşebilir mi?',a:['Evet, metabolizma bu iki süreçten oluşur.','Hayır, biri varsa diğeri durur.'],c:0,e:'Canlı hücrelerde anabolik ve katabolik tepkimeler eş zamanlı ve dengeli biçimde yürütülür.'}
+],
+[
+{q:'Kurak ortam bitkisinde su kaybını azaltan kalıtsal özelliklerin nesiller boyunca yaygınlaşması neye örnektir?',a:['Adaptasyon','Homeostazi'],c:0,e:'Popülasyonda nesiller boyunca yaygınlaşan kalıtsal özellikler adaptasyonla ilişkilidir.'},
+{q:'Spor yapan bir bireyin kaslarının gelişmesi neden evrimsel adaptasyon değildir?',a:['Bireyin yaşamı sırasında kazanılan değişimdir; kalıtsal popülasyon değişimi değildir.','Kaslar canlı dokusu değildir.'],c:0,e:'Adaptasyon bireysel kazanım değil, popülasyon düzeyinde nesiller boyunca gerçekleşen kalıtsal değişimlerle ilgilidir.'},
+{q:'Doğal seçilim sonucunda bir özelliğin popülasyonda yaygınlaşması için hangisi önemlidir?',a:['Özelliğin kalıtsal olması ve üreme başarısını etkilemesi','Bireyin özelliği istemesi'],c:0,e:'Kalıtsal varyasyonlar, çevrede üreme başarısını etkilediğinde doğal seçilimle nesiller boyunca değişebilir.'}
+]
+];
 function showTrait(i,button){
  document.querySelectorAll('.trait').forEach(x=>x.classList.remove('active'));button.classList.add('active');
- const t=traits[i];
+ const t=traits[i],task=topicTasks[i][level==='easy'?0:level==='medium'?1:2];
  const prompts={
- easy:`Temel görev: ${t[4]}`,
- medium:`Yorumlama görevi: ${t[4]} Verdiğin yanıtı bir örnekle destekle.`,
- hard:`Analiz görevi: ${t[4]} Bu özelliğin tek başına canlılığı kanıtlayıp kanıtlamadığını tartış; başka hangi kanıtlarla birlikte değerlendirilmesi gerektiğini belirt.`
+ easy:'Temel kavramı anlama',
+ medium:'Neden-sonuç ve kavram ilişkisi',
+ hard:'Kanıta dayalı bilimsel yorum'
  };
- document.getElementById('traitDetail').innerHTML=`<div class="kicker">BİLİMSEL AÇIKLAMA</div><h3>${t[0]} ${t[1]}</h3><p>${t[2]}</p><p><strong>Örnek:</strong> ${t[3]}</p><div class="challenge">${prompts[level]}</div>`;
+ document.getElementById('traitDetail').innerHTML=`
+ <div class="module-banner"><div class="kicker">KEŞİF MODÜLÜ ${String(i+1).padStart(2,'0')} · ${prompts[level].toLocaleUpperCase('tr-TR')}</div><h3>${t[0]} ${t[1]}</h3><p>${topicTeasers[i]}</p></div>
+ <div class="module-body">
+  <div class="module-columns">
+   <div class="module-info"><h4>📖 Bilimsel açıklama</h4><p>${t[2]}</p></div>
+   <div class="module-info"><h4>🌍 Gerçek yaşam bağlantısı</h4><p>${t[3]}</p></div>
+  </div>
+  <div class="mini-lab"><div class="kicker">🧪 SEVİYEYE ÖZEL MİNİ LABORATUVAR</div><h4>${level==='easy'?'Kavramı tanı':level==='medium'?'Durumu yorumla':'Bilimsel çıkarım yap'}</h4><p class="task-prompt">${task.q}</p>
+   <div class="mini-options">${task.a.map((a,j)=>`<button class="mini-option" onclick="checkTopicAnswer(${i},${j},this)">${String.fromCharCode(65+j)}. ${a}</button>`).join('')}</div>
+   <div class="mini-feedback" id="topicFeedback">Yanıtını seç. Açıklama cevabından sonra gösterilecek.</div>
+  </div>
+ </div>`;
 }
+function checkTopicAnswer(topicIndex,choice,button){
+ const task=topicTasks[topicIndex][level==='easy'?0:level==='medium'?1:2];
+ const buttons=button.parentElement.querySelectorAll('.mini-option');
+ buttons.forEach((b,j)=>{b.disabled=true;if(j===task.c)b.classList.add('correct');else if(j===choice)b.classList.add('wrong');});
+ const fb=document.getElementById('topicFeedback');
+ const ok=choice===task.c;fb.className='mini-feedback '+(ok?'good':'bad');
+ fb.textContent=(ok?'Doğru yorum! ':'Bu kez doğru değil. ')+task.e;
+}
+
 function renderQuiz(){
  currentQuestions=questionBanks[level];qIndex=0;points=0;answered=false;
  document.getElementById('questionBox').style.display='block';
