@@ -118,15 +118,24 @@ function setupLanguage(){
       $('moduleTitle').textContent=
         `${grade}. Sınıf Biyoloji Modülleri`;
 
-     $('moduleList').innerHTML = modules.map((name,index) => `
-  <div onclick="document.getElementById('laboratuvar').style.display='block';document.getElementById('laboratuvar').scrollIntoView({behavior:'smooth'});"
-       style="background:white;padding:18px;margin:10px 0;border-radius:12px;border:1px solid #e8defb;cursor:pointer;transition:0.2s;">
-    <strong>${index+1}. ${name}</strong>
-    <span style="float:right;color:#7138c5;">Laboratuvara Git →</span>
-  </div>
-`).join('');
+   
+      $('moduleList').innerHTML = modules.map((name,index) => `
+        <div class="module-card" style="background:white;padding:18px;margin:10px 0;border-radius:12px;border:1px solid #e8defb;cursor:pointer;">
+          <strong>${index+1}. ${name}</strong>
+          <span style="float:right;color:#7138c5;">Laboratuvara Git →</span>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.module-card').forEach(card => {
+        card.addEventListener('click', () => {
+          $('laboratuvar').style.display = 'block';
+          $('laboratuvar').scrollIntoView({behavior:'smooth'});
+        });
+      });
+    });
   });
 }
+
 function prepareModel(gltf){
  root=gltf.scene;scene.add(root);
  root.updateMatrixWorld(true);
