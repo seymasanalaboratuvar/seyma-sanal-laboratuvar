@@ -142,7 +142,7 @@ document.querySelectorAll('.module-card').forEach(card => {
    });
 });
   });
-}});
+});
 }
 
 function prepareModel(gltf){
