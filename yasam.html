@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaşam Laboratuvarı | Şeyma Hocanın Sanal Laboratuvarı</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,sans-serif;color:#21164e;background:linear-gradient(180deg,#fff,#f4efff)}
+header{padding:18px 6%;background:white;border-bottom:1px solid #e8defb;display:flex;justify-content:space-between;align-items:center;gap:12px}
+header a{color:#7138c5;text-decoration:none;font-weight:900}
+main{max-width:1050px;margin:35px auto;padding:0 20px}
+.hero{text-align:center;padding:35px 15px}
+.eyebrow{color:#7138c5;font-size:12px;font-weight:900;letter-spacing:2px}
+h1{font-size:clamp(30px,5vw,48px);margin:10px 0}
+.hero p{color:#77718e;font-size:17px}
+.panel{background:white;border:1px solid #e8defb;border-radius:22px;padding:25px;margin:22px 0;box-shadow:0 12px 35px #50318b10}
+h2{margin-top:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px}
+.choice,.trait,.answer{border:1px solid #e8defb;background:#faf8ff;border-radius:15px;padding:17px;cursor:pointer;font:700 15px Nunito;color:#21164e;text-align:center}
+.choice:hover,.trait:hover,.answer:hover{border-color:#7138c5;background:#f3ecff}
+.choice span{display:block;font-size:35px;margin-bottom:8px}
+button{font-family:Nunito}
+.feedback{margin-top:15px;padding:14px;border-radius:12px;background:#f4efff;min-height:48px;font-weight:700}
+.trait{text-align:left}
+.trait strong{display:block;color:#7138c5;margin-bottom:5px}
+.trait p{margin:0;color:#716b89;font-weight:600}
+.trait.active{background:#eee5ff;border-color:#7138c5}
+.answers{display:grid;gap:10px}
+.answer{text-align:left}
+.answer:disabled{cursor:default;opacity:.8}
+.primary{border:0;background:#7138c5;color:white;padding:13px 23px;border-radius:12px;font-weight:900;cursor:pointer}
+.primary:hover{background:#5726a5}
+.progress{height:9px;background:#eee5ff;border-radius:20px;overflow:hidden;margin:15px 0}
+.progress div{height:100%;width:0;background:#7138c5;transition:.3s}
+footer{text-align:center;padding:25px;color:#77718e}
+@media(max-width:600px){header{padding:15px}.panel{padding:18px}.hero{padding:20px 5px}}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html">← Ana laboratuvara dön</a>
+  <strong>🧬 YAŞAM LABORATUVARI</strong>
+</header>
+<main>
+<section class="hero">
+  <span class="eyebrow">9. SINIF BİYOLOJİ · KEŞFET VE ÖĞREN</span>
+  <h1>Yaşamın İzini Sür</h1>
+  <p>Canlıları tanı, ortak özelliklerini keşfet ve bilimsel düşünme becerini dene.</p>
+</section>
+
+<section class="panel">
+  <span class="eyebrow">DENEY 01</span>
+  <h2>Canlı mı, cansız mı?</h2>
+  <p>Aşağıdaki örnekleri incele. Sence hangileri canlıdır?</p>
+  <div class="cards">
+    <button class="choice" onclick="classify(this,'canli','canli')"><span>🌳</span>Ağaç</button>
+    <button class="choice" onclick="classify(this,'cansiz','cansiz')"><span>🪨</span>Taş</button>
+    <button class="choice" onclick="classify(this,'canli','canli')"><span>🐈</span>Kedi</button>
+    <button class="choice" onclick="classify(this,'cansiz','cansiz')"><span>🤖</span>Robot</button>
+    <button class="choice" onclick="classify(this,'canli','canli')"><span>🍄</span>Mantar</button>
+    <button class="choice" onclick="classify(this,'canli','canli')"><span>🦠</span>Bakteri</button>
+  </div>
+  <div class="feedback" id="classFeedback">Bir örnek seçerek sınıflandırmaya başla.</div>
+  <p><strong>Doğru sınıflandırma:</strong> <span id="score">0 / 6</span></p>
+</section>
+
+<section class="panel">
+  <span class="eyebrow">KEŞİF ALANI</span>
+  <h2>Canlıların ortak özellikleri</h2>
+  <p>Bir özelliğe dokun. Açıklamasını keşfet.</p>
+  <div class="cards" id="traits">
+    <button class="trait" onclick="showTrait(this,0)"><strong>🧫 Hücresel yapı</strong><p>Canlılar hücrelerden oluşur.</p></button>
+    <button class="trait" onclick="showTrait(this,1)"><strong>🍎 Beslenme</strong><p>Enerji ve yapı taşı ihtiyacını karşılar.</p></button>
+    <button class="trait" onclick="showTrait(this,2)"><strong>⚡ Enerji üretimi</strong><p>Metabolik faaliyetleri için enerji dönüşümü gerçekleştirir.</p></button>
+    <button class="trait" onclick="showTrait(this,3)"><strong>🌱 Büyüme ve gelişme</strong><p>Yapı ve işlev bakımından değişim gösterir.</p></button>
+    <button class="trait" onclick="showTrait(this,4)"><strong>🏃 Hareket</strong><p>Canlılarda hareketin farklı biçimleri görülür.</p></button>
+    <button class="trait" onclick="showTrait(this,5)"><strong>🌡️ Uyarılara tepki</strong><p>Çevresel değişimleri algılar ve yanıt verir.</p></button>
+    <button class="trait" onclick="showTrait(this,6)"><strong>♻️ Boşaltım</strong><p>Metabolizma sonucu oluşan atıkların uzaklaştırılmasını sağlar.</p></button>
+    <button class="trait" onclick="showTrait(this,7)"><strong>🧬 Üreme</strong><p>Türün devamlılığını sağlar.</p></button>
+    <button class="trait" onclick="showTrait(this,8)"><strong>⚖️ Homeostazi</strong><p>İç dengenin belirli sınırlar içinde korunmasıdır.</p></button>
+    <button class="trait" onclick="showTrait(this,9)"><strong>🧪 Metabolizma</strong><p>Canlıdaki yapım ve yıkım tepkimelerinin tümüdür.</p></button>
+    <button class="trait" onclick="showTrait(this,10)"><strong>🌍 Adaptasyon</strong><p>Popülasyonların nesiller boyunca çevreye uyum sağlayan kalıtsal özellikler kazanmasıdır.</p></button>
+  </div>
+  <div class="feedback" id="traitFeedback">Keşfetmek istediğin özelliği seç.</div>
+</section>
+
+<section class="panel">
+  <span class="eyebrow">DENEY 02 · ÖĞRENME KONTROLÜ</span>
+  <h2>Bilgini test et</h2>
+  <div class="progress"><div id="bar"></div></div>
+  <p id="questionCount">Soru 1 / 5</p>
+  <h3 id="question"></h3>
+  <div class="answers" id="answers"></div>
+  <div class="feedback" id="quizFeedback">Doğru cevabı seç.</div>
+  <p><strong id="quizScore">Puan: 0</strong></p>
+  <button class="primary" id="next" onclick="nextQuestion()" disabled>Sonraki soru</button>
+</section>
+</main>
+<footer>🧬 Şeyma Hocanın Sanal Laboratuvarı · Keşfet · İncele · Öğren</footer>
+
+<script>
+let classified = new Set();
+function classify(button,answer,correct){
+  const name=button.innerText.trim();
+  if(classified.has(name))return;
+  classified.add(name);
+  const right=answer===correct;
+  button.style.background=right?'#e6f7ed':'#fff0f0';
+  button.style.borderColor=right?'#36a269':'#d65b5b';
+  document.getElementById('classFeedback').textContent=
+    right?'Doğru sınıflandırma!':'Bu örneği tekrar düşün. Bilimsel ölçütleri hatırla.';
+  document.getElementById('score').textContent=classified.size+' / 6';
+}
+const traitDetails=[
+'Hücre, canlıların temel yapısal ve işlevsel birimidir. Tek hücreli ve çok hücreli canlılar bulunur.',
+'Canlılar enerji elde etmek ve hücresel yapılarını sürdürmek için besin alır veya üretir.',
+'Hücresel faaliyetlerde enerji dönüşümü gerçekleşir. ATP, hücrede enerji aktarımında görev alır.',
+'Büyüme canlıda kütle ve hacim artışını; gelişme ise yapı ve işlev değişimlerini kapsar.',
+'Canlılarda yer değiştirme veya hücre ve organ düzeyinde hareket görülebilir.',
+'Işık, sıcaklık, ses ve kimyasal maddeler gibi uyaranlara tepki verilebilir.',
+'Metabolik faaliyetler sonucunda oluşan atık maddeler uzaklaştırılır.',
+'Üreme bireyin yaşamını sürdürmesi için değil, türün devamı için önemlidir.',
+'Homeostazi, iç ortam koşullarının belirli sınırlar içinde dengede tutulmasıdır.',
+'Metabolizma, canlıdaki tüm yapım (anabolizma) ve yıkım (katabolizma) olaylarını kapsar.',
+'Adaptasyon, popülasyonlarda nesiller boyunca doğal seçilimle yaygınlaşabilen kalıtsal özelliklerdir.'
+];
+function showTrait(button,index){
+ document.querySelectorAll('.trait').forEach(x=>x.classList.remove('active'));
+ button.classList.add('active');
+ document.getElementById('traitFeedback').textContent=traitDetails[index];
+}
+const questions=[
+{q:'Canlıların temel yapısal ve işlevsel birimi hangisidir?',a:['Doku','Hücre','Organ','Sistem'],c:1,e:'Hücre, canlıların temel yapısal ve işlevsel birimidir.'},
+{q:'Aşağıdakilerden hangisi türün devamlılığını sağlar?',a:['Boşaltım','Hareket','Üreme','Beslenme'],c:2,e:'Üreme, türün devamlılığını sağlar.'},
+{q:'Metabolizma hangi olayların bütünüdür?',a:['Yalnızca solunum','Yapım ve yıkım tepkimeleri','Yalnızca büyüme','Sadece hareket'],c:1,e:'Metabolizma anabolizma ve katabolizma olaylarını kapsar.'},
+{q:'İç dengenin korunmasına ne ad verilir?',a:['Adaptasyon','Homeostazi','Üreme','Gelişme'],c:1,e:'Homeostazi iç dengenin korunmasıdır.'},
+{q:'Adaptasyonla ilgili doğru ifade hangisidir?',a:['Bir bireyin anlık değişimidir','Her zaman bilinçli gerçekleşir','Popülasyonda nesiller boyunca yaygınlaşabilir','Sadece hayvanlarda görülür'],c:2,e:'Adaptasyon, kalıtsal özelliklerin nesiller boyunca popülasyonda yaygınlaşmasıyla ilişkilidir.'}
+];
+let qIndex=0,points=0,answered=false;
+function renderQuestion(){
+ const q=questions[qIndex];
+ document.getElementById('questionCount').textContent=`Soru ${qIndex+1} / ${questions.length}`;
+ document.getElementById('bar').style.width=(qIndex/questions.length*100)+'%';
+ document.getElementById('question').textContent=q.q;
+ document.getElementById('quizFeedback').textContent='Doğru cevabı seç.';
+ document.getElementById('next').disabled=true;
+ answered=false;
+ const area=document.getElementById('answers');area.innerHTML='';
+ q.a.forEach((answer,i)=>{
+  const b=document.createElement('button');b.className='answer';b.textContent=answer;
+  b.onclick=()=>checkAnswer(i,b);area.appendChild(b);
+ });
+}
+function checkAnswer(index,button){
+ if(answered)return;answered=true;
+ const q=questions[qIndex];
+ const correct=index===q.c;
+ if(correct)points++;
+ document.querySelectorAll('.answer').forEach((b,i)=>{
+  b.disabled=true;
+  if(i===q.c)b.style.borderColor='#36a269';
+ });
+ document.getElementById('quizFeedback').textContent=(correct?'Doğru! ':'Tekrar dene. ')+q.e;
+ document.getElementById('quizScore').textContent='Puan: '+points;
+ document.getElementById('next').disabled=false;
+}
+function nextQuestion(){
+ if(!answered)return;
+ qIndex++;
+ if(qIndex>=questions.length){
+  document.getElementById('question').textContent='Laboratuvar tamamlandı!';
+  document.getElementById('answers').innerHTML='';
+  document.getElementById('questionCount').textContent='Sonuç';
+  document.getElementById('bar').style.width='100%';
+  document.getElementById('quizFeedback').textContent=`5 soruda ${points} doğru yaptın.`;
+  document.getElementById('next').textContent='Yeniden başla';
+  document.getElementById('next').onclick=()=>{qIndex=0;points=0;document.getElementById('quizScore').textContent='Puan: 0';document.getElementById('next').textContent='Sonraki soru';document.getElementById('next').onclick=nextQuestion;renderQuestion();};
+  document.getElementById('next').textContent='Yeniden başla';
+  return;
+ }
+ renderQuestion();
+}
+renderQuestion();
+</script>
+</body>
+</html>
