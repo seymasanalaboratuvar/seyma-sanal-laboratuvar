@@ -139,8 +139,11 @@ document.querySelectorAll('.module-card').forEach(card => {
       $('gradeMessage').textContent =
         `${moduleName} etkinliği hazırlanıyor.`;
     }
-  });
+   });
 });
+  });
+}});
+}
 
 function prepareModel(gltf){
  root=gltf.scene;scene.add(root);
