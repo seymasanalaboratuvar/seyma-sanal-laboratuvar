@@ -30,7 +30,18 @@ main{max-width:1160px;margin:0 auto;padding:24px 22px 55px}
 .section-head p{margin:0;color:var(--muted);line-height:1.5}
 .kicker{font-size:11px;color:var(--purple);font-weight:900;letter-spacing:1.8px}
 .level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:20px}
-.level{border:2px solid var(--line);background:#fff;border-radius:18px;padding:18px;text-align:left;cursor:pointer;transition:.18s}
+.level{
+  position:relative;
+  z-index:2;
+  pointer-events:auto;
+  border:2px solid var(--line);
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  text-align:left;
+  cursor:pointer;
+  transition:.18s;
+}
 .level:hover{transform:translateY(-2px);border-color:#b99ae8}
 .level.active{border-color:var(--purple);background:#f6f0ff;box-shadow:0 0 0 3px #7138c51a}
 .level .symbol{font-size:27px}
@@ -1374,7 +1385,15 @@ function showResult(){
  document.getElementById('resultText').textContent=`${levels[level].name} seviyesinde ${currentQuestions.length} sorudan ${points} doğru yaptın. ${ratio>=.85?'Bu seviyedeki görevleri başarıyla tamamladın.': 'Özellikle yanlış yaptığın soruların açıklamalarını inceleyip yeniden dene.'}`;
 }
 function restartQuiz(){renderQuiz();}
-renderTraits();setLevel('easy');
+document.querySelectorAll('.level').forEach(button => {
+  button.addEventListener('click', function(event) {
+    event.preventDefault();
+    setLevel(this.dataset.level);
+  });
+});
+
+renderTraits();
+setLevel('easy');
 </script>
 </body>
 </html>
