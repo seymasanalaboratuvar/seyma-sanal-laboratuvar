@@ -259,6 +259,107 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
   .station-body { padding: 15px; }
   .sim-temp { width: 110px; height: 110px; }
 }
+
+/* MİNİ LABORATUVAR SORU TASARIMI */
+.mini-lab {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid #e4d9f7;
+  border-radius: 20px;
+  background: linear-gradient(145deg,#faf7ff,#fff);
+}
+
+.mini-lab .kicker {
+  color: #7542bd;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+}
+
+.mini-lab h4 {
+  font-size: 19px;
+  color: #35205f;
+  margin: 13px 0;
+}
+
+.task-prompt {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.7;
+  color: #30234c;
+  margin: 18px 0;
+}
+
+.mini-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-top: 16px;
+}
+
+.mini-option {
+  min-height: 85px;
+  padding: 17px;
+  border: 2px solid #e4d9f7;
+  border-radius: 15px;
+  background: white;
+  color: #38245f;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.6;
+  text-align: left;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.mini-option:hover:not(:disabled) {
+  border-color: #8050c7;
+  background: #f5efff;
+  transform: translateY(-3px);
+  box-shadow: 0 7px 18px #58349b18;
+}
+
+.mini-option:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.mini-option.correct {
+  border-color: #299b64;
+  background: #eaf8f0;
+  color: #17643e;
+}
+
+.mini-option.wrong {
+  border-color: #d85a68;
+  background: #fff0f1;
+  color: #9f2637;
+}
+
+.mini-feedback {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 14px;
+  background: #f1edfa;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.mini-feedback.good {
+  background: #eaf8f0;
+  color: #17643e;
+}
+
+.mini-feedback.bad {
+  background: #fff0f1;
+  color: #9f2637;
+}
+
+@media(max-width:620px) {
+  .mini-options {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 </head>
 <body>
