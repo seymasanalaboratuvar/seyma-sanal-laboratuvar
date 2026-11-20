@@ -360,6 +360,45 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
     grid-template-columns: 1fr;
   }
 }
+
+/* CEVAP KARTLARINDA A-B ROZETLERİ */
+.mini-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 92px;
+  padding: 17px;
+  text-align: left;
+}
+
+.option-letter {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #eee5fc;
+  color: #7138c5;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.option-text {
+  flex: 1;
+  line-height: 1.65;
+}
+
+.mini-option.correct .option-letter {
+  background: #299b64;
+  color: white;
+}
+
+.mini-option.wrong .option-letter {
+  background: #d85a68;
+  color: white;
+}
 </style>
 </head>
 <body>
@@ -606,7 +645,7 @@ function showTrait(i,button){
    <div class="module-info"><h4>🌍 Gerçek yaşam bağlantısı</h4><p>${t[3]}</p></div>
   </div>
   <div class="mini-lab"><div class="kicker">🧪 SEVİYEYE ÖZEL MİNİ LABORATUVAR</div><h4>${level==='easy'?'Kavramı tanı':level==='medium'?'Durumu yorumla':'Bilimsel çıkarım yap'}</h4><p class="task-prompt">${task.q}</p>
-   <div class="mini-options">${task.a.map((a,j)=>`<button class="mini-option" onclick="checkTopicAnswer(${i},${j},this)">${String.fromCharCode(65+j)}. ${a}</button>`).join('')}</div>
+   <div class="mini-options">${task.a.map((a,j)=>`<button class="mini-option" onclick="checkTopicAnswer(${i},${j},this)"><span class="option-letter">${String.fromCharCode(65+j)}</span><span class="option-text">${a}</span></button>`).join('')}</div>
    <div class="mini-feedback" id="topicFeedback">Yanıtını seç. Açıklama cevabından sonra gösterilecek.</div>
   </div>
   <div id="interactiveStation"></div>
