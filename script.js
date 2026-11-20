@@ -75,12 +75,56 @@ function selectOrgan(id,scroll=false){
  focusOn=true;highlightOn=true;applyHighlight();
 }
 function setupLanguage(){
- if(langReady)return;langReady=true;
- $('langBtn')?.addEventListener('click',()=>{lang=lang==='tr'?'en':'tr';document.documentElement.lang=lang;
- $('langBtn').textContent=lang==='tr'?'EN':'TR';document.querySelectorAll('[data-tr]').forEach(el=>{el.textContent=el.dataset[lang];});
- renderOrgans();showDetail(organs.find(o=>o.id===selected));});
- document.querySelectorAll('.grade').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.grade').forEach(x=>x.classList.remove('active'));b.classList.add('active');
- if($('gradeMessage'))$('gradeMessage').textContent=tr(`${b.dataset.grade}. sınıf laboratuvar modülü seçildi.`,`Grade ${b.dataset.grade} laboratory module selected.`);}));
+  if(langReady)return;
+  langReady=true;
+
+  $('langBtn')?.addEventListener('click',()=>{
+    lang=lang==='tr'?'en':'tr';
+    document.documentElement.lang=lang;
+    $('langBtn').textContent=lang==='tr'?'EN':'TR';
+    document.querySelectorAll('[data-tr]').forEach(el=>{
+      el.textContent=el.dataset[lang];
+    });
+    renderOrgans();
+    showDetail(organs.find(o=>o.id===selected));
+  });
+
+  const modulesByGrade={
+    "9":["Yaşam","Organizasyon"],
+    "10":["Enerji","Ekoloji"],
+    "11":["Tepki","Homeostazi"],
+    "12":[
+      "Genden Proteine",
+      "Canlılarda Enerji Dönüşümü",
+      "Bitki Biyolojisi",
+      "Canlılar ve Çevre"
+    ]
+  };
+
+  document.querySelectorAll('.grade').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.grade').forEach(x=>
+        x.classList.remove('active')
+      );
+
+      b.classList.add('active');
+
+      const grade=b.dataset.grade;
+      const modules=modulesByGrade[grade];
+
+      $('gradeMessage').textContent=
+        `${grade}. sınıf laboratuvar modülü seçildi.`;
+
+      $('moduleTitle').textContent=
+        `${grade}. Sınıf Biyoloji Modülleri`;
+
+      $('moduleList').innerHTML=modules.map((name,index)=>`
+        <div style="background:white;padding:15px;margin:10px 0;border-radius:12px;border:1px solid #e8defb;">
+          <strong>${index+1}. ${name}</strong>
+        </div>
+      `).join('');
+    });
+  });
 }
 function prepareModel(gltf){
  root=gltf.scene;scene.add(root);
@@ -142,7 +186,7 @@ function init(){
  canvas.addEventListener('pointermove',e=>{if(!dragging)return;root&&(root.rotation.y+=(e.clientX-previous.x)*.006,root.rotation.x+=(e.clientY-previous.y)*.006);previous={x:e.clientX,y:e.clientY};});
  canvas.addEventListener('pointerup',e=>{dragging=false;if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<7){const id=pick(e);if(id)selectOrgan(id,false);}down=null;});
  canvas.addEventListener('pointercancel',()=>{dragging=false;down=null;});
- canvas.addEventListener('wheel',e=>{camZ=Math.max(3.2,Math.min(25,camZ+e.deltaY*.01));},{passive:true});
+ canvas.addEventListener('wheel',e=>{camZ=Math.max(3.2,Math.min(25,camZ+e.deltaY*.));},{passive:true});
  $('rotateBtn')?.addEventListener('click',()=>{auto=!auto;$('rotateBtn').classList.toggle('active',auto);const span=$('rotateBtn').querySelector('span');if(span)span.textContent=tr(auto?'Otomatik döndür':'Döndürme durdu',auto?'Auto rotate':'Auto rotate paused');});
  $('zoomIn')?.addEventListener('click',()=>camZ=Math.max(3.2,camZ-1.5));
  $('zoomOut')?.addEventListener('click',()=>camZ=Math.min(25,camZ+1.5));
