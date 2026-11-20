@@ -125,16 +125,22 @@ function setupLanguage(){
           <span style="float:right;color:#7138c5;">Laboratuvara Git →</span>
         </div>
       `).join('');
+document.querySelectorAll('.module-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const moduleName = card.querySelector('strong').textContent;
 
-      document.querySelectorAll('.module-card').forEach(card => {
-        card.addEventListener('click', () => {
-          $('laboratuvar').style.display = 'block';
-          $('laboratuvar').scrollIntoView({behavior:'smooth'});
-        });
+    if (grade === "9" && moduleName.includes("Organizasyon")) {
+      $('laboratuvar').style.display = 'block';
+      $('laboratuvar').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
-    });
+    } else {
+      $('gradeMessage').textContent =
+        `${moduleName} etkinliği hazırlanıyor.`;
+    }
   });
-}
+});
 
 function prepareModel(gltf){
  root=gltf.scene;scene.add(root);
