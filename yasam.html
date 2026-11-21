@@ -3414,6 +3414,71 @@ function renderExcretionLab(host) {
   let activeStage = 0;
   const answers = [null, null, null, null];
 
+  let placements = {};
+  let selectedItem = null;
+
+  const stageActivities = [
+    {
+      instruction: "Maddeleri glomerüler süzülme sonucuna göre doğru bölgeye yerleştir.",
+      zones: [
+        { id: "filtered", title: "💧 SÜZÜNTÜYE GEÇER" },
+        { id: "blood", title: "🩸 KANDA KALIR" }
+      ],
+      items: [
+        { id: "water", label: "Su", zone: "filtered" },
+        { id: "glucose", label: "Glikoz", zone: "filtered" },
+        { id: "urea", label: "Üre", zone: "filtered" },
+        { id: "amino", label: "Amino asit", zone: "filtered" },
+        { id: "ions", label: "Mineral iyonları", zone: "filtered" },
+        { id: "cells", label: "Kan hücreleri", zone: "blood" },
+        { id: "protein", label: "Büyük plazma proteinleri", zone: "blood" }
+      ]
+    },
+    {
+      instruction: "Süzüntüdeki maddeleri geri emilim durumlarına göre sınıflandır.",
+      zones: [
+        { id: "return", title: "♻️ KANA GERİ EMİLİR" },
+        { id: "remain", title: "➡️ SÜZÜNTÜDE KALIR" }
+      ],
+      items: [
+        { id: "glucose", label: "Glikoz", zone: "return" },
+        { id: "amino", label: "Amino asitler", zone: "return" },
+        { id: "water", label: "Su", zone: "return" },
+        { id: "ions", label: "Gerekli iyonlar", zone: "return" },
+        { id: "urea", label: "Ürenin büyük bölümü", zone: "remain" }
+      ]
+    },
+    {
+      instruction: "Kandan nefron tübülüne salgılanabilen maddeleri belirle.",
+      zones: [
+        { id: "secreted", title: "⚗️ TÜBÜLE SALGILANIR" },
+        { id: "notsecreted", title: "↔️ BU SÜRECİN ÖRNEĞİ DEĞİL" }
+      ],
+      items: [
+        { id: "h", label: "H⁺ iyonları", zone: "secreted" },
+        { id: "k", label: "K⁺ iyonları", zone: "secreted" },
+        { id: "drug", label: "Bazı ilaçlar", zone: "secreted" },
+        { id: "glucose", label: "Glikozun kana geri alınması", zone: "notsecreted" },
+        { id: "water", label: "Suyun geri emilmesi", zone: "notsecreted" }
+      ]
+    },
+    {
+      instruction: "Maddeleri normal idrarın içeriğine göre sınıflandır.",
+      zones: [
+        { id: "urine", title: "🧪 NORMAL İDRARDA BULUNUR" },
+        { id: "absent", title: "🚫 NORMALDE BULUNMAZ" }
+      ],
+      items: [
+        { id: "water", label: "Su", zone: "urine" },
+        { id: "urea", label: "Üre", zone: "urine" },
+        { id: "salts", label: "Mineral tuzlar", zone: "urine" },
+        { id: "glucose", label: "Glikoz", zone: "absent" },
+        { id: "protein", label: "Büyük plazma proteinleri", zone: "absent" },
+        { id: "cells", label: "Kan hücreleri", zone: "absent" }
+      ]
+    }
+  ];
+
  
  
   
