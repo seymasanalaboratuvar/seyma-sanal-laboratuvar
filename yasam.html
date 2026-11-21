@@ -692,6 +692,69 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
     grid-template-columns: 1fr;
   }
 }
+  /* BESİN DEDEKTİFİ - LABORATUVAR TASARIMI */
+.station:has(#nutritionSamples) {
+  overflow: hidden;
+  border: 1px solid #b9d9e8;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f3fbff, #e8f1ff);
+  box-shadow: 0 12px 30px rgba(31, 83, 120, .12);
+}
+
+.station:has(#nutritionSamples) .station-head {
+  background: linear-gradient(120deg, #123b59, #247c91);
+  color: white;
+  padding: 24px;
+}
+
+.station:has(#nutritionSamples) .station-head h4 {
+  color: white;
+  font-size: 25px;
+}
+
+.station:has(#nutritionSamples) .station-body {
+  padding: 22px;
+}
+
+.station:has(#nutritionSamples) #nutritionSamples,
+.station:has(#nutritionSamples) #nutritionReagents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.station:has(#nutritionSamples) .sort-chip {
+  border: 1px solid #b6d3e2;
+  border-radius: 14px;
+  padding: 13px 17px;
+  background: white;
+  color: #17445c;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.station:has(#nutritionSamples) .sort-chip:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 16px #17445c22;
+}
+
+.station:has(#nutritionSamples) .sim-readout {
+  background: #102f46;
+  color: #e8f8ff;
+  border: 2px solid #6eb4c8;
+  border-radius: 18px;
+  padding: 20px;
+  min-height: 125px;
+}
+
+.station:has(#nutritionSamples) .sim-readout p {
+  color: #d5eaf2;
+}
+
+.station:has(#nutritionSamples) #nutritionColor {
+  font-size: 42px !important;
+}
 </style>
 </head>
 <body>
