@@ -3659,11 +3659,16 @@ function renderExcretionLab(host) {
     ];
     const focus = focusInfo[activeStage];
 const currentPlacements = placements[activeStage] || {};
-    const selected = answers[activeStage];
-    const completed = answers.filter(a => a !== null).length;
-    const score = answers.reduce((total, answer, index) => {
-      return total + (answer === stages[index][levelKey].correct ? 1 : 0);
-    }, 0);
+  const selected = answers[activeStage];
+
+const practicalDone = stageActivities.map((activity, index) =>
+  activity.items.every(item =>
+    placements[index] && placements[index][item.id] === item.zone
+  )
+);
+
+const completed = practicalDone.filter(Boolean).length;
+const score = completed;
 
     host.innerHTML = `
       <div class="excretion-lab">
@@ -3703,7 +3708,7 @@ const currentPlacements = placements[activeStage] || {};
 
           <div class="ex-stage-nav">
             ${stages.map((item, index) => `
-              <button type="button" class="ex-stage ${activeStage === index ? "active" : ""} ${answers[index] !== null ? "done" : ""}" data-stage="${index}">
+              <button type="button" class="ex-stage ${activeStage === index ? "active" : ""} ${practicalDone[index] ? "done" : ""}" data-stage="${index}">
                 <span>${["🩸", "💧", "⚗️", "🧪"][index]}</span>
                 <strong>${["Süzülme", "Geri emilim", "Salgılama", "İdrar analizi"][index]}</strong>
               </button>
@@ -3716,7 +3721,7 @@ const currentPlacements = placements[activeStage] || {};
                 <div class="ex-stage-label">${stage.label}</div>
                 <h4 class="ex-stage-heading">${stage.title}</h4>
               </div>
-              <span class="ex-status">${answers[activeStage] === null ? "GÖREV BEKLİYOR" : "GÖREV TAMAMLANDI"}</span>
+              <span class="ex-status">${practicalDone[activeStage] ? "GÖREV TAMAMLANDI" : "GÖREV BEKLİYOR"}</span>
             </div>
 
             <div class="ex-visual">
@@ -3811,7 +3816,7 @@ Gerçekçi tıbbi nefron illüstrasyonu. Kan damarları ve nefron tübülleri fa
 
             <div class="ex-bottom-actions">
               <button type="button" class="ex-btn secondary" id="exReset">↻ Deneyi sıfırla</button>
-              <button type="button" class="ex-btn" id="exNext" ${activeStage === 3 ? "disabled" : ""}>
+              <button type="button" class="ex-btn" id="exNext" ${activeStage === 3 || !practicalDone[activeStage] ? "disabled" : ""}>
                 Sonraki aşama →
               </button>
             </div>
@@ -3825,10 +3830,19 @@ Gerçekçi tıbbi nefron illüstrasyonu. Kan damarları ve nefron tübülleri fa
     `;
 
     host.querySelectorAll("[data-stage]").forEach(button => {
-      button.addEventListener("click", () => {
-        activeStage = Number(button.dataset.stage);
-        render();
-      });
+     button.addEventListener("click", () => {
+    const targetStage = Number(button.dataset.stage);
+
+    if (
+        targetStage > activeStage &&
+        practicalDone.slice(0, targetStage).some(done => !done)
+    ) {
+        return;
+    }
+
+    activeStage = targetStage;
+    render();
+});
     });
 
     // Madde kartını seçme ve sürükleme
