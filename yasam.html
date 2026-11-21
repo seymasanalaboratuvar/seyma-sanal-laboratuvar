@@ -1598,6 +1598,147 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
   }
 }
 
+/* NEFRON LABORATUVARI - ETKİLEŞİMLİ MADDE KARTLARI */
+.excretion-lab .ex-practical {
+  margin: 22px 0;
+  padding: 24px;
+  border: 1px solid #cce5eb;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f2fbfc, #ffffff);
+  box-shadow: 0 12px 30px rgba(17, 77, 99, .08);
+}
+
+.excretion-lab .ex-practical-head {
+  margin-bottom: 22px;
+}
+
+.excretion-lab .ex-practical-head span {
+  color: #0796a5;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.excretion-lab .ex-practical-head h4 {
+  margin: 8px 0;
+  color: #123c55;
+  font-size: 22px;
+}
+
+.excretion-lab .ex-practical-head p {
+  color: #58758a;
+  line-height: 1.6;
+}
+
+.excretion-lab .ex-item-bank {
+  padding: 18px;
+  border-radius: 15px;
+  background: #e8f3f7;
+}
+
+.excretion-lab .ex-item-bank > strong {
+  display: block;
+  margin-bottom: 14px;
+  color: #28566c;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.excretion-lab .ex-item-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.excretion-lab .ex-item-card {
+  padding: 12px 17px;
+  border: 1px solid #b9dce5;
+  border-radius: 12px;
+  background: white;
+  color: #17465c;
+  font-weight: 700;
+  cursor: grab;
+  box-shadow: 0 3px 8px rgba(20, 70, 90, .06);
+  transition: .2s ease;
+}
+
+.excretion-lab .ex-item-card:hover,
+.excretion-lab .ex-item-card.selected {
+  border-color: #079eaa;
+  background: #dff7f5;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(7, 158, 170, .15);
+}
+
+.excretion-lab .ex-drop-zones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.excretion-lab .ex-drop-zone {
+  min-height: 150px;
+  padding: 18px;
+  border: 2px dashed #9bcbd4;
+  border-radius: 16px;
+  background: #f8fcfd;
+  transition: .2s ease;
+}
+
+.excretion-lab .ex-drop-zone:hover {
+  border-color: #079eaa;
+  background: #eaf9f8;
+}
+
+.excretion-lab .ex-drop-zone > strong {
+  display: block;
+  color: #15566b;
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+
+.excretion-lab .ex-zone-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.excretion-lab .ex-placed-item {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #d9f4e8;
+  color: #176746;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.excretion-lab .ex-practical-feedback {
+  margin-top: 16px;
+  padding: 13px 16px;
+  border-radius: 11px;
+  background: #e8f4f8;
+  color: #28566c;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .excretion-lab .ex-drop-zones {
+    grid-template-columns: 1fr;
+  }
+
+  .excretion-lab .ex-practical {
+    padding: 15px;
+  }
+
+  .excretion-lab .ex-item-card {
+    width: 100%;
+    text-align: left;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -3517,7 +3658,7 @@ function renderExcretionLab(host) {
       }
     ];
     const focus = focusInfo[activeStage];
-
+const currentPlacements = placements[activeStage] || {};
     const selected = answers[activeStage];
     const completed = answers.filter(a => a !== null).length;
     const score = answers.reduce((total, answer, index) => {
@@ -3614,7 +3755,7 @@ Gerçekçi tıbbi nefron illüstrasyonu. Kan damarları ve nefron tübülleri fa
   <div class="ex-item-bank">
     <strong>🧬 MADDE KARTLARI</strong>
     <div class="ex-item-list">
-      ${stageActivities[activeStage].items.map(item => `
+     ${stageActivities[activeStage].items.filter(item => !currentPlacements[item.id]).map(item => `
         <button type="button" class="ex-item-card"
           data-item="${item.id}">
           ${item.label}
@@ -3627,7 +3768,12 @@ Gerçekçi tıbbi nefron illüstrasyonu. Kan damarları ve nefron tübülleri fa
     ${stageActivities[activeStage].zones.map(zone => `
       <div class="ex-drop-zone" data-zone="${zone.id}">
         <strong>${zone.title}</strong>
-        <div class="ex-zone-items"></div>
+      <div class="ex-zone-items">
+  ${stageActivities[activeStage].items
+    .filter(item => currentPlacements[item.id] === zone.id)
+    .map(item => `<span class="ex-placed-item">${item.label}</span>`)
+    .join("")}
+</div>
       </div>
     `).join("")}
   </div>
@@ -3684,6 +3830,61 @@ Gerçekçi tıbbi nefron illüstrasyonu. Kan damarları ve nefron tübülleri fa
         render();
       });
     });
+
+    // Madde kartını seçme ve sürükleme
+    host.querySelectorAll("[data-item]").forEach(button => {
+      button.draggable = true;
+
+      button.addEventListener("click", () => {
+        selectedItem = button.dataset.item;
+        host.querySelectorAll("[data-item]").forEach(card => {
+          card.classList.toggle("selected", card.dataset.item === selectedItem);
+        });
+        const item = stageActivities[activeStage].items.find(x => x.id === selectedItem);
+        const feedback = host.querySelector("#exPracticalFeedback");
+        if (feedback) feedback.textContent = item.label + " seçildi. Şimdi uygun hedef alanına tıkla.";
+      });
+
+      button.addEventListener("dragstart", event => {
+        selectedItem = button.dataset.item;
+        event.dataTransfer.setData("text/plain", selectedItem);
+      });
+    });
+
+    // Hedef alanına bırakma veya dokunarak yerleştirme
+    host.querySelectorAll("[data-zone]").forEach(zone => {
+      zone.addEventListener("dragover", event => {
+        event.preventDefault();
+      });
+
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        const itemId = event.dataTransfer.getData("text/plain") || selectedItem;
+        placeItem(itemId, zone.dataset.zone);
+      });
+
+      zone.addEventListener("click", () => {
+        if (selectedItem) placeItem(selectedItem, zone.dataset.zone);
+      });
+    });
+
+    function placeItem(itemId, zoneId) {
+      if (!itemId) return;
+
+      const item = stageActivities[activeStage].items.find(x => x.id === itemId);
+      const feedback = host.querySelector("#exPracticalFeedback");
+      if (!item) return;
+
+      if (item.zone !== zoneId) {
+        if (feedback) feedback.textContent = "❌ Bu madde için yanlış bölge. Bilimsel bilgini tekrar düşün ve yeniden dene.";
+        return;
+      }
+
+      if (!placements[activeStage]) placements[activeStage] = {};
+      placements[activeStage][itemId] = zoneId;
+      selectedItem = null;
+      render();
+    }
 
     host.querySelectorAll("[data-choice]").forEach(button => {
       button.addEventListener("click", () => {
