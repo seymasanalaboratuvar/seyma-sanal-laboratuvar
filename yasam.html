@@ -1931,30 +1931,275 @@ function renderMitosisLab(host) {
 }
 
 
+
 function renderMovementLab(host) {
   const tasks = {
     easy: {
-      question: "Bitki sürgünü ışığa doğru yöneliyorsa bu olayın adı nedir?",
-      options: ["Pozitif fototropizma", "Negatif fototropizma", "Boşaltım"],
+      question: "Bitki sürgününün ışığa doğru büyümesi hangi olaydır?",
+      options: ["Pozitif fototropizma", "Negatif fototropizma", "Geotropizma"],
       correct: 0,
-      explanation: "Sürgünün ışığa doğru büyümesi pozitif fototropizmadır."
+      explanation: "Sürgünün ışığa doğru yönelerek büyümesine pozitif fototropizma denir."
     },
     medium: {
-      question: "Işık tek taraftan geldiğinde oksin hormonu sürgünün hangi tarafında daha fazla birikir?",
+      question: "Tek yönlü ışıkta oksin hormonu sürgünün hangi tarafında daha fazla birikir?",
       options: ["Işık alan tarafta", "Gölge tarafta", "Her iki tarafta eşit"],
       correct: 1,
       explanation: "Oksin gölgede kalan tarafta daha fazla birikir. Bu taraftaki hücreler daha fazla uzar ve sürgün ışığa doğru eğilir."
     },
     hard: {
-      question: "Fototropizma deneyinde ışığın yönünün etkisini araştırmak için hangi değişkenler sabit tutulmalıdır?",
+      question: "Fototropizma deneyinde ışığın yönünün etkisini araştırırken hangi değişkenler sabit tutulmalıdır?",
       options: [
         "Bitki türü, su miktarı ve ışık şiddeti",
         "Yalnızca bitkinin rengi",
         "Her bitkide farklı toprak ve su miktarı"
       ],
       correct: 0,
-      explanation: "Işığın yönü bağımsız değişkendir. Diğer koşullar kontrol edilerek gözlenen eğilmenin ışık yönünden kaynaklandığı değerlendirilebilir."
+      explanation: "Işığın yönü bağımsız değişkendir. Diğer koşullar sabit tutularak deneyin güvenilirliği artırılır."
     }
+  };
+
+  const task = tasks[level] || tasks.easy;
+
+  host.innerHTML = `
+    <div class="station movement-lab">
+      <div class="station-head">
+        <div class="kicker">ETKİLEŞİMLİ BİTKİ HAREKETLERİ LABORATUVARI</div>
+        <h4>🌱 Fototropizma: Işığın İzinde</h4>
+        <p>Güneşi sürükle, bitkinin ışığa verdiği tepkiyi gözlemle.</p>
+      </div>
+
+      <div class="station-body">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+          <strong>🔬 Deney düzeneği</strong>
+          <span style="color:#8050c7;font-weight:800">CANLI SİMÜLASYON</span>
+        </div>
+
+        <div style="background:linear-gradient(160deg,#f8f5ff,#eee7ff);border:1px solid #dfd1f7;border-radius:22px;padding:12px;margin:15px 0;overflow:hidden">
+          <div style="text-align:center;font-size:12px;font-weight:800;letter-spacing:1px;color:#7951b6;padding:5px">
+            GÜNEŞİ TUT VE İSTEDİĞİN YÖNE SÜRÜKLE
+          </div>
+
+          <svg id="movementScene" viewBox="0 0 320 250"
+            role="img" aria-label="Sürüklenebilir güneş ve ışığa yönelen bitki"
+            style="width:100%;display:block;max-height:340px;touch-action:none;user-select:none">
+
+            <defs>
+              <linearGradient id="moveSky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="100%" stop-color="#eee7ff"/>
+              </linearGradient>
+              <radialGradient id="moveSunGlow">
+                <stop offset="0%" stop-color="#ffe99a" stop-opacity=".8"/>
+                <stop offset="100%" stop-color="#ffc94d" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="moveSoil" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#a77a54"/>
+                <stop offset="100%" stop-color="#65432e"/>
+              </linearGradient>
+            </defs>
+
+            <rect x="2" y="2" width="316" height="235" rx="17" fill="url(#moveSky)"/>
+
+            <g opacity=".35" fill="#ffffff">
+              <circle cx="60" cy="65" r="19"/>
+              <circle cx="77" cy="57" r="23"/>
+              <circle cx="96" cy="66" r="17"/>
+              <rect x="56" y="65" width="44" height="17" rx="8"/>
+            </g>
+
+            <g id="movementPlant" transform="translate(160 207)">
+              <path d="M0 0 Q-3 -65 0 -132" fill="none"
+                stroke="#278b55" stroke-width="9" stroke-linecap="round"/>
+
+              <path d="M-1 -48 Q-53 -91 -73 -57 Q-49 -24 -1 -48"
+                fill="#43aa6b" stroke="#207d49" stroke-width="2"/>
+              <path d="M-1 -48 Q43 -94 69 -64 Q51 -29 -1 -48"
+                fill="#43aa6b" stroke="#207d49" stroke-width="2"/>
+
+              <path d="M0 -88 Q-39 -124 -51 -99 Q-35 -71 0 -88"
+                fill="#55b879" stroke="#207d49" stroke-width="2"/>
+              <path d="M0 -88 Q37 -127 54 -101 Q39 -72 0 -88"
+                fill="#55b879" stroke="#207d49" stroke-width="2"/>
+
+              <path d="M0 -126 Q-31 -161 -43 -137 Q-26 -111 0 -126"
+                fill="#55b879" stroke="#207d49" stroke-width="2"/>
+              <path d="M0 -126 Q27 -161 43 -137 Q27 -112 0 -126"
+                fill="#55b879" stroke="#207d49" stroke-width="2"/>
+
+              <path d="M0 -132 L0 -149" stroke="#278b55" stroke-width="6" stroke-linecap="round"/>
+            </g>
+
+            <rect x="12" y="207" width="296" height="17" rx="8" fill="url(#moveSoil)"/>
+            <path d="M20 211 Q70 204 115 211 T210 211 T300 211"
+              fill="none" stroke="#d2a37b" stroke-width="2" opacity=".7"/>
+
+            <text x="160" y="240" text-anchor="middle" font-size="10"
+              font-weight="bold" fill="#79563b">TOPRAK</text>
+
+            <g id="movementSunGroup" transform="translate(65 55)"
+              style="cursor:grab;touch-action:none">
+              <circle r="35" fill="url(#moveSunGlow)"/>
+              <g id="movementRays" stroke="#edae24" stroke-width="3.5" stroke-linecap="round">
+                <path d="M0 -31 V-43 M0 31 V43 M-31 0 H-43 M31 0 H43
+                  M-22 -22 L-31 -31 M22 22 L31 31
+                  M22 -22 L31 -31 M-22 22 L-31 31"/>
+              </g>
+              <circle r="20" fill="#ffc84b" stroke="#f1ae2b" stroke-width="2"/>
+              <circle cx="-6" cy="-7" r="7" fill="#ffe9a0" opacity=".8"/>
+              <circle r="47" fill="transparent" />
+            </g>
+          </svg>
+
+          <div id="movementDirection"
+            style="text-align:center;font-weight:900;color:#57319a;padding:10px 5px 4px">
+            Güneş solda. Bitki ışığa doğru yöneliyor.
+          </div>
+          <div style="text-align:center;font-size:12px;color:#806d9d">
+            Güneşi fareyle veya parmağınla sürükleyebilirsin.
+          </div>
+        </div>
+
+        <div style="padding:17px;border:1px solid #e5d9f8;border-radius:17px;background:#faf8ff">
+          <strong>🧬 Bilimsel gözlem</strong>
+          <p id="movementExplanation" style="line-height:1.8;margin:9px 0 0">
+            Işık tek yönden geldiğinde oksin gölgede kalan tarafta daha fazla birikir. Hücrelerin uzama farkı sürgünün ışığa yönelmesini sağlar.
+          </p>
+        </div>
+
+        <div style="margin-top:22px">
+          <div class="kicker">BİLİMSEL DÜŞÜNME GÖREVİ · ${level.toUpperCase()}</div>
+          <h4 style="margin:10px 0 14px">${task.question}</h4>
+          <div id="movementAnswers" style="display:grid;gap:9px"></div>
+          <div id="movementFeedback" class="station-feedback" style="margin-top:13px">
+            Cevabını seç ve bilimsel açıklamayı incele.
+          </div>
+        </div>
+
+        <button type="button" class="secondary" id="movementReset"
+          style="margin-top:16px;width:100%">
+          ↻ Deneyi yeniden başlat
+        </button>
+      </div>
+    </div>
+  `;
+
+  const scene = host.querySelector("#movementScene");
+  const sunGroup = host.querySelector("#movementSunGroup");
+  const plant = host.querySelector("#movementPlant");
+  const directionText = host.querySelector("#movementDirection");
+  const explanation = host.querySelector("#movementExplanation");
+  const feedback = host.querySelector("#movementFeedback");
+  const answers = host.querySelector("#movementAnswers");
+
+  let sunX = 65;
+  let sunY = 55;
+  let dragging = false;
+
+  function updateSun() {
+    sunGroup.setAttribute("transform", `translate(${sunX} ${sunY})`);
+
+    let angle = 0;
+    let direction = "üstten";
+    let detail = "Işık üstten geldiğinde bitki gövdesinde belirgin bir yana eğilme oluşmaz. Sürgün yukarı doğru büyümeye devam eder.";
+
+    if (sunX < 135) {
+      angle = -23;
+      direction = "soldan";
+      detail = "Işık soldan geliyor. Sağ taraf gölgede kalıyor. Oksin gölgeli tarafta daha fazla birikiyor. Bu taraftaki hücrelerin daha fazla uzaması sürgünü ışığa doğru, yani sola büker.";
+    } else if (sunX > 185) {
+      angle = 23;
+      direction = "sağdan";
+      detail = "Işık sağdan geliyor. Sol taraf gölgede kalıyor. Oksin gölgeli tarafta daha fazla birikiyor. Bu taraftaki hücrelerin daha fazla uzaması sürgünü ışığa doğru, yani sağa büker.";
+    }
+
+    plant.setAttribute("transform", `translate(160 207) rotate(${angle})`);
+    directionText.textContent = `☀️ Işık ${direction} geliyor. Bitki ışığa yöneliyor.`;
+    explanation.textContent = detail;
+  }
+
+  function pointerPosition(event) {
+    const point = scene.createSVGPoint();
+    point.x = event.clientX;
+    point.y = event.clientY;
+    return point.matrixTransform(scene.getScreenCTM().inverse());
+  }
+
+  sunGroup.addEventListener("pointerdown", event => {
+    dragging = true;
+    sunGroup.style.cursor = "grabbing";
+    sunGroup.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+
+  sunGroup.addEventListener("pointermove", event => {
+    if (!dragging) return;
+
+    const point = pointerPosition(event);
+    sunX = Math.max(48, Math.min(272, point.x));
+    sunY = Math.max(48, Math.min(155, point.y));
+
+    updateSun();
+  });
+
+  function stopDragging() {
+    dragging = false;
+    sunGroup.style.cursor = "grab";
+  }
+
+  sunGroup.addEventListener("pointerup", stopDragging);
+  sunGroup.addEventListener("pointercancel", stopDragging);
+  sunGroup.addEventListener("lostpointercapture", stopDragging);
+
+  task.options.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sort-chip";
+    button.textContent = option;
+    button.style.textAlign = "left";
+
+    button.addEventListener("click", () => {
+      if (answers.dataset.answered) return;
+      answers.dataset.answered = "true";
+
+      const correct = index === task.correct;
+      button.style.borderColor = correct ? "#25945b" : "#d34b59";
+      button.style.background = correct ? "#eaf8f0" : "#fff0f1";
+
+      feedback.style.background = correct ? "#eaf8f0" : "#fff0f1";
+      feedback.style.color = correct ? "#17643e" : "#9f2637";
+      feedback.textContent =
+        (correct ? "✓ Doğru cevap! " : "✕ Bu kez olmadı. ") +
+        task.explanation;
+
+      answers.querySelectorAll("button").forEach(b => {
+        b.disabled = true;
+      });
+    });
+
+    answers.appendChild(button);
+  });
+
+  function resetLab() {
+    answers.dataset.answered = "";
+    feedback.textContent = "Cevabını seç ve bilimsel açıklamayı incele.";
+    feedback.style.background = "";
+    feedback.style.color = "";
+
+    answers.querySelectorAll("button").forEach(button => {
+      button.disabled = false;
+      button.style.borderColor = "";
+      button.style.background = "";
+    });
+
+    sunX = 65;
+    sunY = 55;
+    updateSun();
+  }
+
+  host.querySelector("#movementReset").addEventListener("click", resetLab);
+  updateSun();
+}
+
   };
 
   const task = tasks[level] || tasks.easy;
