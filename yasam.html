@@ -993,6 +993,36 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
   animation: nutritionDropFall .8s ease-in forwards;
   pointer-events: none;
 }
+
+/* BESİN ÖRNEĞİNİN TÜPE DÜŞMESİ */
+@keyframes nutritionSampleFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-35px) scale(.5);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.2);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(45px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(65px) scale(.7);
+  }
+}
+
+.nutrition-sample-drop {
+  position: absolute;
+  z-index: 6;
+  top: 48px;
+  left: calc(50% - 15px);
+  font-size: 28px;
+  pointer-events: none;
+  animation: nutritionSampleFall .8s ease-in forwards;
+}
 </style>
 </head>
 <body>
@@ -1775,10 +1805,23 @@ function renderNutritionLab(host) {
     const type = event.dataTransfer.getData("nutrition-type");
     const value = event.dataTransfer.getData("nutrition-value");
 
-    if (type === "sample") {
-      const sample = availableSamples.find(item => item.name === value);
-      if (sample) chooseSample(sample);
+   if (type === "sample") {
+    const sample = availableSamples.find(item => item.name === value);
+
+    if (sample) {
+        chooseSample(sample);
+
+        const fallingSample = document.createElement("span");
+        fallingSample.className = "nutrition-sample-drop";
+        fallingSample.textContent = sample.emoji;
+
+        color.appendChild(fallingSample);
+
+        setTimeout(() => {
+            fallingSample.remove();
+        }, 850);
     }
+}
 
     if (type === "reagent") {
       const reagent = reagents.find(item => item.id === value);
