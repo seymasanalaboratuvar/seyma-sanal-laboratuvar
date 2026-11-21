@@ -955,6 +955,44 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
     linear-gradient(to top, #d93643 0%, #ff7777 30%, transparent 31%),
     linear-gradient(90deg, #d8f3ff, #ffffff 35%, #c8eafa);
 }
+
+/* BESİN DEDEKTİFİ - AYIRAÇ DAMLAMA ANİMASYONU */
+@keyframes nutritionDropFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-25px) scale(.6) rotate(-45deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(45px) scale(1) rotate(-45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(65px) scale(.7) rotate(-45deg);
+  }
+}
+
+.station:has(#nutritionSamples) #nutritionColor {
+  position: relative;
+}
+
+.station:has(#nutritionSamples) #nutritionColor.mixing::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: 35px;
+  left: calc(50% + 12px);
+  width: 13px;
+  height: 17px;
+  border-radius: 50% 50% 50% 0;
+  background: linear-gradient(135deg, #fff4a8, #ff9d35);
+  box-shadow: 0 0 12px #ffb347;
+  animation: nutritionDropFall .8s ease-in forwards;
+  pointer-events: none;
+}
 </style>
 </head>
 <body>
