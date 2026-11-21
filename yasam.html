@@ -1847,61 +1847,72 @@ function renderNutritionLab(host) {
     completed.add(key);
     tests++;
 
-    const positive = selectedSample[selectedReagent.id];
-    color.classList.remove("mixing");
+   
+const positive = selectedSample[selectedReagent.id];
+
+const testButton = host.querySelector("#nutritionTest");
+testButton.disabled = true;
+
+liquid.className = "nutrition-liquid";
+color.classList.remove("mixing");
 void color.offsetWidth;
 color.classList.add("mixing");
 
+result.textContent = "Ayıraç tüpe eklendi. Karıştırılıyor...";
+
+const reactionDrop = document.createElement("span");
+reactionDrop.className = "nutrition-sample-drop";
+reactionDrop.textContent = selectedReagent.emoji;
+color.appendChild(reactionDrop);
+
 setTimeout(() => {
+  reactionDrop.remove();
   color.classList.remove("mixing");
-}, 1200);
 
-    liquid.className = "nutrition-liquid";
-    liquid.style.animation = "none";
-    void liquid.offsetWidth;
-    liquid.style.animation = "";
+  if (positive) {
+    score++;
 
-    if (positive) {
-      score++;
-
-      if (selectedReagent.id === "starch") {
-        result.textContent = "Mavi-siyah renk oluştu. Nişasta bulundu!";
-        liquid.classList.add("positive-starch");
-      } else if (selectedReagent.id === "protein") {
-        result.textContent = "Mor renk oluştu. Protein bulundu!";
-        liquid.classList.add("positive-protein");
-      } else {
-        result.textContent = "Kırmızı-turuncu boyanma gözlendi. Yağ bulundu!";
-        liquid.classList.add("positive-fat");
-      }
-
-      feedback.textContent =
-        `Doğru gözlem! ${selectedSample.name} örneğinde ` +
-        `${selectedReagent.nutrient.toLocaleLowerCase("tr-TR")} tespit edildi.`;
-
-      feedback.style.background = "#eaf8f0";
-      feedback.style.color = "#17643e";
-
+    if (selectedReagent.id === "starch") {
+      result.textContent = "Mavi-siyah renk oluştu. Nişasta bulundu!";
+      liquid.classList.add("positive-starch");
+    } else if (selectedReagent.id === "protein") {
+      result.textContent = "Mor renk oluştu. Protein bulundu!";
+      liquid.classList.add("positive-protein");
     } else {
-      liquid.classList.add("negative");
-      result.textContent = "Beklenen pozitif renk değişimi oluşmadı.";
-
-      feedback.textContent =
-        "Bu ayıraçla belirlenen besin içeriği tespit edilmedi. " +
-        "Negatif sonuç, diğer besin içeriklerinin bulunmadığını göstermez.";
-
-      feedback.style.background = "#fff4e5";
-      feedback.style.color = "#80531b";
+      result.textContent = "Kırmızı-turuncu boyanma gözlendi. Yağ bulundu!";
+      liquid.classList.add("positive-fat");
     }
 
-    host.querySelector("#nutritionProgress").textContent =
-      `Tamamlanan deney: ${tests}`;
+    feedback.textContent =
+      `Doğru gözlem! ${selectedSample.name} örneğinde ` +
+      `${selectedReagent.nutrient.toLocaleLowerCase("tr-TR")} tespit edildi.`;
 
-    host.querySelector("#nutritionScore").textContent =
-      `Doğru pozitif sonuç: ${score}`;
+    feedback.style.background = "#eaf8f0";
+    feedback.style.color = "#17643e";
 
-    dropStatus.textContent = "Deney tamamlandı. Yeni bir kombinasyon deneyebilirsin.";
-  });
+  } else {
+    liquid.classList.add("negative");
+    result.textContent = "Beklenen pozitif renk değişimi oluşmadı.";
+
+    feedback.textContent =
+      "Bu ayıraçla belirlenen besin içeriği tespit edilmedi. " +
+      "Negatif sonuç, diğer besin içeriklerinin bulunmadığını göstermez.";
+
+    feedback.style.background = "#fff4e5";
+    feedback.style.color = "#80531b";
+  }
+
+  host.querySelector("#nutritionProgress").textContent =
+    `Tamamlanan deney: ${tests}`;
+
+  host.querySelector("#nutritionScore").textContent =
+    `Doğru pozitif sonuç: ${score}`;
+
+  dropStatus.textContent = "Deney tamamlandı. Yeni bir kombinasyon deneyebilirsin.";
+  testButton.disabled = false;
+
+}, 1200);
+
 
   host.querySelector("#nutritionReset").addEventListener("click", () => {
     renderNutritionLab(host);
