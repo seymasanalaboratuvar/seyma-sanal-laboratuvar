@@ -1005,11 +1005,171 @@ function renderCellDetective(host) {
 }
 
 
+
+function renderNutritionLab(host) {
+  const samples = [
+    {name:"Patates", emoji:"🥔", starch:true, protein:false, fat:false},
+    {name:"Yumurta akı", emoji:"🥚", starch:false, protein:true, fat:false},
+    {name:"Zeytinyağı", emoji:"🫒", starch:false, protein:false, fat:true},
+    {name:"Ekmek", emoji:"🍞", starch:true, protein:false, fat:false},
+    {name:"Süt", emoji:"🥛", starch:false, protein:true, fat:true},
+    {name:"Su", emoji:"💧", starch:false, protein:false, fat:false}
+  ];
+
+  const reagents = [
+    {id:"starch", name:"İyot", emoji:"🟤", nutrient:"Nişasta"},
+    {id:"protein", name:"Biüret", emoji:"🧪", nutrient:"Protein"},
+    {id:"fat", name:"Sudan III", emoji:"🔴", nutrient:"Yağ"}
+  ];
+
+  const sampleCount = level === "easy" ? 3 : level === "medium" ? 4 : 6;
+  const availableSamples = samples.slice(0, sampleCount);
+  let selectedSample = null;
+  let selectedReagent = null;
+  let score = 0;
+  let tests = 0;
+  const completed = new Set();
+
+  host.innerHTML = `
+    <div class="station">
+      <div class="station-head">
+        <div class="kicker">BESİNLERİN YAPISI LABORATUVARI</div>
+        <h4>🧪 Besin Dedektifi</h4>
+      </div>
+      <div class="station-body">
+        <p>Bir besin örneği seç, ardından uygun ayıracı uygula. Renk değişimini inceleyerek besinin içeriğini belirle.</p>
+
+        <h4>1. Besin örneğini seç</h4>
+        <div id="nutritionSamples" class="sort-bank"></div>
+
+        <h4 style="margin-top:20px">2. Kullanacağın ayıracı seç</h4>
+        <div id="nutritionReagents" class="sort-bank"></div>
+
+        <div class="sim-readout" style="margin-top:18px">
+          <strong id="nutritionSelection">Henüz seçim yapılmadı.</strong>
+          <p id="nutritionResult">Önce bir besin ve ayıraç seç.</p>
+          <div id="nutritionColor" style="font-size:30px;margin-top:8px">🔬</div>
+        </div>
+
+        <button type="button" class="secondary" id="nutritionTest" style="margin-top:14px;width:100%">
+          Deneyi gerçekleştir
+        </button>
+
+        <div class="station-feedback" id="nutritionFeedback">
+          Deney sonucunu burada değerlendireceksin.
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:10px;margin-top:14px">
+          <strong id="nutritionProgress">Tamamlanan deney: 0</strong>
+          <strong id="nutritionScore">Doğru yorum: 0</strong>
+        </div>
+
+        <button type="button" class="secondary" id="nutritionReset" style="margin-top:12px">
+          Deneyleri sıfırla
+        </button>
+      </div>
+    </div>`;
+
+  const sampleArea = host.querySelector("#nutritionSamples");
+  const reagentArea = host.querySelector("#nutritionReagents");
+  const selection = host.querySelector("#nutritionSelection");
+  const result = host.querySelector("#nutritionResult");
+  const color = host.querySelector("#nutritionColor");
+  const feedback = host.querySelector("#nutritionFeedback");
+
+  availableSamples.forEach(sample => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sort-chip";
+    button.textContent = `${sample.emoji} ${sample.name}`;
+
+    button.addEventListener("click", () => {
+      selectedSample = sample;
+      sampleArea.querySelectorAll("button").forEach(b => b.style.outline = "");
+      button.style.outline = "3px solid #8655d4";
+      selection.textContent = `Seçilen örnek: ${sample.name}`;
+    });
+
+    sampleArea.appendChild(button);
+  });
+
+  reagents.forEach(reagent => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "sort-chip";
+    button.textContent = `${reagent.emoji} ${reagent.name}`;
+
+    button.addEventListener("click", () => {
+      selectedReagent = reagent;
+      reagentArea.querySelectorAll("button").forEach(b => b.style.outline = "");
+      button.style.outline = "3px solid #8655d4";
+      selection.textContent =
+        `${selectedSample ? selectedSample.name : "Besin seçilmedi"} · ${reagent.name} ayıracı`;
+    });
+
+    reagentArea.appendChild(button);
+  });
+
+  host.querySelector("#nutritionTest").addEventListener("click", () => {
+    if (!selectedSample || !selectedReagent) {
+      feedback.textContent = "Önce bir besin örneği ve ayıraç seçmelisin.";
+      return;
+    }
+
+    const key = selectedSample.name + "-" + selectedReagent.id;
+
+    if (completed.has(key)) {
+      feedback.textContent = "Bu deneyi zaten gerçekleştirdin. Başka bir örnek veya ayıraç seç.";
+      return;
+    }
+
+    completed.add(key);
+    tests++;
+
+    const positive = selectedSample[selectedReagent.id];
+
+    if (positive) {
+      score++;
+      if (selectedReagent.id === "starch") {
+        color.textContent = "🔵⚫";
+        result.textContent = "Mavi-siyah renk oluştu. Nişasta bulundu!";
+      } else if (selectedReagent.id === "protein") {
+        color.textContent = "🟣";
+        result.textContent = "Mor renk oluştu. Protein bulundu!";
+      } else {
+        color.textContent = "🔴🟠";
+        result.textContent = "Kırmızı-turuncu boyanma gözlendi. Yağ bulundu!";
+      }
+      feedback.textContent = "Doğru yorum! Gözlem, seçtiğin besinde " +
+        selectedReagent.nutrient.toLocaleLowerCase("tr-TR") +
+        bulunduğunu gösteriyor.";
+      feedback.style.background = "#eaf8f0";
+      feedback.style.color = "#17643e";
+    } else {
+      color.textContent = "⚪";
+      result.textContent = "Beklenen pozitif renk değişimi oluşmadı.";
+      feedback.textContent = "Bu örnekte seçtiğin ayıraçla belirlenen besin içeriği tespit edilmedi. Negatif sonuç, diğer besin içeriklerinin bulunmadığını göstermez.";
+      feedback.style.background = "#fff4e5";
+      feedback.style.color = "#80531b";
+    }
+
+    host.querySelector("#nutritionProgress").textContent =
+      `Tamamlanan deney: ${tests}`;
+    host.querySelector("#nutritionScore").textContent =
+      `Doğru pozitif sonuç: ${score}`;
+  });
+
+  host.querySelector("#nutritionReset").addEventListener("click", () => {
+    renderNutritionLab(host);
+  });
+}
 function renderInteractiveStation(topicIndex){
  const host=document.getElementById('interactiveStation');if(!host)return;
  if(topicIndex===0){
   renderCellDetective(host);
- }else if(topicIndex===8){
+}else if(topicIndex===1){
+  renderNutritionLab(host);
+}else if(topicIndex===8){
   host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ SİMÜLASYON</div><h4>🌡️ Vücut sıcaklığını dengele</h4></div><div class="station-body"><p>Ortam sıcaklığını değiştir ve vücudun ısı dengesini korumak için verdiği tepkileri gözlemle.</p><div class="sim-layout"><div class="sim-gauge"><div class="kicker">ORTAM SICAKLIĞI</div><div class="sim-temp"><span id="ambientValue">25</span>°C</div><input class="sim-range" id="ambientRange" type="range" min="15" max="40" value="25" oninput="updateThermo(this.value)"><div class="note">15–40 °C arasında ayarla.</div></div><div class="sim-readout"><strong id="thermoTitle">Denge korunuyor</strong><p id="thermoText">Vücut, ısı üretimi ve ısı kaybını dengeleyerek iç sıcaklığını belirli sınırlar içinde tutar.</p><div id="thermoActions">💧 Terleme: normal<br>🩸 Deri damarları: normal</div></div></div></div></div>`;
   updateThermo(25);
  }else if(topicIndex===9){
