@@ -1301,6 +1301,225 @@ function renderPhotosynthesisLab(host) {
 
   calculatePhotosynthesis();
 }
+
+function renderMitosisLab(host) {
+  const phases = [
+    {
+      name:"İnterfaz",
+      label:"Hazırlık aşaması",
+      description:"Hücre büyür ve yaşamsal faaliyetlerini sürdürür. S evresinde DNA eşlenir.",
+      chromosomes:"🧬  🧬",
+      dna:"2C → 4C",
+      detail:"DNA miktarı S evresinde iki katına çıkar. İnterfaz mitoz evresi değildir; hücre bölünmesine hazırlık dönemidir."
+    },
+    {
+      name:"Profaz",
+      label:"Kromozomlar belirginleşiyor",
+      description:"Kromatin iplikleri kısalıp kalınlaşarak kromozomları oluşturur. Çekirdek zarı parçalanmaya başlar.",
+      chromosomes:"🧬  X  🧬",
+      dna:"4C",
+      detail:"Her kromozom iki kardeş kromatitten oluşur. İğ iplikleri oluşmaya başlar."
+    },
+    {
+      name:"Metafaz",
+      label:"Ekvator düzleminde dizilim",
+      description:"Kromozomlar hücrenin ekvator düzleminde sıralanır.",
+      chromosomes:"  X  X  X  ",
+      dna:"4C",
+      detail:"İğ iplikleri kromozomların sentromer bölgelerine tutunur."
+    },
+    {
+      name:"Anafaz",
+      label:"Kardeş kromatitler ayrılıyor",
+      description:"Kardeş kromatitler birbirinden ayrılır ve zıt kutuplara çekilir.",
+      chromosomes:"XX  ←   →  XX",
+      dna:"4C toplam",
+      detail:"Ayrılan kardeş kromatitler artık bağımsız kromozom olarak adlandırılır."
+    },
+    {
+      name:"Telofaz ve sitokinez",
+      label:"İki hücre oluşuyor",
+      description:"Kromozomlar kutuplara ulaşır, çekirdek zarları yeniden oluşur. Sitoplazma bölünerek iki hücre meydana gelir.",
+      chromosomes:"( 🧬 )  ( 🧬 )",
+      dna:"Her hücre 2C",
+      detail:"Oluşan iki yavru hücre, normal mitozda ana hücreyle aynı kromozom sayısına ve genetik bilgiye sahiptir."
+    }
+  ];
+
+  let current = 0;
+  let orderAnswers = [];
+  let orderScore = 0;
+
+  const orderItems = [
+    "Metafaz",
+    "Telofaz ve sitokinez",
+    "Profaz",
+    "Anafaz"
+  ];
+
+  const correctOrder = [
+    "Profaz",
+    "Metafaz",
+    "Anafaz",
+    "Telofaz ve sitokinez"
+  ];
+
+  function shuffle(items) {
+    return [...items].sort(() => Math.random() - 0.5);
+  }
+
+  let shuffled = shuffle(orderItems);
+
+  host.innerHTML = `
+    <div class="station">
+      <div class="station-head">
+        <div class="kicker">HÜCRE BÖLÜNMESİ LABORATUVARI</div>
+        <h4>🧬 Mitozun İzini Sür</h4>
+      </div>
+      <div class="station-body">
+        <p>Mitozun aşamalarını incele. Kromozomların davranışlarını gözlemle ve ardından evreleri doğru sıraya yerleştir.</p>
+
+        <div class="sim-readout" style="margin:14px 0;text-align:center">
+          <div class="kicker" id="mitosisLabel">HAZIRLIK AŞAMASI</div>
+          <h3 id="mitosisPhase">İnterfaz</h3>
+          <div id="mitosisVisual" style="font-size:42px;padding:18px">🧬 🧬</div>
+          <p id="mitosisDescription"></p>
+          <strong id="mitosisDNA"></strong>
+          <p id="mitosisDetail" class="note"></p>
+        </div>
+
+        <div style="display:flex;gap:9px;justify-content:space-between">
+          <button type="button" class="secondary" id="mitosisPrev">← Önceki</button>
+          <strong id="mitosisCounter">1 / 5</strong>
+          <button type="button" class="secondary" id="mitosisNext">Sonraki →</button>
+        </div>
+
+        <div style="margin-top:20px">
+          <h4>🧠 Evreleri doğru sıraya koy</h4>
+          <p>İnterfazdan sonraki mitoz evrelerini başlangıçtan sona sırala. Seçtiğin kartlar sırayla aşağıya eklenecek.</p>
+          <div id="mitosisChoices" class="sort-bank"></div>
+          <div class="sim-readout" style="margin-top:12px">
+            <strong>Senin sıralaman</strong>
+            <ol id="mitosisSequence"></ol>
+          </div>
+          <div id="mitosisFeedback" class="station-feedback">
+            İlk evreyi seçerek başla.
+          </div>
+          <button type="button" class="secondary" id="mitosisCheck" style="width:100%;margin-top:10px">
+            Sıralamayı kontrol et
+          </button>
+          <button type="button" class="secondary" id="mitosisReset" style="width:100%;margin-top:8px">
+            Sıralamayı yeniden yap
+          </button>
+          <div id="mitosisScore" style="margin-top:12px;font-weight:800"></div>
+        </div>
+      </div>
+    </div>`;
+
+  const phaseTitle = host.querySelector("#mitosisPhase");
+  const label = host.querySelector("#mitosisLabel");
+  const visual = host.querySelector("#mitosisVisual");
+  const description = host.querySelector("#mitosisDescription");
+  const dna = host.querySelector("#mitosisDNA");
+  const detail = host.querySelector("#mitosisDetail");
+  const counter = host.querySelector("#mitosisCounter");
+
+  function showPhase() {
+    const p = phases[current];
+    phaseTitle.textContent = p.name;
+    label.textContent = p.label.toLocaleUpperCase("tr-TR");
+    visual.textContent = p.chromosomes;
+    description.textContent = p.description;
+    dna.textContent = "DNA miktarı: " + p.dna;
+    detail.textContent = p.detail;
+    counter.textContent = `${current + 1} / ${phases.length}`;
+
+    host.querySelector("#mitosisPrev").disabled = current === 0;
+    host.querySelector("#mitosisNext").disabled = current === phases.length - 1;
+  }
+
+  host.querySelector("#mitosisPrev").addEventListener("click", () => {
+    if (current > 0) {
+      current--;
+      showPhase();
+    }
+  });
+
+  host.querySelector("#mitosisNext").addEventListener("click", () => {
+    if (current < phases.length - 1) {
+      current++;
+      showPhase();
+    }
+  });
+
+  const choices = host.querySelector("#mitosisChoices");
+  const sequence = host.querySelector("#mitosisSequence");
+  const feedback = host.querySelector("#mitosisFeedback");
+  const score = host.querySelector("#mitosisScore");
+
+  function renderOrder() {
+    choices.innerHTML = "";
+    shuffled.forEach(name => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "sort-chip";
+      button.textContent = name;
+      button.disabled = orderAnswers.includes(name);
+
+      button.addEventListener("click", () => {
+        if (orderAnswers.includes(name)) return;
+        orderAnswers.push(name);
+        renderOrder();
+      });
+
+      choices.appendChild(button);
+    });
+
+    sequence.innerHTML = "";
+    orderAnswers.forEach(name => {
+      const li = document.createElement("li");
+      li.textContent = name;
+      sequence.appendChild(li);
+    });
+  }
+
+  host.querySelector("#mitosisCheck").addEventListener("click", () => {
+    if (orderAnswers.length !== correctOrder.length) {
+      feedback.textContent = "Önce dört mitoz evresinin tamamını sıralamalısın.";
+      return;
+    }
+
+    orderScore = orderAnswers.filter((name, i) =>
+      name === correctOrder[i]
+    ).length;
+
+    if (orderScore === 4) {
+      feedback.textContent = "Harika! Mitoz evrelerini doğru sıraladın.";
+      feedback.style.background = "#eaf8f0";
+      feedback.style.color = "#17643e";
+    } else {
+      feedback.textContent = "Bazı evrelerin yeri yanlış. Doğru sıra: Profaz → Metafaz → Anafaz → Telofaz ve sitokinez.";
+      feedback.style.background = "#fff0f1";
+      feedback.style.color = "#9f2637";
+    }
+
+    score.textContent = `Puan: ${orderScore} / 4`;
+  });
+
+  host.querySelector("#mitosisReset").addEventListener("click", () => {
+    orderAnswers = [];
+    orderScore = 0;
+    shuffled = shuffle(orderItems);
+    feedback.textContent = "Yeni sıralamaya başlayabilirsin.";
+    feedback.style.background = "";
+    feedback.style.color = "";
+    score.textContent = "";
+    renderOrder();
+  });
+
+  showPhase();
+  renderOrder();
+}
 function renderInteractiveStation(topicIndex){
  const host=document.getElementById('interactiveStation');if(!host)return;
  if(topicIndex===0){
@@ -1309,6 +1528,8 @@ function renderInteractiveStation(topicIndex){
   renderNutritionLab(host);
 }else if(topicIndex===2){
   renderPhotosynthesisLab(host);
+}else if(topicIndex===3){
+  renderMitosisLab(host);
 }else if(topicIndex===8){
   host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ SİMÜLASYON</div><h4>🌡️ Vücut sıcaklığını dengele</h4></div><div class="station-body"><p>Ortam sıcaklığını değiştir ve vücudun ısı dengesini korumak için verdiği tepkileri gözlemle.</p><div class="sim-layout"><div class="sim-gauge"><div class="kicker">ORTAM SICAKLIĞI</div><div class="sim-temp"><span id="ambientValue">25</span>°C</div><input class="sim-range" id="ambientRange" type="range" min="15" max="40" value="25" oninput="updateThermo(this.value)"><div class="note">15–40 °C arasında ayarla.</div></div><div class="sim-readout"><strong id="thermoTitle">Denge korunuyor</strong><p id="thermoText">Vücut, ısı üretimi ve ısı kaybını dengeleyerek iç sıcaklığını belirli sınırlar içinde tutar.</p><div id="thermoActions">💧 Terleme: normal<br>🩸 Deri damarları: normal</div></div></div></div></div>`;
   updateThermo(25);
