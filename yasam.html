@@ -864,6 +864,67 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
     radial-gradient(circle, #ffffffaa 2px, transparent 3px) 25px 10px / 30px 40px;
   animation: nutritionBubbles 1s ease-out infinite;
 }
+
+/* AYIRAÇ ŞİŞELERİ */
+.station:has(#nutritionSamples) .reagent-bottle {
+  position: relative;
+  width: 105px;
+  height: 125px;
+  padding: 42px 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 2px solid #b8dce9;
+  border-radius: 13px 13px 22px 22px;
+  background: linear-gradient(
+    90deg,
+    #d8f3ff,
+    #ffffff 35%,
+    #c8eafa
+  );
+  color: #17445c;
+  box-shadow:
+    inset 5px 0 8px #ffffff,
+    inset -5px 0 8px #8fc8df55,
+    0 8px 14px #17445c22;
+  font-size: 13px;
+}
+
+.station:has(#nutritionSamples) .reagent-bottle::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 30px;
+  width: 41px;
+  height: 19px;
+  border: 2px solid #9fc6d8;
+  border-radius: 5px 5px 2px 2px;
+  background: linear-gradient(#f5fdff, #9fc9dc);
+  box-shadow: 0 3px 5px #17445c33;
+}
+
+.station:has(#nutritionSamples) .reagent-bottle::after {
+  content: "";
+  position: absolute;
+  top: 23px;
+  left: 9px;
+  right: 9px;
+  height: 9px;
+  border-radius: 5px;
+  background: #ffffff99;
+  border: 1px solid #ffffff;
+}
+
+.station:has(#nutritionSamples) .reagent-bottle:hover {
+  transform: translateY(-6px) rotate(-2deg);
+  box-shadow: 0 12px 20px #17445c33;
+}
+
+.station:has(#nutritionSamples) .reagent-bottle[style*="outline"] {
+  border-color: #8655d4;
+  box-shadow: 0 0 0 3px #8655d455;
+}
 </style>
 </head>
 <body>
@@ -1611,7 +1672,7 @@ function renderNutritionLab(host) {
   reagents.forEach(reagent => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "sort-chip";
+    button.className = "sort-chip reagent-bottle";
     button.textContent = `${reagent.emoji} ${reagent.name}`;
     button.draggable = true;
     button.dataset.reagent = reagent.id;
