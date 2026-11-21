@@ -3414,55 +3414,150 @@ function renderExcretionLab(host) {
   let activeStage = 0;
   const answers = [null, null, null, null];
 
+ 
   const nephronSVG = `
-    <svg viewBox="0 0 620 280" role="img" aria-label="Glomerulus, Bowman kapsülü ve nefron tübüllerini gösteren şematik çizim">
+    <svg viewBox="0 0 900 450" role="img" aria-label="Glomerulus, Bowman kapsülü, proksimal tübül, Henle kulpu, distal tübül, toplayıcı kanal ve çevresindeki kılcal damarların anatomik şeması">
       <defs>
-        <linearGradient id="exBlood" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#d95769"/>
-          <stop offset="100%" stop-color="#f18b91"/>
+        <linearGradient id="exBlood" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f28b91"/>
+          <stop offset="100%" stop-color="#bd354f"/>
         </linearGradient>
         <linearGradient id="exTubule" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#36b9c1"/>
-          <stop offset="100%" stop-color="#147c9b"/>
+          <stop offset="0%" stop-color="#65d4d0"/>
+          <stop offset="100%" stop-color="#087e9a"/>
         </linearGradient>
+        <linearGradient id="exCapsule" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#dff7f5"/>
+          <stop offset="100%" stop-color="#a7e4e3"/>
+        </linearGradient>
+        <filter id="exShadow">
+          <feGaussianBlur stdDeviation="5"/>
+        </filter>
       </defs>
 
-      <rect x="5" y="5" width="610" height="270" rx="18" fill="#f3fafb"/>
+      <rect width="900" height="450" rx="22" fill="#f2fafb"/>
 
-      <path d="M20 108 C65 108 70 108 105 108" stroke="url(#exBlood)" stroke-width="12" fill="none" stroke-linecap="round"/>
-      <path d="M20 108 C65 108 70 108 105 108" stroke="#fff" stroke-width="2" fill="none" stroke-dasharray="7 8"/>
+      <!-- Kan damarları -->
+      <path d="M35 145 H145" stroke="url(#exBlood)" stroke-width="19" fill="none" stroke-linecap="round"/>
+      <path d="M35 145 H145" stroke="#ffd9dc" stroke-width="3" fill="none" stroke-dasharray="8 10"/>
+      <path d="M35 145 l18 -10 v20z" fill="#bd354f"/>
 
-      <path d="M105 108 C115 62 148 48 166 82 C180 110 148 145 128 120 C108 94 142 62 167 91 C193 122 160 156 138 130 C116 105 151 78 178 101" fill="none" stroke="#d95c70" stroke-width="7" stroke-linecap="round"/>
+      <path d="M145 145 C160 100 185 76 225 76" stroke="#bd354f" stroke-width="15" fill="none" stroke-linecap="round"/>
+      <path d="M225 76 C265 42 310 55 320 96 C331 135 284 157 263 125 C243 96 279 73 303 96 C328 120 299 153 276 135 C250 115 273 88 298 105 C325 126 309 164 281 164 C249 164 239 131 258 111" stroke="#d84d67" stroke-width="9" fill="none" stroke-linecap="round"/>
 
-      <path d="M104 70 Q85 112 105 152 Q129 178 183 151 Q211 124 184 69 Q152 35 104 70Z" fill="none" stroke="#32a9b4" stroke-width="5"/>
-      <path d="M181 105 C221 105 229 105 253 105" stroke="url(#exBlood)" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- Bowman kapsülü -->
+      <path d="M207 60 C170 72 153 110 161 154 C168 198 202 222 248 219 C294 216 334 189 342 147 C351 102 322 64 280 53 C254 46 228 50 207 60Z"
+        fill="url(#exCapsule)" fill-opacity=".35" stroke="#1599a5" stroke-width="7"/>
 
-      <path d="M162 165 C188 192 230 198 257 172 C280 150 268 129 294 128 C326 128 323 172 351 172 C378 172 373 111 403 111 C438 111 422 185 454 185 C486 185 474 100 510 100 C543 100 530 155 590 155" fill="none" stroke="url(#exTubule)" stroke-width="13" stroke-linecap="round"/>
+      <path d="M222 75 C193 89 183 117 190 151 C198 181 221 196 249 195"
+        stroke="#7bcacb" stroke-width="2" fill="none" stroke-dasharray="5 6"/>
 
-      <path d="M162 165 C188 192 230 198 257 172" stroke="#b5f0ed" stroke-width="3" fill="none" stroke-dasharray="5 7"/>
-      <path d="M294 128 C326 128 323 172 351 172" stroke="#b5f0ed" stroke-width="3" fill="none" stroke-dasharray="5 7"/>
+      <!-- Götürücü arteriyol -->
+      <path d="M305 112 C365 89 383 90 425 100" stroke="#bd354f" stroke-width="13" fill="none" stroke-linecap="round"/>
+      <path d="M305 112 C365 89 383 90 425 100" stroke="#ffd9dc" stroke-width="2.5" fill="none" stroke-dasharray="7 8"/>
 
-      <path d="M260 211 C270 232 285 240 305 242" stroke="#168f91" stroke-width="3" fill="none" stroke-dasharray="4 5"/>
-      <path d="M365 210 C376 230 390 239 411 242" stroke="#168f91" stroke-width="3" fill="none" stroke-dasharray="4 5"/>
+      <!-- Proksimal kıvrımlı tübül -->
+      <path d="M324 194
+        C355 218 367 250 397 244
+        C428 238 422 202 453 205
+        C485 208 470 252 501 255
+        C530 258 535 221 556 229"
+        fill="none" stroke="url(#exTubule)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
 
-      <g font-family="Nunito, sans-serif" font-size="12" font-weight="900" fill="#19394c">
-        <text x="18" y="83">Gelen kan</text>
-        <text x="112" y="29">Glomerulus</text>
-        <text x="111" y="193">Bowman kapsülü</text>
-        <text x="228" y="91">Götürücü damar</text>
-        <text x="260" y="215">Proksimal tübül</text>
-        <text x="355" y="88">Henle kulpu</text>
-        <text x="465" y="205">Distal tübül</text>
-        <text x="520" y="75">Toplayıcı kanal</text>
+      <path d="M324 194
+        C355 218 367 250 397 244
+        C428 238 422 202 453 205
+        C485 208 470 252 501 255
+        C530 258 535 221 556 229"
+        fill="none" stroke="#c5f4ed" stroke-width="3" stroke-dasharray="5 9"/>
+
+      <!-- Henle kulpu -->
+      <path d="M556 229
+        C575 260 575 315 576 350
+        C577 393 608 408 634 378
+        C650 359 646 302 646 263
+        C646 225 672 213 691 229"
+        fill="none" stroke="url(#exTubule)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <path d="M556 229
+        C575 260 575 315 576 350
+        C577 393 608 408 634 378
+        C650 359 646 302 646 263
+        C646 225 672 213 691 229"
+        fill="none" stroke="#c5f4ed" stroke-width="3" stroke-dasharray="5 9"/>
+
+      <!-- Distal kıvrımlı tübül -->
+      <path d="M691 229
+        C720 198 744 201 752 232
+        C762 267 720 280 720 249
+        C720 217 766 195 790 219
+        C812 241 789 266 770 254"
+        fill="none" stroke="url(#exTubule)" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- Toplayıcı kanal -->
+      <path d="M810 100 V365"
+        stroke="#087e9a" stroke-width="23" fill="none" stroke-linecap="round"/>
+      <path d="M810 105 V355"
+        stroke="#b8f0e9" stroke-width="4" fill="none" stroke-dasharray="8 12"/>
+
+      <path d="M790 219 C800 219 806 219 810 219"
+        stroke="#087e9a" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+      <!-- Çevresel kılcal damar ağı -->
+      <g fill="none" stroke="#df6a7a" stroke-width="5" stroke-linecap="round" opacity=".9">
+        <path d="M370 275 C400 290 420 278 441 292 S481 310 506 286"/>
+        <path d="M400 244 C403 270 390 290 380 310"/>
+        <path d="M453 205 C455 180 474 170 492 180"/>
+        <path d="M501 255 C515 281 530 290 550 285"/>
+        <path d="M576 350 C550 335 548 316 558 300"/>
+        <path d="M634 378 C665 400 681 382 687 358"/>
+        <path d="M646 263 C667 279 682 278 697 266"/>
+        <path d="M720 249 C735 290 758 295 780 278"/>
       </g>
 
-      <g fill="#168f91">
-        <circle cx="253" cy="105" r="5"/>
-        <circle cx="351" cy="172" r="5"/>
-        <circle cx="510" cy="100" r="5"/>
+      <g fill="none" stroke="#f3a0a9" stroke-width="2.5" stroke-dasharray="5 6">
+        <path d="M370 275 C400 290 420 278 441 292 S481 310 506 286"/>
+        <path d="M400 244 C403 270 390 290 380 310"/>
+        <path d="M576 350 C550 335 548 316 558 300"/>
+        <path d="M634 378 C665 400 681 382 687 358"/>
+      </g>
+
+      <!-- Süzülme ve madde geçişi okları -->
+      <g stroke="#1599a5" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M294 159 L316 181"/>
+        <path d="M307 178 L316 181 L315 168"/>
+        <path d="M390 260 L390 282"/>
+        <path d="M383 274 L390 282 L397 274"/>
+        <path d="M638 310 L638 335"/>
+        <path d="M631 327 L638 335 L645 327"/>
+      </g>
+
+      <!-- Anatomik etiketler -->
+      <g font-family="Nunito, sans-serif" fill="#17394b" font-weight="900">
+        <text x="35" y="115" font-size="16">Gelen kan</text>
+        <text x="212" y="27" font-size="17">Glomerulus</text>
+        <text x="170" y="246" font-size="16">Bowman kapsülü</text>
+        <text x="360" y="72" font-size="15">Götürücü arteriyol</text>
+        <text x="360" y="170" font-size="16">Proksimal tübül</text>
+        <text x="545" y="435" font-size="16">Henle kulpu</text>
+        <text x="710" y="170" font-size="16">Distal tübül</text>
+        <text x="760" y="62" font-size="16">Toplayıcı kanal</text>
+        <text x="45" y="405" font-size="13" fill="#bd5365">Kırmızı: kan damarları</text>
+        <text x="45" y="425" font-size="13" fill="#087e9a">Turkuaz: nefron tübülü</text>
+      </g>
+
+      <g fill="#bd354f">
+        <circle cx="225" cy="76" r="5"/>
+        <circle cx="425" cy="100" r="5"/>
+      </g>
+      <g fill="#087e9a">
+        <circle cx="556" cy="229" r="5"/>
+        <circle cx="691" cy="229" r="5"/>
+        <circle cx="810" cy="219" r="5"/>
       </g>
     </svg>
   `;
+
 
   function render() {
     const stage = stages[activeStage];
