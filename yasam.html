@@ -3428,6 +3428,31 @@ function renderExcretionLab(host) {
   function render() {
     const stage = stages[activeStage];
     const task = stage[levelKey];
+    
+    const focusInfo = [
+      {
+        name: "GLOMERULUS VE BOWMAN KAPSÜLÜ",
+        icon: "🩸",
+        detail: "Kan basıncıyla küçük moleküller süzülür. Kan hücreleri ve büyük plazma proteinleri kanda kalır."
+      },
+      {
+        name: "PROKSİMAL TÜBÜL VE HENLE KULPU",
+        icon: "💧",
+        detail: "Glikoz, amino asitler, su ve gerekli iyonlar tübüllerden kana geri emilir."
+      },
+      {
+        name: "PERİTÜBÜLER KILCALLAR VE TÜBÜLLER",
+        icon: "⚗️",
+        detail: "Bazı iyonlar ve maddeler kandan tübül sıvısına salgılanır."
+      },
+      {
+        name: "TOPLAYICI KANAL VE SON İDRAR",
+        icon: "🧪",
+        detail: "Son idrar su, üre ve mineral tuzları içerir. Normal koşullarda glikoz ve kan hücreleri bulunmaz."
+      }
+    ];
+    const focus = focusInfo[activeStage];
+
     const selected = answers[activeStage];
     const completed = answers.filter(a => a !== null).length;
     const score = answers.reduce((total, answer, index) => {
