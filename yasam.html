@@ -1023,6 +1023,581 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
   pointer-events: none;
   animation: nutritionSampleFall .8s ease-in forwards;
 }
+
+/* =====================================================
+   BÖBREK DEDEKTİFİ | NEFRON LABORATUVARI
+   Profesyonel arayüz tasarımı
+===================================================== */
+
+.excretion-lab {
+  --ex-dark: #102b43;
+  --ex-blue: #176b87;
+  --ex-cyan: #32b8c5;
+  --ex-teal: #168f91;
+  --ex-pale: #eaf8fa;
+  --ex-line: #cfe7eb;
+  --ex-text: #19394c;
+  --ex-muted: #64808e;
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid var(--ex-line);
+  border-radius: 26px;
+  background: #f8fcfd;
+  box-shadow: 0 18px 48px rgba(16, 58, 82, .13);
+  color: var(--ex-text);
+}
+
+.excretion-lab * {
+  box-sizing: border-box;
+}
+
+.excretion-lab .ex-header {
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+  color: white;
+  background:
+    radial-gradient(circle at 88% 15%, #48d1d0 0, transparent 24%),
+    linear-gradient(120deg, #102b43, #155c78 62%, #168f91);
+}
+
+.excretion-lab .ex-header:after {
+  content: "♧";
+  position: absolute;
+  right: 34px;
+  top: -35px;
+  font-size: 190px;
+  line-height: 1;
+  color: #ffffff;
+  opacity: .09;
+  pointer-events: none;
+}
+
+.excretion-lab .ex-eyebrow {
+  position: relative;
+  z-index: 1;
+  color: #a9f0ed;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2.2px;
+}
+
+.excretion-lab .ex-header h3 {
+  position: relative;
+  z-index: 1;
+  margin: 10px 0;
+  color: white;
+  font-size: clamp(25px, 4vw, 34px);
+  line-height: 1.2;
+}
+
+.excretion-lab .ex-header p {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0;
+  color: #e1f5f7;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.excretion-lab .ex-header-meta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.excretion-lab .ex-meta-pill {
+  padding: 7px 12px;
+  border: 1px solid #ffffff40;
+  border-radius: 30px;
+  background: #ffffff16;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.excretion-lab .ex-content {
+  padding: 25px;
+}
+
+.excretion-lab .ex-dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.excretion-lab .ex-stat {
+  padding: 15px;
+  border: 1px solid var(--ex-line);
+  border-radius: 16px;
+  background: white;
+}
+
+.excretion-lab .ex-stat span {
+  display: block;
+  color: var(--ex-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .7px;
+}
+
+.excretion-lab .ex-stat strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--ex-blue);
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.excretion-lab .ex-progress {
+  height: 9px;
+  overflow: hidden;
+  margin: 0 0 23px;
+  border-radius: 20px;
+  background: #dcecef;
+}
+
+.excretion-lab .ex-progress-bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #168f91, #42c8c6);
+  transition: width .35s ease;
+}
+
+.excretion-lab .ex-section-title {
+  margin: 0 0 7px;
+  color: var(--ex-dark);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.excretion-lab .ex-section-desc {
+  margin: 0 0 17px;
+  color: var(--ex-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.excretion-lab .ex-stage-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  margin-bottom: 20px;
+}
+
+.excretion-lab .ex-stage {
+  min-height: 75px;
+  padding: 12px 8px;
+  border: 1.5px solid var(--ex-line);
+  border-radius: 15px;
+  background: white;
+  color: var(--ex-muted);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.excretion-lab .ex-stage span {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 21px;
+}
+
+.excretion-lab .ex-stage strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.excretion-lab .ex-stage.active {
+  border-color: var(--ex-teal);
+  background: #e8f8f7;
+  color: #116d75;
+  box-shadow: 0 0 0 3px #32b8c51c;
+}
+
+.excretion-lab .ex-stage.done {
+  border-color: #83cbb5;
+  background: #effaf5;
+  color: #168451;
+}
+
+.excretion-lab .ex-workspace {
+  padding: 20px;
+  border: 1px solid var(--ex-line);
+  border-radius: 20px;
+  background: white;
+}
+
+.excretion-lab .ex-workspace-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.excretion-lab .ex-stage-label {
+  color: var(--ex-teal);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.excretion-lab .ex-stage-heading {
+  margin: 5px 0 0;
+  color: var(--ex-dark);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.excretion-lab .ex-status {
+  padding: 7px 11px;
+  border-radius: 30px;
+  background: #e8f7f7;
+  color: #137c83;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.excretion-lab .ex-visual {
+  overflow: hidden;
+  padding: 12px;
+  border: 1px solid #d8ebee;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 45%, #ffffff 0, #f0f9fa 75%);
+}
+
+.excretion-lab .ex-visual svg {
+  display: block;
+  width: 100%;
+  max-height: 310px;
+}
+
+.excretion-lab .ex-visual-caption {
+  padding: 9px;
+  color: var(--ex-muted);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.excretion-lab .ex-flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 17px 0;
+}
+
+.excretion-lab .ex-flow-card {
+  padding: 14px;
+  border: 1px solid var(--ex-line);
+  border-radius: 15px;
+  background: #f7fbfc;
+}
+
+.excretion-lab .ex-flow-card span {
+  display: block;
+  font-size: 23px;
+}
+
+.excretion-lab .ex-flow-card strong {
+  display: block;
+  margin: 7px 0 4px;
+  color: var(--ex-blue);
+  font-size: 13px;
+}
+
+.excretion-lab .ex-flow-card p {
+  margin: 0;
+  color: var(--ex-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.excretion-lab .ex-task {
+  margin-top: 20px;
+  padding: 19px;
+  border: 1px solid #d7e9ed;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f1f9fa, #ffffff);
+}
+
+.excretion-lab .ex-task h5 {
+  margin: 8px 0 14px;
+  color: var(--ex-dark);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.excretion-lab .ex-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.excretion-lab .ex-choice {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 62px;
+  padding: 12px;
+  border: 1.5px solid #d5e8eb;
+  border-radius: 13px;
+  background: white;
+  color: var(--ex-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.excretion-lab .ex-choice:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--ex-cyan);
+  background: #f0fbfb;
+}
+
+.excretion-lab .ex-choice:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.excretion-lab .ex-choice.correct {
+  border-color: #36a878;
+  background: #eaf8f0;
+  color: #17643e;
+}
+
+.excretion-lab .ex-choice.wrong {
+  border-color: #d85a68;
+  background: #fff0f1;
+  color: #9f2637;
+}
+
+.excretion-lab .ex-feedback {
+  min-height: 52px;
+  margin-top: 13px;
+  padding: 14px;
+  border-radius: 13px;
+  background: #edf6f8;
+  color: #315c6c;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.excretion-lab .ex-feedback.good {
+  background: #eaf8f0;
+  color: #17643e;
+}
+
+.excretion-lab .ex-feedback.bad {
+  background: #fff0f1;
+  color: #9f2637;
+}
+
+.excretion-lab .ex-sort-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-top: 16px;
+}
+
+.excretion-lab .ex-sort-zone {
+  min-height: 125px;
+  padding: 14px;
+  border: 2px dashed #b8d9df;
+  border-radius: 16px;
+  background: #f7fbfc;
+  text-align: center;
+  transition: .2s;
+}
+
+.excretion-lab .ex-sort-zone.over {
+  border-color: var(--ex-teal);
+  background: #e9f8f7;
+}
+
+.excretion-lab .ex-sort-zone strong {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--ex-blue);
+  font-size: 13px;
+}
+
+.excretion-lab .ex-chip-bank {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.excretion-lab .ex-chip {
+  padding: 13px 9px;
+  border: 1.5px solid #cfe4e8;
+  border-radius: 13px;
+  background: white;
+  color: var(--ex-text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: grab;
+  transition: .18s;
+  touch-action: manipulation;
+}
+
+.excretion-lab .ex-chip:hover {
+  border-color: var(--ex-cyan);
+  background: #f0fbfb;
+}
+
+.excretion-lab .ex-chip.selected {
+  border-color: var(--ex-teal);
+  background: #e5f8f6;
+  box-shadow: 0 0 0 3px #32b8c51c;
+}
+
+.excretion-lab .ex-chip.placed {
+  border-color: #83cbb5;
+  background: #effaf5;
+  color: #168451;
+  cursor: default;
+}
+
+.excretion-lab .ex-analysis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 17px;
+}
+
+.excretion-lab .ex-analysis-card {
+  padding: 17px;
+  border: 1px solid var(--ex-line);
+  border-radius: 15px;
+  background: white;
+}
+
+.excretion-lab .ex-analysis-card h5 {
+  margin: 0 0 8px;
+  color: var(--ex-blue);
+  font-size: 14px;
+}
+
+.excretion-lab .ex-analysis-card p {
+  margin: 0;
+  color: var(--ex-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.excretion-lab .ex-bottom-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.excretion-lab .ex-btn {
+  min-height: 45px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #176b87, #168f91);
+  color: white;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.excretion-lab .ex-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px #176b872b;
+}
+
+.excretion-lab .ex-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.excretion-lab .ex-btn.secondary {
+  border: 1px solid var(--ex-line);
+  background: white;
+  color: var(--ex-blue);
+}
+
+.excretion-lab .ex-science-note {
+  margin-top: 17px;
+  padding: 15px 17px;
+  border-left: 4px solid var(--ex-cyan);
+  border-radius: 10px;
+  background: #edf8fa;
+  color: #426574;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.excretion-lab button:focus-visible {
+  outline: 3px solid #5ac7c8;
+  outline-offset: 3px;
+}
+
+@media(max-width:700px) {
+  .excretion-lab .ex-content {
+    padding: 15px;
+  }
+
+  .excretion-lab .ex-header {
+    padding: 23px 19px;
+  }
+
+  .excretion-lab .ex-stage-nav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .excretion-lab .ex-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .excretion-lab .ex-chip-bank {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width:480px) {
+  .excretion-lab .ex-dashboard {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .excretion-lab .ex-choice-grid,
+  .excretion-lab .ex-sort-grid,
+  .excretion-lab .ex-analysis {
+    grid-template-columns: 1fr;
+  }
+
+  .excretion-lab .ex-workspace {
+    padding: 13px;
+  }
+
+  .excretion-lab .ex-stage-heading {
+    font-size: 19px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2675,6 +3250,381 @@ function renderMovementLab(host) {
 }
 
 
+function renderExcretionLab(host) {
+  const stages = [
+    {
+      title: "Glomerüler süzülme",
+      label: "AŞAMA 01 · FİLTRASYON",
+      description: "Kan, glomerulus kılcallarına geldiğinde basınç etkisiyle küçük moleküller Bowman kapsülüne geçer.",
+      visual: "🩸",
+      easy: {
+        question: "Sağlıklı bir böbrekte aşağıdakilerden hangileri normalde glomerüler süzülme sırasında kanda kalır?",
+        options: [
+          "Su ve glikoz",
+          "Kan hücreleri ve büyük plazma proteinleri",
+          "Üre ve mineral iyonları",
+          "Su ve amino asitler"
+        ],
+        correct: 1,
+        explanation: "Kan hücreleri ve büyük plazma proteinleri normal glomerüler filtrasyon bariyerinden geçemez. Kan dolaşımında kalırlar."
+      },
+      medium: {
+        question: "Glomerüler filtrasyon bariyerinin seçiciliğini en iyi açıklayan ifade hangisidir?",
+        options: [
+          "Yalnızca vücudun ihtiyaç duymadığı maddeler süzülür.",
+          "Küçük moleküller süzülebilirken kan hücreleri ve büyük proteinler tutulur.",
+          "Bütün maddeler eşit miktarda süzülür.",
+          "Glikoz ve amino asitler büyük oldukları için süzülmez."
+        ],
+        correct: 1,
+        explanation: "Glomerüler filtrasyon, vücudun o anda ihtiyaç duyup duymamasına göre değil; molekül boyutu, yük ve filtrasyon bariyerinin özelliklerine göre gerçekleşir."
+      },
+      hard: {
+        question: "Glomerüler filtrasyon bariyerinde ciddi bir hasar oluşursa idrarda hangi bulgunun görülmesi beklenebilir?",
+        options: [
+          "Glikozun tamamen kaybolması",
+          "Büyük plazma proteinlerinin idrara geçmesi",
+          "Kan hücrelerinin tamamının parçalanması",
+          "Üre üretiminin durması"
+        ],
+        correct: 1,
+        explanation: "Filtrasyon bariyerinin hasarlanması proteinlerin süzüntüye geçmesine neden olabilir. İdrarda protein görülmesi böbrek hasarının önemli göstergelerinden biridir."
+      }
+    },
+    {
+      title: "Seçici geri emilim",
+      label: "AŞAMA 02 · REABSORPSİYON",
+      description: "Nefron boyunca ilerleyen süzüntüden vücudun ihtiyaç duyduğu maddeler yeniden kana alınır.",
+      visual: "💧",
+      easy: {
+        question: "Sağlıklı bir insanda glomerüler süzüntüye geçen glikozun büyük bölümü ne olur?",
+        options: [
+          "İdrarla tamamen atılır.",
+          "Tübüllerden kana geri emilir.",
+          "Böbrekte üreye dönüştürülür.",
+          "Kan hücrelerine dönüşür."
+        ],
+        correct: 1,
+        explanation: "Normal koşullarda süzüntüye geçen glikozun neredeyse tamamı, özellikle proksimal tübülde geri emilerek kana kazandırılır."
+      },
+      medium: {
+        question: "Geri emilim sürecinde aşağıdaki maddelerden hangilerinin kana geri kazandırılması beklenir?",
+        options: [
+          "Glikoz, amino asitler, su ve gerekli iyonlar",
+          "Yalnızca üre",
+          "Kan hücreleri ve büyük proteinler",
+          "Yalnızca metabolik atıklar"
+        ],
+        correct: 0,
+        explanation: "Glikoz ve amino asitler normal koşullarda geri emilir. Su ve gerekli iyonların geri emilimi de vücudun ihtiyacına göre düzenlenir."
+      },
+      hard: {
+        question: "ADH hormonunun etkisi arttığında böbreklerde hangi değişiklik beklenir?",
+        options: [
+          "Suyun geri emilimi azalır, idrar seyrelir.",
+          "Suyun geri emilimi artar, idrar yoğunlaşır.",
+          "Glikozun tamamı idrara geçer.",
+          "Glomerüler filtrasyon bariyeri yok olur."
+        ],
+        correct: 1,
+        explanation: "ADH, özellikle toplayıcı kanallarda suya geçirgenliği artırarak suyun geri emilimini destekler. Böylece idrar hacmi azalır ve yoğunluğu artar."
+      }
+    },
+    {
+      title: "Tübüler salgılama",
+      label: "AŞAMA 03 · SEKRESYON",
+      description: "Bazı maddeler kandan nefron tübüllerine taşınarak süzüntüye eklenir.",
+      visual: "⚗️",
+      easy: {
+        question: "Tübüler salgılama sırasında maddeler hangi yönde taşınır?",
+        options: [
+          "Tübülden kana",
+          "Kandan nefron tübülüne",
+          "Bowman kapsülünden glomerulusa",
+          "İdrardan kan hücrelerine"
+        ],
+        correct: 1,
+        explanation: "Salgılama, bazı maddelerin peritübüler kılcallardaki kandan nefron tübülüne aktarılmasıdır."
+      },
+      medium: {
+        question: "Aşağıdakilerden hangisi tübüler salgılamaya örnek verilebilir?",
+        options: [
+          "Glikozun kana geri alınması",
+          "Bazı ilaçların ve H⁺ iyonlarının tübüle aktarılması",
+          "Kan hücrelerinin süzülmesi",
+          "Suyun bağırsaklardan emilmesi"
+        ],
+        correct: 1,
+        explanation: "H⁺, K⁺ iyonları ve bazı ilaçlar belirli koşullarda tübüllere salgılanabilir. Bu süreç iyon dengesinin ve asit-baz dengesinin düzenlenmesine katkı sağlar."
+      },
+      hard: {
+        question: "Tübüler salgılamanın asit-baz dengesi açısından temel katkısı hangisidir?",
+        options: [
+          "H⁺ iyonlarının tübüle salgılanarak uzaklaştırılmasına katkı sağlaması",
+          "Kan hücrelerinin parçalanması",
+          "Glikozun tamamının idrara geçirilmesi",
+          "Plazma proteinlerinin süzülmesi"
+        ],
+        correct: 0,
+        explanation: "H⁺ iyonlarının tübüllere salgılanması, böbreklerin kan pH'sının düzenlenmesine katkıda bulunan mekanizmalardan biridir."
+      }
+    },
+    {
+      title: "Son idrarın analizi",
+      label: "AŞAMA 04 · LABORATUVAR ANALİZİ",
+      description: "Nefrondaki işlemler tamamlandığında oluşan son idrarın içeriğini değerlendir.",
+      visual: "🧪",
+      easy: {
+        question: "Sağlıklı bir insanın normal idrarında hangi maddelerin bulunması beklenir?",
+        options: [
+          "Su, üre ve mineral tuzlar",
+          "Bol miktarda glikoz ve protein",
+          "Kan hücreleri ve büyük proteinler",
+          "Yalnızca glikoz"
+        ],
+        correct: 0,
+        explanation: "Normal idrarın temel bileşenleri su, üre ve çeşitli çözünmüş mineral iyonlarıdır."
+      },
+      medium: {
+        question: "İdrar tahlilinde glikoz görülmesi hangi durumla ilişkili olabilir?",
+        options: [
+          "Glikozun geri emilim kapasitesinin aşılması veya tübüler geri emilim bozukluğu",
+          "Bütün kan hücrelerinin süzülmesi",
+          "Ürenin hiç üretilmemesi",
+          "Normal böbrek işlevinin kesin kanıtı"
+        ],
+        correct: 0,
+        explanation: "Kan glikoz düzeyinin böbrek eşiğini aşması veya tübüler geri emilim bozukluğu glikozüriye yol açabilir."
+      },
+      hard: {
+        question: "Bir idrar örneğinde protein ve kan hücrelerinin saptanması en çok hangi yapının değerlendirilmesini gerektirir?",
+        options: [
+          "Glomerüler filtrasyon bariyeri",
+          "Mide mukozası",
+          "İnce bağırsak villusları",
+          "Akciğer alveolleri"
+        ],
+        correct: 0,
+        explanation: "Proteinüri ve hematüri, glomerüler filtrasyon bariyerindeki bozukluklarla ilişkili olabilir. Ancak kesin değerlendirme için klinik inceleme gerekir."
+      }
+    }
+  ];
+
+  const levelKey = level === "hard" ? "hard" : level === "medium" ? "medium" : "easy";
+  let activeStage = 0;
+  const answers = [null, null, null, null];
+
+  const nephronSVG = `
+    <svg viewBox="0 0 620 280" role="img" aria-label="Glomerulus, Bowman kapsülü ve nefron tübüllerini gösteren şematik çizim">
+      <defs>
+        <linearGradient id="exBlood" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#d95769"/>
+          <stop offset="100%" stop-color="#f18b91"/>
+        </linearGradient>
+        <linearGradient id="exTubule" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#36b9c1"/>
+          <stop offset="100%" stop-color="#147c9b"/>
+        </linearGradient>
+      </defs>
+
+      <rect x="5" y="5" width="610" height="270" rx="18" fill="#f3fafb"/>
+
+      <path d="M20 108 C65 108 70 108 105 108" stroke="url(#exBlood)" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <path d="M20 108 C65 108 70 108 105 108" stroke="#fff" stroke-width="2" fill="none" stroke-dasharray="7 8"/>
+
+      <path d="M105 108 C115 62 148 48 166 82 C180 110 148 145 128 120 C108 94 142 62 167 91 C193 122 160 156 138 130 C116 105 151 78 178 101" fill="none" stroke="#d95c70" stroke-width="7" stroke-linecap="round"/>
+
+      <path d="M104 70 Q85 112 105 152 Q129 178 183 151 Q211 124 184 69 Q152 35 104 70Z" fill="none" stroke="#32a9b4" stroke-width="5"/>
+      <path d="M181 105 C221 105 229 105 253 105" stroke="url(#exBlood)" stroke-width="9" fill="none" stroke-linecap="round"/>
+
+      <path d="M162 165 C188 192 230 198 257 172 C280 150 268 129 294 128 C326 128 323 172 351 172 C378 172 373 111 403 111 C438 111 422 185 454 185 C486 185 474 100 510 100 C543 100 530 155 590 155" fill="none" stroke="url(#exTubule)" stroke-width="13" stroke-linecap="round"/>
+
+      <path d="M162 165 C188 192 230 198 257 172" stroke="#b5f0ed" stroke-width="3" fill="none" stroke-dasharray="5 7"/>
+      <path d="M294 128 C326 128 323 172 351 172" stroke="#b5f0ed" stroke-width="3" fill="none" stroke-dasharray="5 7"/>
+
+      <path d="M260 211 C270 232 285 240 305 242" stroke="#168f91" stroke-width="3" fill="none" stroke-dasharray="4 5"/>
+      <path d="M365 210 C376 230 390 239 411 242" stroke="#168f91" stroke-width="3" fill="none" stroke-dasharray="4 5"/>
+
+      <g font-family="Nunito, sans-serif" font-size="12" font-weight="900" fill="#19394c">
+        <text x="18" y="83">Gelen kan</text>
+        <text x="112" y="29">Glomerulus</text>
+        <text x="111" y="193">Bowman kapsülü</text>
+        <text x="228" y="91">Götürücü damar</text>
+        <text x="260" y="215">Proksimal tübül</text>
+        <text x="355" y="88">Henle kulpu</text>
+        <text x="465" y="205">Distal tübül</text>
+        <text x="520" y="75">Toplayıcı kanal</text>
+      </g>
+
+      <g fill="#168f91">
+        <circle cx="253" cy="105" r="5"/>
+        <circle cx="351" cy="172" r="5"/>
+        <circle cx="510" cy="100" r="5"/>
+      </g>
+    </svg>
+  `;
+
+  function render() {
+    const stage = stages[activeStage];
+    const task = stage[levelKey];
+    const selected = answers[activeStage];
+    const completed = answers.filter(a => a !== null).length;
+    const score = answers.reduce((total, answer, index) => {
+      return total + (answer === stages[index][levelKey].correct ? 1 : 0);
+    }, 0);
+
+    host.innerHTML = `
+      <div class="excretion-lab">
+        <div class="ex-header">
+          <div class="ex-eyebrow">9. SINIF BİYOLOJİ · İNSAN FİZYOLOJİSİ</div>
+          <h3>♧ Böbrek Dedektifi: Nefron Laboratuvarı</h3>
+          <p>Bir damla kanın böbrekte geçirdiği yolculuğu keşfet. Süzülme, geri emilim ve salgılama mekanizmalarını incele; son idrarın içeriğini bilimsel kanıtlarla analiz et.</p>
+          <div class="ex-header-meta">
+            <span class="ex-meta-pill">🔬 4 deney aşaması</span>
+            <span class="ex-meta-pill">🧪 İnteraktif analiz</span>
+            <span class="ex-meta-pill">📊 Anlık değerlendirme</span>
+          </div>
+        </div>
+
+        <div class="ex-content">
+          <div class="ex-dashboard">
+            <div class="ex-stat">
+              <span>TAMAMLANAN AŞAMA</span>
+              <strong>${completed} / 4</strong>
+            </div>
+            <div class="ex-stat">
+              <span>DOĞRU CEVAP</span>
+              <strong>${score} / 4</strong>
+            </div>
+            <div class="ex-stat">
+              <span>BAŞARI PUANI</span>
+              <strong>${score * 25} / 100</strong>
+            </div>
+          </div>
+
+          <div class="ex-progress">
+            <div class="ex-progress-bar" style="width:${completed * 25}%"></div>
+          </div>
+
+          <h4 class="ex-section-title">Nefronun çalışma istasyonları</h4>
+          <p class="ex-section-desc">Her istasyona gir, bilimsel görevi tamamla ve böbreğin çalışma mekanizmasını çöz.</p>
+
+          <div class="ex-stage-nav">
+            ${stages.map((item, index) => `
+              <button type="button" class="ex-stage ${activeStage === index ? "active" : ""} ${answers[index] !== null ? "done" : ""}" data-stage="${index}">
+                <span>${["🩸", "💧", "⚗️", "🧪"][index]}</span>
+                <strong>${["Süzülme", "Geri emilim", "Salgılama", "İdrar analizi"][index]}</strong>
+              </button>
+            `).join("")}
+          </div>
+
+          <div class="ex-workspace">
+            <div class="ex-workspace-head">
+              <div>
+                <div class="ex-stage-label">${stage.label}</div>
+                <h4 class="ex-stage-heading">${stage.title}</h4>
+              </div>
+              <span class="ex-status">${answers[activeStage] === null ? "GÖREV BEKLİYOR" : "GÖREV TAMAMLANDI"}</span>
+            </div>
+
+            <div class="ex-visual">
+              ${nephronSVG}
+              <div class="ex-visual-caption">Şematik nefron gösterimi. Oklar ve yapılar öğrenme amacıyla sadeleştirilmiştir.</div>
+            </div>
+
+            <p class="ex-section-desc" style="margin-top:15px">${stage.description}</p>
+
+            <div class="ex-flow">
+              <div class="ex-flow-card">
+                <span>🩸</span>
+                <strong>Kan akışı</strong>
+                <p>Glomerulus kılcallarına ulaşan kan, filtrasyon için basınç oluşturur.</p>
+              </div>
+              <div class="ex-flow-card">
+                <span>💧</span>
+                <strong>Süzüntü</strong>
+                <p>Küçük moleküller Bowman kapsülüne geçerek tübüllerde ilerler.</p>
+              </div>
+              <div class="ex-flow-card">
+                <span>♻️</span>
+                <strong>Madde dengesi</strong>
+                <p>Gerekli maddeler geri alınır, bazı atıklar tübüle salgılanır.</p>
+              </div>
+            </div>
+
+            <div class="ex-task">
+              <div class="ex-stage-label">BİLİMSEL DÜŞÜNME GÖREVİ · ${level.toLocaleUpperCase("tr-TR")}</div>
+              <h5>${task.question}</h5>
+              <div class="ex-choice-grid" id="exChoices">
+                ${task.options.map((option, index) => `
+                  <button type="button" class="ex-choice ${selected !== null && index === task.correct ? "correct" : ""} ${selected === index && selected !== task.correct ? "wrong" : ""}" data-choice="${index}" ${selected !== null ? "disabled" : ""}>
+                    <span>${String.fromCharCode(65 + index)}</span>
+                    <span>${option}</span>
+                  </button>
+                `).join("")}
+              </div>
+
+              <div class="ex-feedback ${selected === null ? "" : selected === task.correct ? "good" : "bad"}" id="exFeedback">
+                ${selected === null
+                  ? "Yanıtını seç. Seçiminden sonra bilimsel açıklama gösterilecek."
+                  : (selected === task.correct ? "✓ Doğru cevap! " : "✕ Bu yanıt doğru değil. ") + task.explanation}
+              </div>
+            </div>
+
+            ${completed === 4 ? `
+              <div class="ex-science-note">
+                🏆 <strong>Laboratuvar tamamlandı!</strong> Dört aşamanın tamamını bitirdin. Başarı puanın ${score * 25}/100.
+                ${score === 4 ? "Mükemmel! Nefronun çalışma mekanizmasını eksiksiz çözdün." : "Yanlış yanıtlarının açıklamalarını tekrar inceleyerek bilgini pekiştirebilirsin."}
+              </div>
+            ` : ""}
+
+            <div class="ex-bottom-actions">
+              <button type="button" class="ex-btn secondary" id="exReset">↻ Deneyi sıfırla</button>
+              <button type="button" class="ex-btn" id="exNext" ${activeStage === 3 ? "disabled" : ""}>
+                Sonraki aşama →
+              </button>
+            </div>
+          </div>
+
+          <div class="ex-science-note">
+            <strong>🔎 Bilimsel not:</strong> Normal koşullarda glikoz ve amino asitler büyük ölçüde geri emilir. Kan hücreleri ve büyük plazma proteinleri glomerüler filtrasyon bariyerinde tutulur. Üre ise büyük ölçüde idrarla uzaklaştırılır.
+          </div>
+        </div>
+      </div>
+    `;
+
+    host.querySelectorAll("[data-stage]").forEach(button => {
+      button.addEventListener("click", () => {
+        activeStage = Number(button.dataset.stage);
+        render();
+      });
+    });
+
+    host.querySelectorAll("[data-choice]").forEach(button => {
+      button.addEventListener("click", () => {
+        if (answers[activeStage] !== null) return;
+        answers[activeStage] = Number(button.dataset.choice);
+        render();
+      });
+    });
+
+    host.querySelector("#exNext").addEventListener("click", () => {
+      if (activeStage < 3) {
+        activeStage++;
+        render();
+      }
+    });
+
+    host.querySelector("#exReset").addEventListener("click", () => {
+      answers.fill(null);
+      activeStage = 0;
+      render();
+    });
+  }
+
+  render();
+}
+
 function renderInteractiveStation(topicIndex){
  const host=document.getElementById('interactiveStation');if(!host)return;
  if(topicIndex===0){
@@ -2687,6 +3637,8 @@ function renderInteractiveStation(topicIndex){
  renderMitosisLab(host);
 }else if(topicIndex===4){
  renderMovementLab(host);
+   }else if(topicIndex===6){
+ renderExcretionLab(host);
 }else if(topicIndex===8){
   host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ SİMÜLASYON</div><h4>🌡️ Vücut sıcaklığını dengele</h4></div><div class="station-body"><p>Ortam sıcaklığını değiştir ve vücudun ısı dengesini korumak için verdiği tepkileri gözlemle.</p><div class="sim-layout"><div class="sim-gauge"><div class="kicker">ORTAM SICAKLIĞI</div><div class="sim-temp"><span id="ambientValue">25</span>°C</div><input class="sim-range" id="ambientRange" type="range" min="15" max="40" value="25" oninput="updateThermo(this.value)"><div class="note">15–40 °C arasında ayarla.</div></div><div class="sim-readout"><strong id="thermoTitle">Denge korunuyor</strong><p id="thermoText">Vücut, ısı üretimi ve ısı kaybını dengeleyerek iç sıcaklığını belirli sınırlar içinde tutar.</p><div id="thermoActions">💧 Terleme: normal<br>🩸 Deri damarları: normal</div></div></div></div></div>`;
   updateThermo(25);
