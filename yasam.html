@@ -1424,6 +1424,7 @@ function renderCellDetective(host) {
 
 
 
+
 function renderNutritionLab(host) {
   const samples = [
     {name:"Patates", emoji:"🥔", starch:true, protein:false, fat:false},
@@ -1442,6 +1443,7 @@ function renderNutritionLab(host) {
 
   const sampleCount = level === "easy" ? 3 : level === "medium" ? 4 : 6;
   const availableSamples = samples.slice(0, sampleCount);
+
   let selectedSample = null;
   let selectedReagent = null;
   let score = 0;
@@ -1454,28 +1456,32 @@ function renderNutritionLab(host) {
         <div class="kicker">BESİNLERİN YAPISI LABORATUVARI</div>
         <h4>🧪 Besin Dedektifi</h4>
       </div>
-      <div class="station-body">
-        <p>Bir besin örneği seç, ardından uygun ayıracı uygula. Renk değişimini inceleyerek besinin içeriğini belirle.</p>
 
-        <h4>1. Besin örneğini seç</h4>
+      <div class="station-body">
+        <p>Besin örneğini ve ayıracı deney tüpüne sürükle. Renk değişimini gözlemleyerek besinin içeriğini belirle.</p>
+
+        <h4>1. Besin örneğini seç veya sürükle</h4>
         <div id="nutritionSamples" class="sort-bank"></div>
 
-        <h4 style="margin-top:20px">2. Kullanacağın ayıracı seç</h4>
+        <h4 style="margin-top:20px">2. Ayıracı seç veya sürükle</h4>
         <div id="nutritionReagents" class="sort-bank"></div>
 
         <div class="sim-readout" style="margin-top:18px">
           <strong id="nutritionSelection">Henüz seçim yapılmadı.</strong>
-          <p id="nutritionResult">Önce bir besin ve ayıraç seç.</p>
-         <div id="nutritionColor" class="nutrition-tube-area">
-  <div class="nutrition-tube">
-    <div class="nutrition-liquid"></div>
-  </div>
-  <span class="nutrition-tube-label">REAKSİYON TÜPÜ</span>
-</div>
+          <p id="nutritionResult">Bir besin ve ayıraç seçerek tüpe bırak.</p>
+
+          <div id="nutritionColor" class="nutrition-tube-area">
+            <div id="nutritionDropStatus">⬇ Besin ve ayıracı buraya bırak</div>
+            <div class="nutrition-tube">
+              <div class="nutrition-liquid"></div>
+            </div>
+            <span class="nutrition-tube-label">REAKSİYON TÜPÜ</span>
+          </div>
         </div>
 
-        <button type="button" class="secondary" id="nutritionTest" style="margin-top:14px;width:100%">
-          Deneyi gerçekleştir
+        <button type="button" class="secondary" id="nutritionTest"
+          style="margin-top:14px;width:100%">
+          🧪 Deneyi gerçekleştir
         </button>
 
         <div class="station-feedback" id="nutritionFeedback">
@@ -1487,7 +1493,8 @@ function renderNutritionLab(host) {
           <strong id="nutritionScore">Doğru yorum: 0</strong>
         </div>
 
-        <button type="button" class="secondary" id="nutritionReset" style="margin-top:12px">
+        <button type="button" class="secondary" id="nutritionReset"
+          style="margin-top:12px">
           Deneyleri sıfırla
         </button>
       </div>
@@ -1498,20 +1505,68 @@ function renderNutritionLab(host) {
   const selection = host.querySelector("#nutritionSelection");
   const result = host.querySelector("#nutritionResult");
   const color = host.querySelector("#nutritionColor");
-const liquid = host.querySelector(".nutrition-liquid");
+  const liquid = host.querySelector(".nutrition-liquid");
   const feedback = host.querySelector("#nutritionFeedback");
+  const dropStatus = host.querySelector("#nutritionDropStatus");
+
+  function updateSelection() {
+    selection.textContent =
+      `${selectedSample ? selectedSample.name : "Besin seçilmedi"} · ` +
+      `${selectedReagent ? selectedReagent.name : "Ayıraç seçilmedi"}`;
+
+    if (selectedSample && selectedReagent) {
+      dropStatus.textContent = "✓ İki malzeme de hazır. Deneyi başlatabilirsin.";
+    } else {
+      dropStatus.textContent = "⬇ Besin ve ayıracı buraya bırak";
+    }
+  }
+
+  function chooseSample(sample) {
+    selectedSample = sample;
+
+    sampleArea.querySelectorAll("button").forEach(button => {
+      button.style.outline = "";
+    });
+
+    const button = sampleArea.querySelector(
+      `[data-sample="${sample.name}"]`
+    );
+
+    if (button) button.style.outline = "3px solid #8655d4";
+
+    updateSelection();
+  }
+
+  function chooseReagent(reagent) {
+    selectedReagent = reagent;
+
+    reagentArea.querySelectorAll("button").forEach(button => {
+      button.style.outline = "";
+    });
+
+    const button = reagentArea.querySelector(
+      `[data-reagent="${reagent.id}"]`
+    );
+
+    if (button) button.style.outline = "3px solid #8655d4";
+
+    updateSelection();
+  }
 
   availableSamples.forEach(sample => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "sort-chip";
     button.textContent = `${sample.emoji} ${sample.name}`;
+    button.draggable = true;
+    button.dataset.sample = sample.name;
 
-    button.addEventListener("click", () => {
-      selectedSample = sample;
-      sampleArea.querySelectorAll("button").forEach(b => b.style.outline = "");
-      button.style.outline = "3px solid #8655d4";
-      selection.textContent = `Seçilen örnek: ${sample.name}`;
+    button.addEventListener("click", () => chooseSample(sample));
+
+    button.addEventListener("dragstart", event => {
+      event.dataTransfer.setData("nutrition-type", "sample");
+      event.dataTransfer.setData("nutrition-value", sample.name);
+      event.dataTransfer.effectAllowed = "copy";
     });
 
     sampleArea.appendChild(button);
@@ -1522,28 +1577,62 @@ const liquid = host.querySelector(".nutrition-liquid");
     button.type = "button";
     button.className = "sort-chip";
     button.textContent = `${reagent.emoji} ${reagent.name}`;
+    button.draggable = true;
+    button.dataset.reagent = reagent.id;
 
-    button.addEventListener("click", () => {
-      selectedReagent = reagent;
-      reagentArea.querySelectorAll("button").forEach(b => b.style.outline = "");
-      button.style.outline = "3px solid #8655d4";
-      selection.textContent =
-        `${selectedSample ? selectedSample.name : "Besin seçilmedi"} · ${reagent.name} ayıracı`;
+    button.addEventListener("click", () => chooseReagent(reagent));
+
+    button.addEventListener("dragstart", event => {
+      event.dataTransfer.setData("nutrition-type", "reagent");
+      event.dataTransfer.setData("nutrition-value", reagent.id);
+      event.dataTransfer.effectAllowed = "copy";
     });
 
     reagentArea.appendChild(button);
   });
 
+  color.addEventListener("dragover", event => {
+    event.preventDefault();
+    color.classList.add("drag-over");
+    event.dataTransfer.dropEffect = "copy";
+  });
+
+  color.addEventListener("dragleave", event => {
+    if (!color.contains(event.relatedTarget)) {
+      color.classList.remove("drag-over");
+    }
+  });
+
+  color.addEventListener("drop", event => {
+    event.preventDefault();
+    color.classList.remove("drag-over");
+
+    const type = event.dataTransfer.getData("nutrition-type");
+    const value = event.dataTransfer.getData("nutrition-value");
+
+    if (type === "sample") {
+      const sample = availableSamples.find(item => item.name === value);
+      if (sample) chooseSample(sample);
+    }
+
+    if (type === "reagent") {
+      const reagent = reagents.find(item => item.id === value);
+      if (reagent) chooseReagent(reagent);
+    }
+
+    feedback.textContent = "Malzeme tüpe eklendi. Diğer malzemeyi de yerleştir.";
+  });
+
   host.querySelector("#nutritionTest").addEventListener("click", () => {
     if (!selectedSample || !selectedReagent) {
-      feedback.textContent = "Önce bir besin örneği ve ayıraç seçmelisin.";
+      feedback.textContent = "Önce bir besin ve bir ayıraç seçmelisin.";
       return;
     }
 
     const key = selectedSample.name + "-" + selectedReagent.id;
 
     if (completed.has(key)) {
-      feedback.textContent = "Bu deneyi zaten gerçekleştirdin. Başka bir örnek veya ayıraç seç.";
+      feedback.textContent = "Bu deneyi zaten yaptın. Başka bir kombinasyon dene.";
       return;
     }
 
@@ -1551,46 +1640,59 @@ const liquid = host.querySelector(".nutrition-liquid");
     tests++;
 
     const positive = selectedSample[selectedReagent.id];
-liquid.className = "nutrition-liquid";
+
+    liquid.className = "nutrition-liquid";
+    liquid.style.animation = "none";
+    void liquid.offsetWidth;
+    liquid.style.animation = "";
+
     if (positive) {
       score++;
+
       if (selectedReagent.id === "starch") {
-        
         result.textContent = "Mavi-siyah renk oluştu. Nişasta bulundu!";
         liquid.classList.add("positive-starch");
       } else if (selectedReagent.id === "protein") {
-        
         result.textContent = "Mor renk oluştu. Protein bulundu!";
         liquid.classList.add("positive-protein");
       } else {
-        
         result.textContent = "Kırmızı-turuncu boyanma gözlendi. Yağ bulundu!";
         liquid.classList.add("positive-fat");
       }
-      feedback.textContent = "Doğru yorum! Gözlem, seçtiğin besinde " +
-        selectedReagent.nutrient.toLocaleLowerCase("tr-TR") +
-       " bulunduğunu gösteriyor.";
+
+      feedback.textContent =
+        `Doğru gözlem! ${selectedSample.name} örneğinde ` +
+        `${selectedReagent.nutrient.toLocaleLowerCase("tr-TR")} tespit edildi.`;
+
       feedback.style.background = "#eaf8f0";
       feedback.style.color = "#17643e";
+
     } else {
-     
       liquid.classList.add("negative");
       result.textContent = "Beklenen pozitif renk değişimi oluşmadı.";
-      feedback.textContent = "Bu örnekte seçtiğin ayıraçla belirlenen besin içeriği tespit edilmedi. Negatif sonuç, diğer besin içeriklerinin bulunmadığını göstermez.";
+
+      feedback.textContent =
+        "Bu ayıraçla belirlenen besin içeriği tespit edilmedi. " +
+        "Negatif sonuç, diğer besin içeriklerinin bulunmadığını göstermez.";
+
       feedback.style.background = "#fff4e5";
       feedback.style.color = "#80531b";
     }
 
     host.querySelector("#nutritionProgress").textContent =
       `Tamamlanan deney: ${tests}`;
+
     host.querySelector("#nutritionScore").textContent =
       `Doğru pozitif sonuç: ${score}`;
+
+    dropStatus.textContent = "Deney tamamlandı. Yeni bir kombinasyon deneyebilirsin.";
   });
 
   host.querySelector("#nutritionReset").addEventListener("click", () => {
     renderNutritionLab(host);
   });
 }
+
 
 function renderPhotosynthesisLab(host) {
   host.innerHTML = `
