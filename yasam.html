@@ -410,6 +410,287 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
   background: #d85a68;
   color: white;
 }
+
+/* MITOZ LABORATUVARI - YENİ TASARIM */
+.mitosis-lab {
+  margin-top: 22px;
+  border: 1px solid #d9c8f3;
+  border-radius: 26px;
+  box-shadow: 0 18px 45px rgba(54, 29, 98, .12);
+  background: #fff;
+}
+
+.mitosis-lab .station-head {
+  padding: 28px 30px;
+  background: linear-gradient(120deg, #211448, #58309b 58%, #9362d4);
+}
+
+.mitosis-lab .station-head .kicker {
+  color: #e8d9ff;
+  letter-spacing: 2px;
+}
+
+.mitosis-lab .station-head h4 {
+  font-size: 25px;
+  margin-top: 9px;
+}
+
+.mitosis-lab .station-head p {
+  color: #eee5ff;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+.mitosis-lab .station-body {
+  padding: 26px;
+}
+
+.mitosis-lab #mitosisDrawing {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e6dafa;
+  box-shadow: inset 0 0 35px #eee5ff;
+}
+
+.mitosis-lab #mitosisPhase {
+  font-size: 23px;
+  margin: 12px 0;
+}
+
+.mitosis-lab #mitosisDescription {
+  max-width: 720px;
+  margin: 10px auto;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.mitosis-lab .sim-readout {
+  min-height: 125px;
+  padding: 20px;
+  border: 1px solid #e7dcf7;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f8f4ff, #fff);
+}
+
+.mitosis-lab .sim-readout small {
+  color: #7955ad;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.mitosis-lab .sim-readout h3 {
+  color: #442477;
+  margin: 10px 0 0;
+  font-size: 22px;
+}
+
+.mitosis-lab #mitosisChoices {
+  margin-top: 15px;
+}
+
+.mitosis-lab .sort-chip {
+  min-height: 65px;
+  font-family: inherit;
+  color: #30204f;
+  line-height: 1.5;
+}
+
+.mitosis-lab #mitosisSequence {
+  min-height: 90px;
+  padding: 18px 18px 18px 42px;
+  border: 1px solid #e5d9f7;
+  border-radius: 17px;
+  background: #faf8ff;
+  line-height: 2;
+}
+
+.mitosis-lab #mitosisFeedback {
+  padding: 17px;
+  border: 1px solid #e5d9f7;
+  border-radius: 16px;
+  background: #f7f2ff;
+  line-height: 1.7;
+}
+
+.mitosis-lab button {
+  transition: .2s ease;
+}
+
+.mitosis-lab button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.mitosis-lab button:focus-visible {
+  outline: 3px solid #a77be4;
+  outline-offset: 3px;
+}
+
+@media(max-width:620px) {
+  .mitosis-lab .station-head {
+    padding: 22px 18px;
+  }
+
+  .mitosis-lab .station-body {
+    padding: 16px;
+  }
+
+  .mitosis-lab #mitosisVisual { 
+    min-height: 150px;
+  }
+}
+
+/* MITOZ LABORATUVARI - YENİ TASARIM */
+.mitosis-lab {
+  --mitosis-purple: #7040bd;
+  --mitosis-dark: #211448;
+  background: #fff;
+  border: 1px solid #e1d5f5;
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(50, 25, 90, .10);
+}
+
+.mitosis-lab .station-head {
+  padding: 28px;
+  background: linear-gradient(120deg, #211448, #58309b 65%, #9163d5);
+}
+
+.mitosis-lab .station-head h4 {
+  font-size: 25px;
+  margin-top: 9px;
+  letter-spacing: -.5px;
+}
+
+.mitosis-lab .station-body {
+  padding: 28px;
+}
+
+.mitosis-lab #mitosisDrawing,
+.mitosis-lab #mitosisVisual {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(48px, 8vw, 76px);
+  background:
+    radial-gradient(circle at center, #fff 0%, #f5efff 75%);
+  border: 1px solid #e5d9f8;
+  border-radius: 22px;
+  margin: 20px 0;
+}
+
+.mitosis-lab #mitosisPhase {
+  color: #57319a;
+  font-size: 27px;
+  font-weight: 900;
+}
+
+.mitosis-lab #mitosisDescription {
+  max-width: 760px;
+  margin: 14px auto;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.mitosis-lab #mitosisDNA {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 30px;
+  background: #eee6fc;
+  color: #59339b;
+  font-weight: 900;
+}
+
+.mitosis-lab #mitosisDetail {
+  padding: 15px;
+  border-left: 4px solid #8050c7;
+  border-radius: 12px;
+  background: #faf7ff;
+  line-height: 1.7;
+  margin-top: 16px;
+}
+
+.mitosis-lab #mitosisCounter {
+  color: #7040bd;
+  font-size: 17px;
+}
+
+.mitosis-lab #mitosisPrev,
+.mitosis-lab #mitosisNext {
+  min-width: 125px;
+  padding: 13px 18px;
+  border-radius: 13px;
+  font-weight: 900;
+}
+
+.mitosis-lab #mitosisChoices {
+  margin-top: 18px;
+  gap: 14px;
+}
+
+.mitosis-lab #mitosisChoices .sort-chip {
+  min-height: 70px;
+  border-radius: 16px;
+  border: 1.5px solid #dfd1f5;
+  background: linear-gradient(145deg, #fff, #f5efff);
+  color: #332052;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.mitosis-lab #mitosisChoices .sort-chip:hover:not(:disabled) {
+  border-color: #7040bd;
+  background: #eee5fc;
+  transform: translateY(-3px);
+}
+
+.mitosis-lab #mitosisChoices .sort-chip:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+.mitosis-lab #mitosisSequence {
+  min-height: 90px;
+  padding: 15px 15px 15px 38px;
+  line-height: 2;
+}
+
+.mitosis-lab #mitosisFeedback {
+  padding: 17px;
+  border-radius: 15px;
+  background: #f4effb;
+  font-weight: 800;
+  line-height: 1.7;
+}
+
+.mitosis-lab #mitosisCheck,
+.mitosis-lab #mitosisReset {
+  min-height: 48px;
+  font-size: 14px;
+}
+
+.mitosis-lab #mitosisScore {
+  color: #59339b;
+  font-size: 19px;
+}
+
+@media(max-width:620px) {
+  .mitosis-lab .station-body {
+    padding: 16px;
+  }
+
+  .mitosis-lab .station-head {
+    padding: 22px 18px;
+  }
+
+  .mitosis-lab #mitosisChoices {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 </head>
 <body>
@@ -1302,224 +1583,352 @@ function renderPhotosynthesisLab(host) {
   calculatePhotosynthesis();
 }
 
+
 function renderMitosisLab(host) {
   const phases = [
     {
       name:"İnterfaz",
-      label:"Hazırlık aşaması",
-      description:"Hücre büyür ve yaşamsal faaliyetlerini sürdürür. S evresinde DNA eşlenir.",
-      chromosomes:"🧬  🧬",
+      desc:"Hücre büyür. DNA, S evresinde kendini eşler. Hücre bölünmeye hazırlanır.",
+      fact:"DNA miktarı 2C'den 4C'ye çıkar. Kromozom sayısı değişmez.",
       dna:"2C → 4C",
-      detail:"DNA miktarı S evresinde iki katına çıkar. İnterfaz mitoz evresi değildir; hücre bölünmesine hazırlık dönemidir."
+      stage:0
     },
     {
       name:"Profaz",
-      label:"Kromozomlar belirginleşiyor",
-      description:"Kromatin iplikleri kısalıp kalınlaşarak kromozomları oluşturur. Çekirdek zarı parçalanmaya başlar.",
-      chromosomes:"🧬  X  🧬",
+      desc:"Kromatin iplikleri yoğunlaşır. Kromozomlar belirginleşir, iğ iplikleri oluşmaya başlar.",
+      fact:"Her kromozom iki kardeş kromatitten oluşur.",
       dna:"4C",
-      detail:"Her kromozom iki kardeş kromatitten oluşur. İğ iplikleri oluşmaya başlar."
+      stage:1
     },
     {
       name:"Metafaz",
-      label:"Ekvator düzleminde dizilim",
-      description:"Kromozomlar hücrenin ekvator düzleminde sıralanır.",
-      chromosomes:"  X  X  X  ",
+      desc:"Kromozomlar hücrenin ekvator düzleminde tek sıra hâlinde dizilir.",
+      fact:"Kromozomlar en belirgin hâlde gözlenebilir.",
       dna:"4C",
-      detail:"İğ iplikleri kromozomların sentromer bölgelerine tutunur."
+      stage:2
     },
     {
       name:"Anafaz",
-      label:"Kardeş kromatitler ayrılıyor",
-      description:"Kardeş kromatitler birbirinden ayrılır ve zıt kutuplara çekilir.",
-      chromosomes:"XX  ←   →  XX",
+      desc:"Kardeş kromatitler ayrılır ve zıt kutuplara doğru hareket eder.",
+      fact:"Ayrılan kromatitler artık bağımsız kromozom kabul edilir.",
       dna:"4C toplam",
-      detail:"Ayrılan kardeş kromatitler artık bağımsız kromozom olarak adlandırılır."
+      stage:3
     },
     {
-      name:"Telofaz ve sitokinez",
-      label:"İki hücre oluşuyor",
-      description:"Kromozomlar kutuplara ulaşır, çekirdek zarları yeniden oluşur. Sitoplazma bölünerek iki hücre meydana gelir.",
-      chromosomes:"( 🧬 )  ( 🧬 )",
+      name:"Telofaz",
+      desc:"Kromozomlar kutuplara ulaşır. Yeni çekirdek zarları oluşur.",
+      fact:"İki yeni çekirdek meydana gelir.",
+      dna:"Her çekirdek 2C",
+      stage:4
+    },
+    {
+      name:"Sitokinez",
+      desc:"Sitoplazma bölünür ve iki yavru hücre oluşur.",
+      fact:"Hayvan hücresinde boğumlanma, bitki hücresinde ara lamel oluşumu görülür.",
       dna:"Her hücre 2C",
-      detail:"Oluşan iki yavru hücre, normal mitozda ana hücreyle aynı kromozom sayısına ve genetik bilgiye sahiptir."
+      stage:5
     }
   ];
 
+  const questions = {
+    easy: [
+      {
+        q:"DNA eşlenmesi hücre döngüsünün hangi aşamasında gerçekleşir?",
+        a:["Profaz","İnterfazın S evresi","Metafaz","Anafaz"],
+        c:1,
+        why:"DNA eşlenmesi interfazın S evresinde gerçekleşir."
+      },
+      {
+        q:"Kromozomların ekvator düzleminde dizildiği evre hangisidir?",
+        a:["Profaz","Anafaz","Metafaz","Telofaz"],
+        c:2,
+        why:"Metafazda kromozomlar ekvator düzleminde sıralanır."
+      }
+    ],
+    medium: [
+      {
+        q:"Bir hücrede 2n=6 kromozom varsa metafazda kaç kromozom gözlenir?",
+        a:["3","6","12","24"],
+        c:1,
+        why:"DNA eşlenmesi kromozom sayısını iki katına çıkarmaz. Metafazda 6 kromozom ve 12 kromatit bulunur."
+      },
+      {
+        q:"Anafazda kardeş kromatitlerin ayrılmasını sağlayan yapı hangisidir?",
+        a:["Ribozom","İğ iplikleri","Golgi aygıtı","Lizozom"],
+        c:1,
+        why:"İğ iplikleri kromatitleri zıt kutuplara taşır."
+      },
+      {
+        q:"Bitki hücresinde sitokinez nasıl gerçekleşir?",
+        a:["Boğumlanma","Ara lamel oluşumu","Çekirdek kaybolması","DNA eşlenmesi"],
+        c:1,
+        why:"Bitki hücrelerinde hücre plağı gelişerek ara lameli oluşturur."
+      }
+    ],
+    hard: [
+      {
+        q:"2n=8 kromozomlu bir hücre metafazdan anafaza geçerken hücredeki kromozom sayısı nasıl değişir?",
+        a:["8'den 16'ya çıkar","16'dan 8'e iner","8 olarak kalır","4'e iner"],
+        c:0,
+        why:"Anafazda kardeş kromatitler ayrıldığı için aynı hücre içinde geçici olarak 16 kromozom sayılır."
+      },
+      {
+        q:"Mitozda iğ iplikleri oluşmazsa öncelikle hangi olay aksar?",
+        a:["DNA eşlenmesi","Kromozomların kutuplara ayrılması","Protein sentezi","Hücre büyümesi"],
+        c:1,
+        why:"İğ iplikleri kromozomların doğru biçimde ayrılmasını sağlar."
+      },
+      {
+        q:"Bir hücrede sitokinez gerçekleşmez, ancak çekirdek bölünmesi tamamlanırsa ne oluşabilir?",
+        a:["İki ayrı hücre","Çok çekirdekli hücre","Hücre duvarı","DNA'sız hücre"],
+        c:1,
+        why:"Çekirdek bölünmesi olup sitoplazma bölünmezse aynı hücrede birden fazla çekirdek bulunabilir."
+      }
+    ]
+  };
+
   let current = 0;
-  let orderAnswers = [];
-  let orderScore = 0;
+  let questionIndex = 0;
+  let score = 0;
+  let answered = false;
+  const activeQuestions = questions[level] || questions.easy;
 
-  const orderItems = [
-    "Metafaz",
-    "Telofaz ve sitokinez",
-    "Profaz",
-    "Anafaz"
-  ];
-
-  const correctOrder = [
-    "Profaz",
-    "Metafaz",
-    "Anafaz",
-    "Telofaz ve sitokinez"
-  ];
-
-  function shuffle(items) {
-    return [...items].sort(() => Math.random() - 0.5);
+  function chromosome(x,y,scale=1,rotate=0) {
+    return `<g transform="translate(${x} ${y}) rotate(${rotate}) scale(${scale})">
+      <path d="M-9 -22 L9 22 M9 -22 L-9 22"
+        stroke="#7138c5" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <circle cx="0" cy="0" r="4" fill="#f2a33b"/>
+    </g>`;
   }
 
-  let shuffled = shuffle(orderItems);
+  function cellSVG(stage) {
+    let contents = "";
+    const poles = stage >= 3;
+
+    if(stage === 0) {
+      contents = `
+        <circle cx="200" cy="125" r="53" fill="#d9c8f5" stroke="#8655d4" stroke-width="3"/>
+        <circle cx="200" cy="125" r="39" fill="#eee7fb"/>
+        <path d="M170 115 Q185 85 210 118 T235 135 M175 140 Q205 160 225 120"
+          fill="none" stroke="#7138c5" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="200" cy="125" r="5" fill="#f2a33b"/>`;
+    } else if(stage === 1) {
+      contents = `
+        <circle cx="200" cy="125" r="53" fill="#eee7fb" stroke="#b9a0e5" stroke-width="2" stroke-dasharray="6 5"/>
+        ${chromosome(180,110,0.8)}
+        ${chromosome(215,135,0.8,20)}
+        ${chromosome(210,95,0.7,-15)}
+        <path d="M55 125 L120 125 M280 125 L345 125"
+          stroke="#e3a33b" stroke-width="3" stroke-dasharray="5 5"/>`;
+    } else if(stage === 2) {
+      contents = `
+        <path d="M80 125 L320 125" stroke="#b9a0e5" stroke-width="2" stroke-dasharray="5 5"/>
+        ${chromosome(170,125,0.8)}
+        ${chromosome(200,125,0.8)}
+        ${chromosome(230,125,0.8)}
+        <path d="M75 50 L175 115 M75 200 L175 135 M325 50 L225 115 M325 200 L225 135"
+          stroke="#e3a33b" stroke-width="2" fill="none"/>`;
+    } else if(stage === 3) {
+      contents = `
+        ${chromosome(105,90,0.55,-10)}
+        ${chromosome(105,160,0.55,10)}
+        ${chromosome(295,90,0.55,10)}
+        ${chromosome(295,160,0.55,-10)}
+        <path d="M65 125 L145 125 M335 125 L255 125"
+          stroke="#e3a33b" stroke-width="3" stroke-dasharray="5 4"/>`;
+    } else {
+      contents = `
+        <path d="M90 125 Q90 45 165 45 Q200 45 200 125 Q200 205 165 205 Q90 205 90 125Z"
+          fill="#e9defa" stroke="#8655d4" stroke-width="3"/>
+        <path d="M200 125 Q200 45 235 45 Q310 45 310 125 Q310 205 235 205 Q200 205 200 125Z"
+          fill="#e9defa" stroke="#8655d4" stroke-width="3"/>
+        <circle cx="145" cy="125" r="28" fill="#d0b8f0" stroke="#7138c5" stroke-width="2"/>
+        <circle cx="255" cy="125" r="28" fill="#d0b8f0" stroke="#7138c5" stroke-width="2"/>
+        ${chromosome(145,125,0.35)}
+        ${chromosome(255,125,0.35)}`;
+    }
+
+    return `
+      <svg viewBox="0 0 400 250" role="img"
+        aria-label="${phases[stage].name} evresi hücre çizimi"
+        style="width:100%;max-width:520px;display:block;margin:auto">
+        <defs>
+          <linearGradient id="mitosisCellGradient" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#f5efff"/>
+            <stop offset="100%" stop-color="#dfd0f7"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="200" cy="125" rx="155" ry="100"
+          fill="url(#mitosisCellGradient)" stroke="#8655d4" stroke-width="5"/>
+        <ellipse cx="200" cy="125" rx="148" ry="93"
+          fill="none" stroke="#ffffff" stroke-width="2"/>
+        ${contents}
+      </svg>`;
+  }
 
   host.innerHTML = `
-    <div class="station">
+    <div class="station mitosis-lab">
       <div class="station-head">
-        <div class="kicker">HÜCRE BÖLÜNMESİ LABORATUVARI</div>
-        <h4>🧬 Mitozun İzini Sür</h4>
+        <div class="kicker">ETKİLEŞİMLİ HÜCRE BÖLÜNMESİ SİMÜLASYONU</div>
+        <h4>🧬 Mitoz Simülasyon Laboratuvarı</h4>
+        <p>Hücrenin bölünmesini aşama aşama incele, bilimsel görevleri tamamla.</p>
       </div>
       <div class="station-body">
-        <p>Mitozun aşamalarını incele. Kromozomların davranışlarını gözlemle ve ardından evreleri doğru sıraya yerleştir.</p>
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <strong id="mitosisStageCount">Aşama 1 / 6</strong>
+          <span>Çalışma seviyesi: ${(level || "easy").toUpperCase()}</span>
+        </div>
+        <div style="height:8px;background:#eee6fa;border-radius:20px;margin:10px 0 18px;overflow:hidden">
+          <div id="mitosisProgress" style="height:100%;width:16.6%;background:linear-gradient(90deg,#7138c5,#a77ae8);transition:width .3s"></div>
+        </div>
 
-        <div class="sim-readout" style="margin:14px 0;text-align:center">
-          <div class="kicker" id="mitosisLabel">HAZIRLIK AŞAMASI</div>
-          <h3 id="mitosisPhase">İnterfaz</h3>
-          <div id="mitosisVisual" style="font-size:42px;padding:18px">🧬 🧬</div>
+        <div style="background:linear-gradient(135deg,#25164b,#7541bd);color:white;border-radius:18px;padding:18px;text-align:center">
+          <div style="font-size:11px;letter-spacing:2px;font-weight:800">HÜCREDE NELER OLUYOR?</div>
+          <div id="mitosisDrawing" style="background:#fff;border-radius:14px;margin:14px 0;padding:12px"></div>
+          <h3 id="mitosisTitle"></h3>
           <p id="mitosisDescription"></p>
-          <strong id="mitosisDNA"></strong>
-          <p id="mitosisDetail" class="note"></p>
         </div>
 
-        <div style="display:flex;gap:9px;justify-content:space-between">
-          <button type="button" class="secondary" id="mitosisPrev">← Önceki</button>
-          <strong id="mitosisCounter">1 / 5</strong>
-          <button type="button" class="secondary" id="mitosisNext">Sonraki →</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+          <div class="sim-readout">
+            <small>DNA miktarı</small>
+            <h3 id="mitosisDNA"></h3>
+          </div>
+          <div class="sim-readout">
+            <small>Bilimsel bilgi</small>
+            <p id="mitosisFact"></p>
+          </div>
         </div>
 
-        <div style="margin-top:20px">
-          <h4>🧠 Evreleri doğru sıraya koy</h4>
-          <p>İnterfazdan sonraki mitoz evrelerini başlangıçtan sona sırala. Seçtiğin kartlar sırayla aşağıya eklenecek.</p>
-          <div id="mitosisChoices" class="sort-bank"></div>
-          <div class="sim-readout" style="margin-top:12px">
-            <strong>Senin sıralaman</strong>
-            <ol id="mitosisSequence"></ol>
+        <div style="display:flex;justify-content:space-between;gap:10px;margin-top:14px">
+          <button type="button" class="secondary" id="mitosisPrev">← Geri</button>
+          <button type="button" class="secondary" id="mitosisNext">Sonraki aşama →</button>
+        </div>
+
+        <div style="margin-top:24px;border-top:1px solid #e9defa;padding-top:20px">
+          <div class="kicker">BİLİMSEL DÜŞÜNME GÖREVİ</div>
+          <h4 id="mitosisQuestionTitle">Görev 1</h4>
+          <p id="mitosisQuestion"></p>
+          <div id="mitosisAnswers" style="display:grid;gap:9px"></div>
+          <div id="mitosisFeedback" class="station-feedback" style="margin-top:12px">
+            Doğru seçeneği belirle.
           </div>
-          <div id="mitosisFeedback" class="station-feedback">
-            İlk evreyi seçerek başla.
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+            <strong id="mitosisQuestionProgress"></strong>
+            <strong id="mitosisScore">Puan: 0</strong>
           </div>
-          <button type="button" class="secondary" id="mitosisCheck" style="width:100%;margin-top:10px">
-            Sıralamayı kontrol et
+          <button type="button" class="secondary" id="mitosisQuestionNext" style="width:100%;margin-top:12px" disabled>
+            Sonraki görev →
           </button>
-          <button type="button" class="secondary" id="mitosisReset" style="width:100%;margin-top:8px">
-            Sıralamayı yeniden yap
-          </button>
-          <div id="mitosisScore" style="margin-top:12px;font-weight:800"></div>
         </div>
       </div>
     </div>`;
 
-  const phaseTitle = host.querySelector("#mitosisPhase");
-  const label = host.querySelector("#mitosisLabel");
-  const visual = host.querySelector("#mitosisVisual");
-  const description = host.querySelector("#mitosisDescription");
-  const dna = host.querySelector("#mitosisDNA");
-  const detail = host.querySelector("#mitosisDetail");
-  const counter = host.querySelector("#mitosisCounter");
+  const $ = id => host.querySelector("#" + id);
 
   function showPhase() {
     const p = phases[current];
-    phaseTitle.textContent = p.name;
-    label.textContent = p.label.toLocaleUpperCase("tr-TR");
-    visual.textContent = p.chromosomes;
-    description.textContent = p.description;
-    dna.textContent = "DNA miktarı: " + p.dna;
-    detail.textContent = p.detail;
-    counter.textContent = `${current + 1} / ${phases.length}`;
-
-    host.querySelector("#mitosisPrev").disabled = current === 0;
-    host.querySelector("#mitosisNext").disabled = current === phases.length - 1;
+    $("mitosisStageCount").textContent = `Aşama ${current + 1} / 6`;
+    $("mitosisProgress").style.width = `${(current + 1) / 6 * 100}%`;
+    $("mitosisDrawing").innerHTML = cellSVG(current);
+    $("mitosisTitle").textContent = p.name;
+    $("mitosisDescription").textContent = p.desc;
+    $("mitosisDNA").textContent = p.dna;
+    $("mitosisFact").textContent = p.fact;
+    $("mitosisPrev").disabled = current === 0;
+    $("mitosisNext").disabled = current === 5;
   }
 
-  host.querySelector("#mitosisPrev").addEventListener("click", () => {
-    if (current > 0) {
+  function showQuestion() {
+    const q = activeQuestions[questionIndex];
+    answered = false;
+    $("mitosisQuestionTitle").textContent = `Görev ${questionIndex + 1}`;
+    $("mitosisQuestion").textContent = q.q;
+    $("mitosisQuestionProgress").textContent =
+      `${questionIndex + 1} / ${activeQuestions.length}`;
+    $("mitosisFeedback").textContent = "Doğru seçeneği belirle.";
+    $("mitosisFeedback").style.background = "";
+    $("mitosisFeedback").style.color = "";
+    $("mitosisQuestionNext").disabled = true;
+    $("mitosisQuestionNext").textContent =
+      questionIndex === activeQuestions.length - 1 ? "Görevleri tamamla" : "Sonraki görev →";
+
+    $("mitosisAnswers").innerHTML = "";
+    q.a.forEach((answer,index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "sort-chip";
+      button.style.textAlign = "left";
+      button.textContent = answer;
+
+      button.addEventListener("click", () => {
+        if(answered) return;
+        answered = true;
+
+        const correct = index === q.c;
+        if(correct) score++;
+
+        $("mitosisAnswers").querySelectorAll("button").forEach((b,i) => {
+          b.disabled = true;
+          if(i === q.c) {
+            b.style.border = "2px solid #23945b";
+            b.style.background = "#eaf8f0";
+          } else if(i === index && !correct) {
+            b.style.border = "2px solid #c43d4c";
+            b.style.background = "#fff0f1";
+          }
+        });
+
+        $("mitosisFeedback").textContent =
+          (correct ? "✓ Doğru! " : "✗ Bu kez olmadı. ") + q.why;
+        $("mitosisFeedback").style.background = correct ? "#eaf8f0" : "#fff0f1";
+        $("mitosisFeedback").style.color = correct ? "#17643e" : "#9f2637";
+        $("mitosisScore").textContent = `Puan: ${score}`;
+        $("mitosisQuestionNext").disabled = false;
+      });
+
+      $("mitosisAnswers").appendChild(button);
+    });
+  }
+
+  $("mitosisPrev").addEventListener("click", () => {
+    if(current > 0) {
       current--;
       showPhase();
     }
   });
 
-  host.querySelector("#mitosisNext").addEventListener("click", () => {
-    if (current < phases.length - 1) {
+  $("mitosisNext").addEventListener("click", () => {
+    if(current < 5) {
       current++;
       showPhase();
     }
   });
 
-  const choices = host.querySelector("#mitosisChoices");
-  const sequence = host.querySelector("#mitosisSequence");
-  const feedback = host.querySelector("#mitosisFeedback");
-  const score = host.querySelector("#mitosisScore");
+  $("mitosisQuestionNext").addEventListener("click", () => {
+    if(!answered) return;
 
-  function renderOrder() {
-    choices.innerHTML = "";
-    shuffled.forEach(name => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "sort-chip";
-      button.textContent = name;
-      button.disabled = orderAnswers.includes(name);
-
-      button.addEventListener("click", () => {
-        if (orderAnswers.includes(name)) return;
-        orderAnswers.push(name);
-        renderOrder();
-      });
-
-      choices.appendChild(button);
-    });
-
-    sequence.innerHTML = "";
-    orderAnswers.forEach(name => {
-      const li = document.createElement("li");
-      li.textContent = name;
-      sequence.appendChild(li);
-    });
-  }
-
-  host.querySelector("#mitosisCheck").addEventListener("click", () => {
-    if (orderAnswers.length !== correctOrder.length) {
-      feedback.textContent = "Önce dört mitoz evresinin tamamını sıralamalısın.";
-      return;
-    }
-
-    orderScore = orderAnswers.filter((name, i) =>
-      name === correctOrder[i]
-    ).length;
-
-    if (orderScore === 4) {
-      feedback.textContent = "Harika! Mitoz evrelerini doğru sıraladın.";
-      feedback.style.background = "#eaf8f0";
-      feedback.style.color = "#17643e";
+    if(questionIndex < activeQuestions.length - 1) {
+      questionIndex++;
+      showQuestion();
     } else {
-      feedback.textContent = "Bazı evrelerin yeri yanlış. Doğru sıra: Profaz → Metafaz → Anafaz → Telofaz ve sitokinez.";
-      feedback.style.background = "#fff0f1";
-      feedback.style.color = "#9f2637";
+      $("mitosisQuestionTitle").textContent = "Laboratuvar tamamlandı!";
+      $("mitosisQuestion").textContent =
+        `Görev sonucunda ${activeQuestions.length} sorudan ${score} doğru yaptın.`;
+      $("mitosisAnswers").innerHTML = "";
+      $("mitosisFeedback").textContent =
+        score === activeQuestions.length
+          ? "Mükemmel! Tüm görevleri doğru tamamladın."
+          : "Görevleri tamamladın. Açıklamaları inceleyerek bilgilerini pekiştirebilirsin.";
+      $("mitosisQuestionNext").disabled = true;
+      $("mitosisQuestionNext").textContent = "Tamamlandı";
     }
-
-    score.textContent = `Puan: ${orderScore} / 4`;
-  });
-
-  host.querySelector("#mitosisReset").addEventListener("click", () => {
-    orderAnswers = [];
-    orderScore = 0;
-    shuffled = shuffle(orderItems);
-    feedback.textContent = "Yeni sıralamaya başlayabilirsin.";
-    feedback.style.background = "";
-    feedback.style.color = "";
-    score.textContent = "";
-    renderOrder();
   });
 
   showPhase();
-  renderOrder();
+  showQuestion();
 }
+
 function renderInteractiveStation(topicIndex){
  const host=document.getElementById('interactiveStation');if(!host)return;
  if(topicIndex===0){
