@@ -1163,12 +1163,152 @@ function renderNutritionLab(host) {
     renderNutritionLab(host);
   });
 }
+
+function renderPhotosynthesisLab(host) {
+  host.innerHTML = `
+    <div class="station">
+      <div class="station-head">
+        <div class="kicker">ENERJİ DÖNÜŞÜMÜ LABORATUVARI</div>
+        <h4>🌿 Fotosentez Deney İstasyonu</h4>
+      </div>
+      <div class="station-body">
+        <p>Işık şiddetini, karbondioksit miktarını ve sıcaklığı değiştir. Fotosentez hızının nasıl etkilendiğini gözlemle.</p>
+
+        <div class="sim-readout" style="margin:14px 0">
+          <strong>🔬 Deney düzeneği</strong>
+          <div style="font-size:48px;text-align:center;padding:12px">☀️ 🌱 🫧</div>
+          <p>Su bitkisinin fotosentez sırasında oluşturduğu oksijen miktarını modelle.</p>
+        </div>
+
+        <div class="sim-readout" style="margin-bottom:14px">
+          <label for="photoLight"><strong>☀️ Işık şiddeti</strong></label>
+          <div><strong id="photoLightValue">60</strong> / 100</div>
+          <input id="photoLight" class="sim-range" type="range" min="0" max="100" value="60">
+          <label for="photoCO2"><strong>💨 Karbondioksit miktarı</strong></label>
+          <div><strong id="photoCO2Value">400</strong> ppm</div>
+          <input id="photoCO2" class="sim-range" type="range" min="0" max="1000" step="50" value="400">
+          <label for="photoTemp"><strong>🌡️ Ortam sıcaklığı</strong></label>
+          <div><strong id="photoTempValue">25</strong> °C</div>
+          <input id="photoTemp" class="sim-range" type="range" min="0" max="55" value="25">
+        </div>
+
+        <div class="sim-readout">
+          <div class="kicker">MODELDE HESAPLANAN FOTOSENTEZ HIZI</div>
+          <div style="font-size:34px;font-weight:900;color:#23834f">
+            <span id="photoRate">60</span>%
+          </div>
+          <div style="height:13px;background:#e8e8ef;border-radius:20px;overflow:hidden;margin:10px 0">
+            <div id="photoBar" style="height:100%;width:60%;background:#36a66a;border-radius:20px;transition:width .3s"></div>
+          </div>
+          <strong id="photoStatus">Fotosentez gerçekleşiyor.</strong>
+          <p id="photoExplanation">Değişkenlerin etkisini incele.</p>
+        </div>
+
+        <div class="station-feedback" id="photoFeedback">
+          Değişkenleri ayarladığında deney sonuçları burada güncellenecek.
+        </div>
+
+        <h4 style="margin-top:18px">🧠 Bilimsel yorum görevi</h4>
+        <p id="photoChallenge">Işık şiddetini artır. Fotosentez hızı nasıl değişiyor?</p>
+        <button type="button" class="secondary" id="photoReset" style="width:100%">
+          Başlangıç değerlerine dön
+        </button>
+        <p class="note" style="margin-top:12px">
+          Bilimsel not: Bu etkinlik, sınırlayıcı faktörleri göstermek için hazırlanmış basitleştirilmiş bir modeldir. Yüzde değerleri gerçek deney ölçümü değildir.
+        </p>
+      </div>
+    </div>`;
+
+  const light = host.querySelector("#photoLight");
+  const co2 = host.querySelector("#photoCO2");
+  const temp = host.querySelector("#photoTemp");
+
+  const lightValue = host.querySelector("#photoLightValue");
+  const co2Value = host.querySelector("#photoCO2Value");
+  const tempValue = host.querySelector("#photoTempValue");
+  const rateValue = host.querySelector("#photoRate");
+  const bar = host.querySelector("#photoBar");
+  const status = host.querySelector("#photoStatus");
+  const explanation = host.querySelector("#photoExplanation");
+  const feedback = host.querySelector("#photoFeedback");
+  const challenge = host.querySelector("#photoChallenge");
+
+  function calculatePhotosynthesis() {
+    const l = Number(light.value);
+    const c = Number(co2.value);
+    const t = Number(temp.value);
+
+    lightValue.textContent = l;
+    co2Value.textContent = c;
+    tempValue.textContent = t;
+
+    const lightFactor = l / 100;
+    const co2Factor = c / (c + 200);
+    const tempFactor = Math.max(0, 1 - Math.pow((t - 30) / 25, 2));
+
+    const factors = [
+      {name:"Işık şiddeti", value:lightFactor},
+      {name:"Karbondioksit miktarı", value:co2Factor},
+      {name:"Sıcaklık", value:tempFactor}
+    ];
+
+    const rate = Math.round(Math.min(...factors.map(x => x.value)) * 100);
+    const limiting = factors.filter(x => x.value <= Math.min(...factors.map(y => y.value)) + 0.001);
+    const limitingNames = limiting.map(x => x.name).join(" ve ");
+
+    rateValue.textContent = rate;
+    bar.style.width = rate + "%";
+
+    if (rate === 0) {
+      status.textContent = "Fotosentez hızı sıfır!";
+    } else if (rate < 35) {
+      status.textContent = "Fotosentez hızı düşük.";
+    } else if (rate < 70) {
+      status.textContent = "Fotosentez hızı orta düzeyde.";
+    } else {
+      status.textContent = "Fotosentez hızı yüksek.";
+    }
+
+    explanation.textContent =
+      "Bu modelde sınırlayıcı faktör: " + limitingNames +
+      ". Diğer koşullar uygun olsa bile en düşük faktör hızı sınırlar.";
+
+    feedback.textContent =
+      "Işık: %" + Math.round(lightFactor * 100) +
+      " · CO₂: %" + Math.round(co2Factor * 100) +
+      " · Sıcaklık: %" + Math.round(tempFactor * 100);
+
+    challenge.textContent =
+      rate === 0
+        ? "Hızı sıfıra düşüren koşulu belirle. Hangi değişkeni değiştirmen gerekir?"
+        : "Sınırlayıcı faktör olan " + limitingNames +
+          " değerini artır. Fotosentez hızı nasıl değişiyor?";
+
+    bar.style.background =
+      rate < 35 ? "#d97757" : rate < 70 ? "#d6a43a" : "#36a66a";
+  }
+
+  [light, co2, temp].forEach(input => {
+    input.addEventListener("input", calculatePhotosynthesis);
+  });
+
+  host.querySelector("#photoReset").addEventListener("click", () => {
+    light.value = 60;
+    co2.value = 400;
+    temp.value = 25;
+    calculatePhotosynthesis();
+  });
+
+  calculatePhotosynthesis();
+}
 function renderInteractiveStation(topicIndex){
  const host=document.getElementById('interactiveStation');if(!host)return;
  if(topicIndex===0){
   renderCellDetective(host);
 }else if(topicIndex===1){
   renderNutritionLab(host);
+}else if(topicIndex===2){
+  renderPhotosynthesisLab(host);
 }else if(topicIndex===8){
   host.innerHTML=`<div class="station"><div class="station-head"><div class="kicker">ETKİLEŞİMLİ SİMÜLASYON</div><h4>🌡️ Vücut sıcaklığını dengele</h4></div><div class="station-body"><p>Ortam sıcaklığını değiştir ve vücudun ısı dengesini korumak için verdiği tepkileri gözlemle.</p><div class="sim-layout"><div class="sim-gauge"><div class="kicker">ORTAM SICAKLIĞI</div><div class="sim-temp"><span id="ambientValue">25</span>°C</div><input class="sim-range" id="ambientRange" type="range" min="15" max="40" value="25" oninput="updateThermo(this.value)"><div class="note">15–40 °C arasında ayarla.</div></div><div class="sim-readout"><strong id="thermoTitle">Denge korunuyor</strong><p id="thermoText">Vücut, ısı üretimi ve ısı kaybını dengeleyerek iç sıcaklığını belirli sınırlar içinde tutar.</p><div id="thermoActions">💧 Terleme: normal<br>🩸 Deri damarları: normal</div></div></div></div></div>`;
   updateThermo(25);
