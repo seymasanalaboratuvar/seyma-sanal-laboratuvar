@@ -755,7 +755,80 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
 .station:has(#nutritionSamples) #nutritionColor {
   font-size: 42px !important;
 }
-</style>
+/* BESİN DEDEKTİFİ - GERÇEKÇİ DENEY TÜPÜ */
+.nutrition-tube-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 190px;
+  margin-top: 12px;
+}
+
+.nutrition-tube {
+  position: relative;
+  width: 66px;
+  height: 125px;
+  border: 4px solid #c9e8f5;
+  border-top: 0;
+  border-radius: 8px 8px 28px 28px;
+  background: linear-gradient(90deg, #ffffff88, #d9f5ff55, #ffffff66);
+  box-shadow: inset 5px 0 8px #ffffff99, 0 8px 18px #0003;
+  overflow: hidden;
+}
+
+.nutrition-tube::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 68px;
+  height: 9px;
+  border: 3px solid #c9e8f5;
+  border-radius: 5px;
+  background: #eafaff;
+  z-index: 2;
+}
+
+.nutrition-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8%;
+  border-radius: 0 0 24px 24px;
+  background: #dceef5;
+  transition: height .8s ease, background .8s ease;
+  box-shadow: inset 0 5px 8px #ffffff66;
+}
+
+.nutrition-liquid.positive-starch {
+  height: 65%;
+  background: linear-gradient(90deg, #172b78, #07102e, #243c9b);
+}
+
+.nutrition-liquid.positive-protein {
+  height: 65%;
+  background: linear-gradient(90deg, #9b59d0, #6e25a8, #bd82e8);
+}
+
+.nutrition-liquid.positive-fat {
+  height: 65%;
+  background: linear-gradient(90deg, #ff9b35, #e43c20, #ffb04d);
+}
+
+.nutrition-liquid.negative {
+  height: 35%;
+  background: linear-gradient(90deg, #dceef5, #f8ffff, #c5e2ed);
+}
+
+.nutrition-tube-label {
+  color: #b9e8f5;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}</style>
 </head>
 <body>
 <header>
@@ -1393,7 +1466,12 @@ function renderNutritionLab(host) {
         <div class="sim-readout" style="margin-top:18px">
           <strong id="nutritionSelection">Henüz seçim yapılmadı.</strong>
           <p id="nutritionResult">Önce bir besin ve ayıraç seç.</p>
-          <div id="nutritionColor" style="font-size:30px;margin-top:8px">🔬</div>
+         <div id="nutritionColor" class="nutrition-tube-area">
+  <div class="nutrition-tube">
+    <div class="nutrition-liquid"></div>
+  </div>
+  <span class="nutrition-tube-label">REAKSİYON TÜPÜ</span>
+</div>
         </div>
 
         <button type="button" class="secondary" id="nutritionTest" style="margin-top:14px;width:100%">
@@ -1420,6 +1498,7 @@ function renderNutritionLab(host) {
   const selection = host.querySelector("#nutritionSelection");
   const result = host.querySelector("#nutritionResult");
   const color = host.querySelector("#nutritionColor");
+const liquid = host.querySelector(".nutrition-liquid");
   const feedback = host.querySelector("#nutritionFeedback");
 
   availableSamples.forEach(sample => {
@@ -1472,18 +1551,21 @@ function renderNutritionLab(host) {
     tests++;
 
     const positive = selectedSample[selectedReagent.id];
-
+liquid.className = "nutrition-liquid";
     if (positive) {
       score++;
       if (selectedReagent.id === "starch") {
         color.textContent = "🔵⚫";
         result.textContent = "Mavi-siyah renk oluştu. Nişasta bulundu!";
+        liquid.classList.add("positive-starch");
       } else if (selectedReagent.id === "protein") {
         color.textContent = "🟣";
         result.textContent = "Mor renk oluştu. Protein bulundu!";
+        liquid.classList.add("positive-protein");
       } else {
         color.textContent = "🔴🟠";
         result.textContent = "Kırmızı-turuncu boyanma gözlendi. Yağ bulundu!";
+        liquid.classList.add("positive-fat");
       }
       feedback.textContent = "Doğru yorum! Gözlem, seçtiğin besinde " +
         selectedReagent.nutrient.toLocaleLowerCase("tr-TR") +
@@ -1492,6 +1574,7 @@ function renderNutritionLab(host) {
       feedback.style.color = "#17643e";
     } else {
       color.textContent = "⚪";
+      liquid.classList.add("negative");
       result.textContent = "Beklenen pozitif renk değişimi oluşmadı.";
       feedback.textContent = "Bu örnekte seçtiğin ayıraçla belirlenen besin içeriği tespit edilmedi. Negatif sonuç, diğer besin içeriklerinin bulunmadığını göstermez.";
       feedback.style.background = "#fff4e5";
