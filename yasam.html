@@ -3604,6 +3604,39 @@ Gerçekçi tıbbi nefron illüstrasyonu. Kan damarları ve nefron tübülleri fa
               </div>
             </div>
 
+<div class="ex-practical">
+  <div class="ex-practical-head">
+    <span>🔬 UYGULAMALI LABORATUVAR</span>
+    <h4>Madde taşıma deneyini gerçekleştir</h4>
+    <p>${stageActivities[activeStage].instruction}</p>
+  </div>
+
+  <div class="ex-item-bank">
+    <strong>🧬 MADDE KARTLARI</strong>
+    <div class="ex-item-list">
+      ${stageActivities[activeStage].items.map(item => `
+        <button type="button" class="ex-item-card"
+          data-item="${item.id}">
+          ${item.label}
+        </button>
+      `).join("")}
+    </div>
+  </div>
+
+  <div class="ex-drop-zones">
+    ${stageActivities[activeStage].zones.map(zone => `
+      <div class="ex-drop-zone" data-zone="${zone.id}">
+        <strong>${zone.title}</strong>
+        <div class="ex-zone-items"></div>
+      </div>
+    `).join("")}
+  </div>
+
+  <div class="ex-practical-feedback" id="exPracticalFeedback">
+    Bir madde kartına tıkla, ardından yerleştirmek istediğin bölgeye tıkla.
+  </div>
+</div>
+
             <div class="ex-task">
               <div class="ex-stage-label">BİLİMSEL DÜŞÜNME GÖREVİ · ${level.toLocaleUpperCase("tr-TR")}</div>
               <h5>${task.question}</h5>
