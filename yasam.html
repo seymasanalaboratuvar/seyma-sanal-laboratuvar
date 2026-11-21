@@ -936,6 +936,25 @@ footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
   padding: 8px;
   color: #d5eaf2;
 }
+
+/* AYIRAÇLARIN ŞİŞE İÇİ SIVILARI */
+.station:has(#nutritionSamples) .reagent-bottle[data-reagent="starch"] {
+  background:
+    linear-gradient(to top, #76502e 0%, #a77a4c 30%, transparent 31%),
+    linear-gradient(90deg, #d8f3ff, #ffffff 35%, #c8eafa);
+}
+
+.station:has(#nutritionSamples) .reagent-bottle[data-reagent="protein"] {
+  background:
+    linear-gradient(to top, #3976c8 0%, #72a9ed 30%, transparent 31%),
+    linear-gradient(90deg, #d8f3ff, #ffffff 35%, #c8eafa);
+}
+
+.station:has(#nutritionSamples) .reagent-bottle[data-reagent="fat"] {
+  background:
+    linear-gradient(to top, #d93643 0%, #ff7777 30%, transparent 31%),
+    linear-gradient(90deg, #d8f3ff, #ffffff 35%, #c8eafa);
+}
 </style>
 </head>
 <body>
