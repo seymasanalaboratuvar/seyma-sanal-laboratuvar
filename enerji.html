@@ -855,13 +855,13 @@ function makeChloroplast(x,y,z){
 /* Palizat parankiması */
 for(let i=0;i<6;i++){
   const x=(i-2.5)*1.35;
-  makeCell(x,0.6,0,0.53,1.45,0.48);
+  makeCell(x,0.45,0,0.48,1.05,0.55);
 
   for(let j=0;j<5;j++){
     makeChloroplast(
       x+(j%2===0?-0.28:0.28),
       -0.25+j*0.38,
-      0.39
+      0.30
     );
   }
 }
