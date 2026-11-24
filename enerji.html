@@ -821,18 +821,6 @@ function makeCell(x,y,z,sx,sy,sz){
   cell.scale.set(sx,sy,sz);
   tissue.add(cell);
 
-  const membrane=new THREE.Mesh(
-    new THREE.SphereGeometry(1,32,24),
-    new THREE.MeshBasicMaterial({
-      color:0xbaffc7,
-      wireframe:true,
-      transparent:true,
-      opacity:0.10
-    })
-  );
-  membrane.position.copy(cell.position);
-  membrane.scale.set(sx*1.015,sy*1.015,sz*1.015);
-  tissue.add(membrane);
 
   return cell;
 }
