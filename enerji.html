@@ -1029,23 +1029,28 @@ function molecule(type) {
 const co2 = molecule('CO2');
 const oxygen = molecule('O2');
 
-/* IŞIK HÜZMESİ */
+
+/* İNCE, YUMUŞAK GÜNEŞ IŞINLARI */
 const beams = [];
-for (let i = 0; i < 5; i++) {
+
+for (let i = 0; i < 7; i++) {
   const beam = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.025, 0.12, 2.1, 12, 1, true),
+    new THREE.CylinderGeometry(0.008, 0.035, 1.5, 16, 1, true),
     new THREE.MeshBasicMaterial({
-      color: 0xffe99b,
+      color: 0xffefb0,
       transparent: true,
-      opacity: 0.16,
-      side: THREE.DoubleSide
+      opacity: 0.09,
+      side: THREE.DoubleSide,
+      depthWrite: false
     })
   );
-  beam.position.set((i - 2) * 1.25, 2.0, 0.8);
-  beam.rotation.z = -0.18;
+
+  beam.position.set((i - 3) * 1.05, 2.0, 0.65);
+  beam.rotation.z = -0.12;
   tissue.add(beam);
   beams.push(beam);
 }
+
 
 /* KONTROLLERİ DENEY DEĞİŞKENLERİNE BAĞLA */
 const getValue = id => Number(document.getElementById(id)?.value ?? 0);
