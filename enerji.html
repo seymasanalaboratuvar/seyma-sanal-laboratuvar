@@ -403,6 +403,271 @@ button:hover{background:#a2f5c2}
 .scene-top,.scene-label,.scene-caption{
   z-index:2;
 }
+
+/* ===== PROFESYONEL LABORATUVAR TASARIMI ===== */
+
+:root {
+  --green: #65e6a1;
+  --mint: #c7ffdc;
+  --muted: #a5c8b5;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 50% 0%, #174a38 0%, transparent 48%),
+    linear-gradient(145deg, #041512, #0b2821 55%, #041512);
+}
+
+main {
+  max-width: 1600px;
+  padding-top: 36px;
+}
+
+.intro {
+  margin-bottom: 30px;
+}
+
+.eyebrow {
+  letter-spacing: 3px;
+  text-shadow: 0 0 15px #65e6a155;
+}
+
+h1 {
+  letter-spacing: -1.3px;
+  font-weight: 850;
+}
+
+.intro p {
+  max-width: 760px;
+  font-size: 14px;
+}
+
+.lab-layout {
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 24px;
+}
+
+.scene {
+  min-height: 720px;
+  border: 1px solid #8af5b54a;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 48% 38%, #347d50 0%, #164a35 42%, #061b17 100%);
+  box-shadow:
+    0 30px 90px #0009,
+    inset 0 0 100px #020e0b99,
+    0 0 35px #42d98912;
+}
+
+#leaf3dScene {
+  min-height: 720px;
+}
+
+.scene-top {
+  top: 24px;
+  left: 27px;
+}
+
+.scene-top strong {
+  font-size: 13px;
+  letter-spacing: .6px;
+}
+
+.scene-top small {
+  display: block;
+  margin-top: 7px;
+  color: #c0e8ce;
+  font-size: 11px;
+}
+
+.scene-label {
+  top: 26px;
+  right: 25px;
+  padding: 8px 12px;
+  border: 1px solid #7bf0ae55;
+  border-radius: 30px;
+  background: #061b17a8;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+.scene-caption {
+  bottom: 18px;
+}
+
+.scene-caption span {
+  border: 1px solid #8af5b52b;
+  background: #061b17d9;
+  backdrop-filter: blur(10px);
+  padding: 10px 14px;
+}
+
+.controls {
+  border: 1px solid #8af5b545;
+  border-radius: 22px;
+  padding: 20px;
+  background:
+    linear-gradient(155deg, #173d30, #0b211c 75%);
+  box-shadow:
+    0 25px 65px #0006,
+    inset 0 1px #ffffff12;
+}
+
+.control-heading {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ffffff19;
+}
+
+.control-heading h2 {
+  font-size: 16px;
+  letter-spacing: -.3px;
+}
+
+.live {
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #65e6a119;
+}
+
+.control {
+  min-height: 205px;
+  padding: 15px 8px;
+  border: 1px solid #a6f4c51c;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #ffffff0b, #ffffff03);
+  box-shadow: inset 0 1px #ffffff0c;
+  transition: border-color .25s, background .25s;
+}
+
+.control:hover {
+  border-color: #65e6a166;
+  background: #65e6a10c;
+}
+
+.control-title label {
+  color: #e7fff0;
+  font-size: 11px;
+  letter-spacing: .1px;
+}
+
+.control-title output {
+  color: #78f0ae;
+  font-size: 15px;
+  font-weight: 850;
+}
+
+input[type=range] {
+  height: 125px;
+  width: 26px;
+  accent-color: #70f0aa;
+  filter: drop-shadow(0 0 5px #65e6a133);
+}
+
+.range-note {
+  color: #9fc6b1;
+  font-size: 9px;
+}
+
+.results {
+  margin-top: 5px;
+  padding: 19px;
+  border: 1px solid #65e6a14a;
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 20% 0%, #1b4934, transparent 65%),
+    #061a15;
+  box-shadow: inset 0 1px #ffffff12;
+}
+
+.result-label {
+  font-size: 9px;
+  letter-spacing: 1.3px;
+}
+
+.rate {
+  font-size: 43px;
+  letter-spacing: -1.5px;
+  text-shadow: 0 0 24px #65e6a144;
+}
+
+.progress {
+  height: 10px;
+  background: #294b3d;
+}
+
+.progress-fill {
+  box-shadow: 0 0 12px #65e6a166;
+}
+
+.metric {
+  border: 1px solid #ffffff10;
+  background: #173b2e;
+}
+
+.metric strong {
+  font-size: 16px;
+}
+
+.status {
+  color: #c4ead2;
+  font-size: 11px;
+}
+
+button {
+  border-radius: 12px;
+  box-shadow: 0 5px 18px #65e6a122;
+  transition: transform .2s, box-shadow .2s, background .2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px #65e6a133;
+}
+
+.science {
+  margin-top: 24px;
+  padding: 20px 22px;
+  border: 1px solid #8af5b52b;
+  border-radius: 17px;
+  background: linear-gradient(120deg, #ffffff0a, #ffffff03);
+  font-size: 12px;
+}
+
+@media (max-width: 850px) {
+  .lab-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .scene,
+  #leaf3dScene {
+    min-height: 560px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .control-heading,
+  .results {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 500px) {
+  .scene,
+  #leaf3dScene {
+    min-height: 430px;
+  }
+
+  .controls {
+    padding: 14px;
+  }
+
+  .control {
+    min-height: 190px;
+  }
+}
 </style>
 </head>
 <body>
@@ -914,26 +1179,50 @@ for (let i = 0; i < 12; i++) {
   cell(x, 2.45, 0, 0.39, 0.19, 0.42, 0x77bd79);
 }
 
+
 /* PALİZAT PARENKİMASI */
 const chloroplasts = [];
+
+const vacuoleMaterial = new THREE.MeshPhysicalMaterial({
+  color: 0xc4e8cf,
+  roughness: 0.32,
+  transparent: true,
+  opacity: 0.24,
+  transmission: 0.18,
+  side: THREE.DoubleSide,
+  depthWrite: false
+});
 
 for (let i = 0; i < 6; i++) {
   const x = (i - 2.5) * 1.35;
 
-  cell(x, 0.55, 0, 0.53, 1.23, 0.48, 0x398d57);
+  const palisadeCell = cell(
+    x, 0.55, 0,
+    0.53, 1.23, 0.48,
+    0x398d57
+  );
 
- 
-const positions = [
-  [-0.22, -0.82], [0.22, -0.82],
-  [-0.24, -0.30], [0.24, -0.30],
-  [-0.24, 0.30],  [0.24, 0.30],
-  [-0.22, 0.82],  [0.22, 0.82]
-];
+  // Merkezi koful
+  const vacuole = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 40, 32),
+    vacuoleMaterial
+  );
 
+  vacuole.scale.set(0.29, 0.91, 0.28);
+  vacuole.position.set(0, 0, -0.08);
+  palisadeCell.add(vacuole);
+
+  // Kloroplastlar: hücrenin çevresinde
+  const positions = [
+    [-0.30, -0.82], [0.30, -0.82],
+    [-0.34, -0.30], [0.34, -0.30],
+    [-0.34, 0.30],  [0.34, 0.30],
+    [-0.30, 0.82],  [0.30, 0.82]
+  ];
 
   positions.forEach(([dx, dy]) => {
     chloroplasts.push(
-      chloroplast(x + dx, 0.55 + dy, 0.12)
+      chloroplast(x + dx, 0.55 + dy, 0.20)
     );
   });
 }
