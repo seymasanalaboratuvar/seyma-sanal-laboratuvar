@@ -796,77 +796,113 @@ scene.add(fillLight);
 const tissue = new THREE.Group();
 scene.add(tissue);
 
+
+/* HÜCRELER VE ORGANELLER: YENİ MATERYAL SİSTEMİ */
+
 const materials = {
   wall: new THREE.MeshPhysicalMaterial({
-    color: 0x398b59,
-    roughness: 0.34,
+    color: 0x76ad7b,
+    roughness: 0.62,
     metalness: 0,
     transparent: true,
-    opacity: 0.88,
-    clearcoat: 0.65,
-    clearcoatRoughness: 0.28
+    opacity: 0.48,
+    clearcoat: 0.12,
+    clearcoatRoughness: 0.7,
+    side: THREE.DoubleSide,
+    depthWrite: false
   }),
+
   inner: new THREE.MeshPhysicalMaterial({
-    color: 0x8bd69a,
-    roughness: 0.48,
+    color: 0x9bd5a0,
+    roughness: 0.72,
     transparent: true,
-    opacity: 0.42
+    opacity: 0.19,
+    side: THREE.DoubleSide,
+    depthWrite: false
   }),
+
   chloroplast: new THREE.MeshPhysicalMaterial({
-    color: 0x19a94e,
-    emissive: 0x08752d,
-    emissiveIntensity: 0.35,
-    roughness: 0.24,
-    clearcoat: 1
+    color: 0x237b43,
+    emissive: 0x103e22,
+    emissiveIntensity: 0.12,
+    roughness: 0.48,
+    metalness: 0,
+    clearcoat: 0.28,
+    clearcoatRoughness: 0.5
   }),
+
   air: new THREE.MeshBasicMaterial({
-    color: 0x8bd9c0,
+    color: 0xa8e8d5,
     transparent: true,
-    opacity: 0.13
+    opacity: 0.10,
+    depthWrite: false
   })
 };
 
-const sphere = new THREE.SphereGeometry(1, 40, 32);
+const sphere = new THREE.SphereGeometry(1, 48, 36);
 
 function cell(x, y, z, sx, sy, sz, color) {
-  const outerMat = materials.wall.clone();
-  if (color) outerMat.color.setHex(color);
+  const group = new THREE.Group();
+  group.position.set(x, y, z);
+  tissue.add(group);
 
-  const outer = new THREE.Mesh(sphere, outerMat);
-  outer.position.set(x, y, z);
-  outer.scale.set(sx, sy, sz);
-  tissue.add(outer);
+  const wallMaterial = materials.wall.clone();
 
-  const inner = new THREE.Mesh(sphere, materials.inner);
-  inner.position.set(x, y, z + 0.015);
-  inner.scale.set(sx * 0.91, sy * 0.91, sz * 0.91);
-  tissue.add(inner);
+  if (color) {
+    wallMaterial.color.setHex(color);
+  }
 
-  return outer;
+  const wall = new THREE.Mesh(sphere, wallMaterial);
+  wall.scale.set(sx, sy, sz);
+  group.add(wall);
+
+  const cytoplasm = new THREE.Mesh(
+    sphere,
+    materials.inner
+  );
+
+  cytoplasm.scale.set(
+    sx * 0.91,
+    sy * 0.91,
+    sz * 0.88
+  );
+
+  cytoplasm.position.z = 0.012;
+  group.add(cytoplasm);
+
+  return group;
 }
 
 function chloroplast(x, y, z) {
   const group = new THREE.Group();
 
   const body = new THREE.Mesh(
-    new THREE.SphereGeometry(0.13, 24, 18),
+    new THREE.SphereGeometry(0.115, 32, 24),
     materials.chloroplast
   );
-  body.scale.set(1.45, 0.72, 0.65);
+
+  body.scale.set(1.55, 0.82, 0.72);
   group.add(body);
 
+  const thylakoidMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9bcf78,
+    roughness: 0.62
+  });
+
   for (let i = -1; i <= 1; i++) {
-    const disc = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.035, 0.035, 0.018, 16),
-      new THREE.MeshStandardMaterial({ color: 0xbaff91 })
+    const stack = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.027, 0.027, 0.012, 20),
+      thylakoidMaterial
     );
-    disc.rotation.x = Math.PI / 2;
-    disc.position.set(i * 0.065, 0, 0.085);
-    group.add(disc);
+
+    stack.rotation.x = Math.PI / 2;
+    stack.position.set(i * 0.065, 0, 0.065);
+    group.add(stack);
   }
 
   group.position.set(x, y, z);
   tissue.add(group);
+
   return group;
 }
 
