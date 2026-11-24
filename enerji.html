@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaprağın İçinde | Fotosentez Laboratuvarı</title>
+<style>
+:root{
+  --bg:#071b19;
+  --panel:#102b26;
+  --green:#65e6a1;
+  --mint:#b2f4d0;
+  --text:#e9fff3;
+  --muted:#9bbcaf;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 40% 30%,#164d38 0%,transparent 48%),
+    linear-gradient(135deg,#061714,#0b2923 55%,#061713);
+  color:var(--text);
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+header{
+  height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 4%;
+  border-bottom:1px solid #ffffff17;
+  background:#061713b8;
+}
+.brand{font-weight:800;letter-spacing:.5px}
+.brand span{color:var(--green)}
+.header-tag{
+  font-size:11px;
+  color:var(--mint);
+  border:1px solid #65e6a155;
+  padding:8px 13px;
+  border-radius:30px;
+  letter-spacing:1px;
+}
+main{max-width:1500px;margin:auto;padding:30px 3% 50px}
+.intro{margin-bottom:24px}
+.eyebrow{
+  color:var(--green);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+h1{font-size:clamp(27px,4vw,43px);margin:9px 0}
+.intro p{color:var(--muted);margin:0;line-height:1.6}
+.lab-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 340px;
+  gap:20px;
+  align-items:stretch;
+}
+.scene{
+  min-height:650px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #80e5aa38;
+  border-radius:25px;
+  background:
+    radial-gradient(ellipse at 50% 48%,#276a42 0%,#123d30 43%,#0a211d 100%);
+  box-shadow:0 25px 80px #0007,inset 0 0 70px #65e6a116;
+}
+.scene-top{
+  position:absolute;top:22px;left:25px;z-index:2;
+}
+.scene-top strong{display:block;font-size:14px}
+.scene-top small{color:#a6d6b9;font-size:11px}
+.scene-label{
+  position:absolute;right:22px;top:22px;
+  color:#b7f3cc;font-size:10px;letter-spacing:1.5px;
+}
+.leaf-svg{width:100%;height:100%;min-height:650px}
+.cell{fill:#8edb83;fill-opacity:.12;stroke:#a8f5a2;stroke-opacity:.32;stroke-width:2}
+.chloro{fill:#72e99b;stroke:#c3ffd1;stroke-width:1.5}
+.grana{stroke:#d3ffb0;stroke-width:3;stroke-linecap:round}
+.vein{fill:none;stroke:#a8edaa;stroke-width:8;stroke-opacity:.55}
+.bubble{
+  fill:#a9f7ff;
+  filter:drop-shadow(0 0 7px #a9f7ff);
+  animation:rise 3s infinite ease-in;
+}
+.bubble:nth-of-type(2n){animation-delay:1s}
+.bubble:nth-of-type(3n){animation-delay:2s}
+@keyframes rise{
+  0%{transform:translateY(20px);opacity:0}
+  25%{opacity:.9}
+  100%{transform:translateY(-65px);opacity:0}
+}
+.sunbeam{
+  fill:none;stroke:#ffe99b;stroke-width:5;
+  stroke-linecap:round;opacity:.55;
+  animation:glow 2.5s infinite alternate;
+}
+@keyframes glow{to{opacity:.12}}
+.scene-caption{
+  position:absolute;bottom:20px;left:22px;right:22px;
+  display:flex;justify-content:space-between;gap:10px;
+  color:#c2e9d0;font-size:11px;
+}
+.scene-caption span{background:#061b16aa;padding:9px 12px;border-radius:20px}
+.controls{
+  background:linear-gradient(160deg,#15382e,#0c241f);
+  border:1px solid #80e5aa35;
+  border-radius:25px;
+  padding:22px;
+  box-shadow:0 20px 55px #0004;
+}
+.control-heading{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:18px;
+}
+.control-heading h2{font-size:17px;margin:0}
+.live{font-size:9px;color:#70efaa;letter-spacing:1px}
+.control{padding:14px 0;border-bottom:1px solid #ffffff15}
+.control:last-of-type{border:0}
+.control-title{display:flex;justify-content:space-between;gap:8px}
+.control-title label{font-size:12px;font-weight:700}
+.control-title output{color:var(--green);font-size:12px;font-weight:800}
+input[type=range]{
+  width:100%;margin:15px 0 5px;
+  accent-color:#65e6a1;cursor:pointer;
+}
+.range-note{font-size:10px;color:#88aa9a;display:flex;justify-content:space-between}
+.results{
+  margin-top:18px;
+  padding:17px;
+  border-radius:17px;
+  background:#061b17;
+  border:1px solid #65e6a133;
+}
+.result-label{font-size:10px;color:#9fcbb2;letter-spacing:1px}
+.rate{font-size:38px;font-weight:900;color:var(--green);margin:5px 0}
+.progress{height:9px;background:#234238;border-radius:20px;overflow:hidden}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#36b878,#a5ffc5);
+  border-radius:20px;transition:width .35s;
+}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}
+.metric{background:#14352b;padding:11px;border-radius:12px}
+.metric small{display:block;color:#9cbcab;font-size:9px}
+.metric strong{display:block;margin-top:5px;color:#d9ffe6;font-size:17px}
+.status{
+  margin-top:13px;font-size:11px;line-height:1.6;
+  color:#b6e9c8;min-height:35px;
+}
+button{
+  width:100%;padding:12px;margin-top:15px;
+  background:#65e6a1;color:#08251a;border:0;
+  border-radius:12px;font-weight:800;cursor:pointer;
+}
+button:hover{background:#a2f5c2}
+.science{
+  margin-top:20px;padding:16px 18px;
+  background:#ffffff08;border:1px solid #ffffff17;
+  border-radius:15px;color:#a9cabb;font-size:11px;line-height:1.7;
+}
+@media(max-width:850px){
+  .lab-layout{grid-template-columns:1fr}
+  .scene{min-height:480px}
+  .leaf-svg{min-height:480px}
+  .controls{order:2}
+}
+@media(max-width:500px){
+  header{padding:0 16px}
+  main{padding:22px 12px}
+  .scene{min-height:390px}
+  .leaf-svg{min-height:390px}
+  .scene-caption{font-size:9px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🧬 ŞEYMA HOCANIN <span>SANAL LABORATUVARI</span></div>
+  <div class="header-tag">10. SINIF · ENERJİ</div>
+</header>
+
+<main>
+  <section class="intro">
+    <div class="eyebrow">DİJİTAL BİYOLOJİ LABORATUVARI / 01</div>
+    <h1>Yaprağın İçine Yolculuk 🌿</h1>
+    <p>Bir yaprak hücresinin içine gir. Fotosentezi etkileyen değişkenleri kontrol et, sonuçları gözlemle ve kendi deneyini oluştur.</p>
+  </section>
+
+  <div class="lab-layout">
+    <section class="scene">
+      <div class="scene-top">
+        <strong>YAPRAK DOKUSU · MİKRO GÖRÜNÜM</strong>
+        <small>Mezofil hücreleri ve kloroplastlar</small>
+      </div>
+      <div class="scene-label">CANLI SİMÜLASYON</div>
+
+      <svg class="leaf-svg" viewBox="0 0 760 650" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="leafbg">
+            <stop stop-color="#4a9b55"/>
+            <stop offset="1" stop-color="#123e2b"/>
+          </radialGradient>
+          <linearGradient id="cellfill" x2="1" y2="1">
+            <stop stop-color="#a4ed9c" stop-opacity=".35"/>
+            <stop offset="1" stop-color="#3c9a5b" stop-opacity=".12"/>
+          </linearGradient>
+          <filter id="shine">
+            <feGaussianBlur stdDeviation="5"/>
+          </filter>
+        </defs>
+
+        <rect width="760" height="650" fill="url(#leafbg)" opacity=".32"/>
+
+        <!-- Yaprak hücrelerinin kesiti -->
+        <path d="M0 170 Q180 140 380 170 T760 165 L760 205 Q550 225 380 205 T0 210Z"
+          fill="#9bcf75" opacity=".42"/>
+        <path d="M0 430 Q200 410 380 430 T760 420 L760 475 Q500 450 0 475Z"
+          fill="#8fcf80" opacity=".3"/>
+
+        <!-- Palizat parankiması hücreleri -->
+        <g>
+          <rect class="cell" x="45" y="220" width="105" height="175" rx="45"/>
+          <rect class="cell" x="165" y="220" width="105" height="175" rx="45"/>
+          <rect class="cell" x="285" y="220" width="105" height="175" rx="45"/>
+          <rect class="cell" x="405" y="220" width="105" height="175" rx="45"/>
+          <rect class="cell" x="525" y="220" width="105" height="175" rx="45"/>
+          <rect class="cell" x="645" y="220" width="80" height="175" rx="38"/>
+        </g>
+
+        <!-- Hücre içindeki kloroplastlar -->
+        <g id="chloroplasts">
+          <g transform="translate(95 270)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(95 335)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(215 270)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(215 335)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(335 270)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(335 335)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(455 270)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(455 335)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(575 270)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+          <g transform="translate(575 335)">
+            <ellipse class="chloro" rx="22" ry="12"/>
+            <path class="grana" d="M-12 -3H12 M-12 3H12"/>
+          </g>
+        </g>
+
+        <!-- Sünger parankiması -->
+        <g fill="#8ad78a" fill-opacity=".18" stroke="#b0e8a4" stroke-opacity=".4" stroke-width="2">
+          <path d="M60 485 Q110 455 165 490 L160 560 Q95 590 55 550Z"/>
+          <path d="M195 485 Q255 450 305 490 L300 560 Q245 585 190 550Z"/>
+          <path d="M350 485 Q410 450 465 490 L460 560 Q400 590 345 550Z"/>
+          <path d="M510 485 Q575 450 630 490 L625 560 Q565 590 505 550Z"/>
+        </g>
+
+        <!-- Stoma ve gaz hareketleri -->
+        <path d="M315 615 Q380 570 445 615" stroke="#d4f5b6" stroke-width="5" fill="none"/>
+        <ellipse cx="350" cy="605" rx="25" ry="12" fill="#7adf98" stroke="#c5f9c5" stroke-width="2"/>
+        <ellipse cx="410" cy="605" rx="25" ry="12" fill="#7adf98" stroke="#c5f9c5" stroke-width="2"/>
+        <path d="M375 602 Q380 615 385 602" fill="#061b17"/>
+        <text x="380" y="640" text-anchor="middle" fill="#d6f8dc" font-size="13">STOMA</text>
+
+        <!-- Işık ışınları -->
+        <g id="lightBeams">
+          <path class="sunbeam" d="M130 40L190 210"/>
+          <path class="sunbeam" d="M250 25L285 205"/>
+          <path class="sunbeam" d="M370 30L380 205"/>
+          <path class="sunbeam" d="M490 25L465 205"/>
+          <path class="sunbeam" d="M610 40L550 210"/>
+        </g>
+
+        <!-- Oksijen kabarcıkları -->
+        <g id="oxygenBubbles">
+          <circle class="bubble" cx="150" cy="450" r="7"/>
+          <circle class="bubble" cx="250" cy="465" r="5"/>
+          <circle class="bubble" cx="400" cy="450" r="8"/>
+          <circle class="bubble" cx="550" cy="460" r="6"/>
+          <circle class="bubble" cx="650" cy="445" r="5"/>
+        </g>
+
+        <g fill="#e5ffe9" font-size="12">
+          <text x="380" y="120" text-anchor="middle">IŞIK ENERJİSİ ↓</text>
+          <text x="380" y="195" text-anchor="middle">PALİZAT PARANKİMASI</text>
+          <text x="380" y="580" text-anchor="middle">SÜNGER PARANKİMASI</text>
+        </g>
+      </svg>
+
+      <div class="scene-caption">
+        <span>🟢 Kloroplastlar</span>
+        <span>💧 Su ve gaz alışverişi</span>
+        <span>🫧 O₂ çıkışı</span>
+      </div>
+    </section>
+
+    <aside class="controls">
+      <div class="control-heading">
+        <h2>⚙️ Deney değişkenleri</h2>
+        <span class="live">● CANLI</span>
+      </div>
+
+      <div class="control">
+        <div class="control-title">
+          <label for="light">☀️ Işık şiddeti</label>
+          <output id="lightOut">70%</output>
+        </div>
+        <input id="light" type="range" min="0" max="100" value="70">
+        <div class="range-note"><span>Karanlık</span><span>Çok güçlü</span></div>
+      </div>
+
+      <div class="control">
+        <div class="control-title">
+          <label for="co2">🌫️ CO₂ miktarı</label>
+          <output id="co2Out">400 ppm</output>
+        </div>
+        <input id="co2" type="range" min="0" max="1200" step="50" value="400">
+        <div class="range-note"><span>0 ppm</span><span>1200 ppm</span></div>
+      </div>
+
+      <div class="control">
+        <div class="control-title">
+          <label for="water">💧 Su miktarı</label>
+          <output id="waterOut">80%</output>
+        </div>
+        <input id="water" type="range" min="0" max="100" value="80">
+        <div class="range-note"><span>Susuz</span><span>Yeterli</span></div>
+      </div>
+
+      <div class="control">
+        <div class="control-title">
+          <label for="temp">🌡️ Sıcaklık</label>
+          <output id="tempOut">25 °C</output>
+        </div>
+        <input id="temp" type="range" min="0" max="50" value="25">
+        <div class="range-note"><span>0 °C</span><span>50 °C</span></div>
+      </div>
+
+      <div class="control">
+        <div class="control-title">
+          <label for="chlorophyll">🟢 Klorofil miktarı</label>
+          <output id="chlorophyllOut">90%</output>
+        </div>
+        <input id="chlorophyll" type="range" min="0" max="100" value="90">
+        <div class="range-note"><span>Az</span><span>Çok</span></div>
+      </div>
+
+      <div class="results">
+        <div class="result-label">MODELDEKİ GÖRELİ FOTOSENTEZ HIZI</div>
+        <div class="rate"><span id="rate">0</span>%</div>
+        <div class="progress"><div class="progress-fill" id="bar"></div></div>
+        <div class="metrics">
+          <div class="metric">
+            <small>Oksijen üretimi</small>
+            <strong id="oxygen">0</strong>
+          </div>
+          <div class="metric">
+            <small>Organik madde üretimi</small>
+            <strong id="glucose">0</strong>
+          </div>
+        </div>
+        <div class="status" id="status">Deney koşulları hazırlanıyor.</div>
+        <button id="reset">↺ Değişkenleri sıfırla</button>
+      </div>
+    </aside>
+  </div>
+
+  <div class="science">
+    <strong>🔬 Bilimsel açıklama:</strong>
+    Bu simülasyon fotosentez hızını etkileyen değişkenleri incelemek için hazırlanmış basitleştirilmiş bir modeldir. Sonuçlar gerçek laboratuvar ölçümleri değildir. Fotosentez hızını en çok sınırlayan koşul, diğer koşullar uygun olsa bile toplam hızı etkileyebilir. Sıcaklığın etkisi enzimlerin çalışma aralığına bağlıdır.
+  </div>
+</main>
+
+<script>
+const ids=["light","co2","water","temp","chlorophyll"];
+const controls=Object.fromEntries(ids.map(id=>[id,document.getElementById(id)]));
+
+function calculate(){
+  const light=Number(controls.light.value);
+  const co2=Number(controls.co2.value);
+  const water=Number(controls.water.value);
+  const temp=Number(controls.temp.value);
+  const chlorophyll=Number(controls.chlorophyll.value);
+
+  document.getElementById("lightOut").textContent=light+"%";
+  document.getElementById("co2Out").textContent=co2+" ppm";
+  document.getElementById("waterOut").textContent=water+"%";
+  document.getElementById("tempOut").textContent=temp+" °C";
+  document.getElementById("chlorophyllOut").textContent=chlorophyll+"%";
+
+  const factors=[
+    {name:"Işık şiddeti",value:light/100},
+    {name:"CO₂ miktarı",value:co2/(co2+250)},
+    {name:"Su miktarı",value:water/100},
+    {name:"Klorofil miktarı",value:chlorophyll/100}
+  ];
+
+  const temperatureFactor=Math.max(0,1-Math.pow((temp-30)/27,2));
+  factors.push({name:"Sıcaklık",value:temperatureFactor});
+
+  const limiting=Math.min(...factors.map(x=>x.value));
+  const rate=Math.round(limiting*100);
+
+  document.getElementById("rate").textContent=rate;
+  document.getElementById("bar").style.width=rate+"%";
+  document.getElementById("oxygen").textContent=rate+" birim";
+  document.getElementById("glucose").textContent=rate+" birim";
+
+  const limitingFactors=factors
+    .filter(x=>Math.abs(x.value-limiting)<0.015)
+    .map(x=>x.name);
+
+  let message="";
+  if(rate===0){
+    message="Fotosentez için gerekli koşullardan en az biri uygun değil. Sınırlayıcı koşulu değiştir.";
+  }else if(rate<35){
+    message="Fotosentez hızı düşük. Sınırlayıcı faktör: "+limitingFactors.join(", ")+".";
+  }else if(rate<75){
+    message="Fotosentez orta hızda devam ediyor. En sınırlayıcı değişken: "+limitingFactors.join(", ")+".";
+  }else{
+    message="Fotosentez hızı yüksek. Koşullar genel olarak uygun.";
+  }
+
+  document.getElementById("status").textContent=message;
+
+  const bubbleGroup=document.getElementById("oxygenBubbles");
+  bubbleGroup.style.opacity=Math.max(.08,rate/100);
+  bubbleGroup.style.transform="scale("+(0.5+rate/200)+")";
+  document.getElementById("lightBeams").style.opacity=Math.max(.05,light/100);
+  document.getElementById("chloroplasts").style.opacity=Math.max(.08,chlorophyll/100);
+}
+
+ids.forEach(id=>controls[id].addEventListener("input",calculate));
+
+document.getElementById("reset").addEventListener("click",()=>{
+  const defaults={light:70,co2:400,water:80,temp:25,chlorophyll:90};
+  ids.forEach(id=>controls[id].value=defaults[id]);
+  calculate();
+});
+
+calculate();
+</script>
+</body>
+</html>
