@@ -386,6 +386,23 @@ button:hover{background:#a2f5c2}
     drop-shadow(3px 4px 5px rgba(0,0,0,.45));
   transition:transform .65s ease-in-out;
 }
+
+/* THREE.JS 3B SAHNE */
+.leaf-svg{
+  display:none;
+}
+#leaf3dScene{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  min-height:650px;
+  z-index:0;
+  display:block;
+}
+.scene-top,.scene-label,.scene-caption{
+  z-index:2;
+}
 </style>
 </head>
 <body>
@@ -403,6 +420,7 @@ button:hover{background:#a2f5c2}
 
   <div class="lab-layout">
     <section class="scene">
+      <div id="leaf3dScene"></div>
       <div class="scene-top">
         <strong>YAPRAK DOKUSU · MİKRO GÖRÜNÜM</strong>
         <small>Mezofil hücreleri ve kloroplastlar</small>
@@ -741,5 +759,212 @@ document.getElementById("reset").addEventListener("click",()=>{
 
 calculate();
 </script>
+  
+
+<script type="module">
+import * as THREE from
+'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+
+const container=document.getElementById('leaf3dScene');
+
+const scene=new THREE.Scene();
+scene.background=null;
+
+const camera=new THREE.PerspectiveCamera(
+  42,
+  container.clientWidth/container.clientHeight,
+  0.1,
+  100
+);
+camera.position.set(0,2.8,13);
+camera.lookAt(0,0,0);
+
+const renderer=new THREE.WebGLRenderer({
+  alpha:true,
+  antialias:true
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(container.clientWidth,container.clientHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+container.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0xc9ffd8,2));
+
+const sunlight=new THREE.DirectionalLight(0xeaffb4,3);
+sunlight.position.set(-4,7,8);
+scene.add(sunlight);
+
+const fillLight=new THREE.PointLight(0x36ff9b,35,20);
+fillLight.position.set(4,-1,5);
+scene.add(fillLight);
+
+const tissue=new THREE.Group();
+scene.add(tissue);
+
+function makeCell(x,y,z,sx,sy,sz){
+  const geometry=new THREE.SphereGeometry(1,40,32);
+  const material=new THREE.MeshPhysicalMaterial({
+    color:0x4eaa70,
+    roughness:0.28,
+    metalness:0,
+    transmission:0.18,
+    transparent:true,
+    opacity:0.83,
+    thickness:0.8,
+    clearcoat:0.8,
+    clearcoatRoughness:0.2
+  });
+
+  const cell=new THREE.Mesh(geometry,material);
+  cell.position.set(x,y,z);
+  cell.scale.set(sx,sy,sz);
+  tissue.add(cell);
+
+  const membrane=new THREE.Mesh(
+    new THREE.SphereGeometry(1,32,24),
+    new THREE.MeshBasicMaterial({
+      color:0xbaffc7,
+      wireframe:true,
+      transparent:true,
+      opacity:0.10
+    })
+  );
+  membrane.position.copy(cell.position);
+  membrane.scale.set(sx*1.015,sy*1.015,sz*1.015);
+  tissue.add(membrane);
+
+  return cell;
+}
+
+function makeChloroplast(x,y,z){
+  const chloroplast=new THREE.Mesh(
+    new THREE.SphereGeometry(0.16,24,18),
+    new THREE.MeshPhysicalMaterial({
+      color:0x29d66b,
+      roughness:0.2,
+      emissive:0x087c35,
+      emissiveIntensity:0.5,
+      clearcoat:1
+    })
+  );
+
+  chloroplast.position.set(x,y,z);
+  chloroplast.scale.set(1.35,0.65,0.8);
+  tissue.add(chloroplast);
+
+  for(let i=-1;i<=1;i++){
+    const granum=new THREE.Mesh(
+      new THREE.CylinderGeometry(0.035,0.035,0.035,16),
+      new THREE.MeshStandardMaterial({color:0xc4ff9b})
+    );
+    granum.rotation.z=Math.PI/2;
+    granum.position.set(x+i*0.07,y+0.015,z+0.11);
+    tissue.add(granum);
+  }
+}
+
+/* Palizat parankiması */
+for(let i=0;i<6;i++){
+  const x=(i-2.5)*1.35;
+  makeCell(x,0.6,0,0.53,1.45,0.48);
+
+  for(let j=0;j<5;j++){
+    makeChloroplast(
+      x+(j%2===0?-0.28:0.28),
+      -0.25+j*0.38,
+      0.39
+    );
+  }
+}
+
+/* Sünger parankiması */
+const spongy=[
+  [-3.5,-1.7,0.8],[-1.9,-2.0,0.7],
+  [0,-1.8,0.8],[2,-1.9,0.7],
+  [3.6,-1.6,0.8],[-2.8,-2.9,0.7],
+  [-0.8,-3.0,0.7],[1.5,-2.9,0.7],
+  [3.2,-2.8,0.7]
+];
+
+spongy.forEach(([x,y,s])=>{
+  makeCell(x,y,-0.15,s,s*0.72,s*0.65);
+});
+
+/* Üst ve alt epidermis */
+for(let i=0;i<8;i++){
+  const x=(i-3.5)*1.05;
+  makeCell(x,2.35,0,0.52,0.22,0.45);
+  makeCell(x,-3.85,0,0.52,0.22,0.45);
+}
+
+/* Stoma ve bekçi hücreleri */
+function makeGuard(x,rotation){
+  const guard=new THREE.Mesh(
+    new THREE.SphereGeometry(0.55,32,24),
+    new THREE.MeshPhysicalMaterial({
+      color:0x64df91,
+      roughness:0.25,
+      clearcoat:1
+    })
+  );
+  guard.position.set(x,-3.65,0.85);
+  guard.scale.set(0.65,1.15,0.45);
+  guard.rotation.z=rotation;
+  tissue.add(guard);
+}
+
+makeGuard(-0.42,-0.35);
+makeGuard(0.42,0.35);
+
+/* Işık parçacıkları */
+const particles=[];
+for(let i=0;i<35;i++){
+  const p=new THREE.Mesh(
+    new THREE.SphereGeometry(0.025,12,12),
+    new THREE.MeshBasicMaterial({
+      color:0xffef9a,
+      transparent:true,
+      opacity:0.65
+    })
+  );
+  p.position.set(
+    (Math.random()-0.5)*9,
+    Math.random()*6-1,
+    1.2
+  );
+  scene.add(p);
+  particles.push(p);
+}
+
+function resize(){
+  const w=container.clientWidth;
+  const h=container.clientHeight;
+  camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+}
+window.addEventListener('resize',resize);
+
+let clock=0;
+function animate(){
+  requestAnimationFrame(animate);
+  clock+=0.006;
+
+  tissue.rotation.y=Math.sin(clock)*0.035;
+  tissue.rotation.x=Math.sin(clock*0.7)*0.018;
+
+  particles.forEach((p,i)=>{
+    p.position.y-=0.008;
+    if(p.position.y<-4){
+      p.position.y=3;
+    }
+  });
+
+  renderer.render(scene,camera);
+}
+animate();
+</script>
+
 </body>
 </html>
