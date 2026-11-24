@@ -873,30 +873,31 @@ function cell(x, y, z, sx, sy, sz, color) {
   return group;
 }
 
+
 function chloroplast(x, y, z) {
   const group = new THREE.Group();
 
   const body = new THREE.Mesh(
-    new THREE.SphereGeometry(0.115, 32, 24),
+    new THREE.SphereGeometry(0.085, 40, 32),
     materials.chloroplast
   );
 
-  body.scale.set(1.55, 0.82, 0.72);
+  body.scale.set(1.5, 0.8, 0.7);
   group.add(body);
 
   const thylakoidMaterial = new THREE.MeshStandardMaterial({
-    color: 0x9bcf78,
-    roughness: 0.62
+    color: 0xa6d879,
+    roughness: 0.58
   });
 
   for (let i = -1; i <= 1; i++) {
     const stack = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.027, 0.027, 0.012, 20),
+      new THREE.CylinderGeometry(0.018, 0.018, 0.008, 20),
       thylakoidMaterial
     );
 
     stack.rotation.x = Math.PI / 2;
-    stack.position.set(i * 0.065, 0, 0.065);
+    stack.position.set(i * 0.045, 0, 0.025);
     group.add(stack);
   }
 
@@ -905,6 +906,7 @@ function chloroplast(x, y, z) {
 
   return group;
 }
+
 
 /* ÜST EPİDERMİS */
 for (let i = 0; i < 12; i++) {
@@ -920,12 +922,14 @@ for (let i = 0; i < 6; i++) {
 
   cell(x, 0.55, 0, 0.53, 1.23, 0.48, 0x398d57);
 
-  const positions = [
-    [-0.32, -0.82], [0.32, -0.82],
-    [-0.34, -0.35], [0.34, -0.35],
-    [-0.34, 0.35], [0.34, 0.35],
-    [-0.30, 0.82], [0.30, 0.82]
-  ];
+ 
+const positions = [
+  [-0.22, -0.82], [0.22, -0.82],
+  [-0.24, -0.30], [0.24, -0.30],
+  [-0.24, 0.30],  [0.24, 0.30],
+  [-0.22, 0.82],  [0.22, 0.82]
+];
+
 
   positions.forEach(([dx, dy]) => {
     chloroplasts.push(
