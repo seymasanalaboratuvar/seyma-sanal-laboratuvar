@@ -84,30 +84,49 @@ h1{font-size:clamp(27px,4vw,43px);margin:9px 0}
 .grana{stroke:#d3ffb0;stroke-width:3;stroke-linecap:round}
 .vein{fill:none;stroke:#a8edaa;stroke-width:8;stroke-opacity:.55}
 
+
 .co2-particle{
-  fill:#ffad45;
-  stroke:#fff0c9;
-  stroke-width:1.5;
   filter:drop-shadow(0 0 7px #ff9b32);
-  animation:co2Enter 2.8s infinite ease-in;
 }
 .o2-particle{
-  fill:#75e7ff;
-  stroke:#d5f8ff;
-  stroke-width:1.5;
   filter:drop-shadow(0 0 7px #65dfff);
-  animation:o2Exit 2.5s infinite ease-out;
 }
+
+/* Moleküller atomlarıyla birlikte hareket eder */
+#guardLeft,
+#guardRight{
+  transition:transform .6s ease-in-out;
+}
+#stomaOpening{
+  transition:all .6s ease-in-out;
+}
+  #co2Molecules{
+  animation:co2Enter 3.5s infinite ease-in-out;
+  transform-box:fill-box;
+  transform-origin:center;
+}
+#o2Molecules{
+  animation:o2Exit 3.5s infinite ease-in-out;
+  transform-box:fill-box;
+  transform-origin:center;
+}
+
+/* CO2 dış ortamdan yaprağın içine: yukarı */
 @keyframes co2Enter{
   0%{transform:translateY(0);opacity:0}
   20%{opacity:1}
+  80%{opacity:1}
   100%{transform:translateY(-75px);opacity:0}
 }
+
+/* O2 yaprağın içinden dış ortama: aşağı */
 @keyframes o2Exit{
   0%{transform:translateY(0);opacity:0}
   20%{opacity:1}
-  100%{transform:translateY(-65px);opacity:0}
+  80%{opacity:1}
+  100%{transform:translateY(75px);opacity:0}
 }
+
 .bubble{
   fill:#a9f7ff;
   filter:drop-shadow(0 0 7px #a9f7ff);
@@ -378,40 +397,47 @@ button:hover{background:#a2f5c2}
         </g>
 
        
+
 <!-- STOMA VE GAZ ALIŞVERİŞİ -->
 <g id="stomaSystem">
-  <path d="M315 615 Q380 570 445 615"
-        stroke="#d4f5b6" stroke-width="5" fill="none"/>
+  <!-- Stoma çevresi -->
+  <path d="M315 560 Q380 525 445 560"
+        stroke="#d4f5b6" stroke-width="4" fill="none"/>
 
+  <!-- Bekçi hücreleri -->
   <g id="guardLeft">
-    <path d="M370 590 C330 565 320 625 365 620 Q380 610 370 590Z"
+    <path d="M370 535 C330 510 320 570 365 565 Q380 555 370 535Z"
           fill="#70e49a" stroke="#d2ffd9" stroke-width="3"/>
   </g>
-
   <g id="guardRight">
-    <path d="M390 590 C430 565 440 625 395 620 Q380 610 390 590Z"
+    <path d="M390 535 C430 510 440 570 395 565 Q380 555 390 535Z"
           fill="#70e49a" stroke="#d2ffd9" stroke-width="3"/>
   </g>
 
-  <rect id="stomaOpening" x="377" y="592" width="6" height="25"
+  <rect id="stomaOpening" x="377" y="537" width="6" height="25"
         rx="3" fill="#061b17"/>
 
-  <text x="380" y="640" text-anchor="middle"
-        fill="#d6f8dc" font-size="13">STOMA</text>
+  <text x="380" y="585" text-anchor="middle"
+        fill="#eaffed" font-size="13" font-weight="bold">STOMA</text>
 
-  <!-- CO2: turuncu moleküller, içeri giriş -->
+  <!-- CO2: bir molekül, dış ortamdan içeri -->
   <g id="co2Molecules">
-    <circle class="co2-particle" cx="380" cy="650" r="7"/>
-    <circle class="co2-particle" cx="360" cy="650" r="5"/>
-    <circle class="co2-particle" cx="400" cy="650" r="5"/>
+    <path d="M365 620 L380 620 L395 620"
+          stroke="#ffb15c" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="365" cy="620" r="7" fill="#e85d35"/>
+    <circle cx="380" cy="620" r="8" fill="#ffad45"/>
+    <circle cx="395" cy="620" r="7" fill="#e85d35"/>
   </g>
 
-  <!-- O2: mavi moleküller, dışarı çıkış -->
+  <!-- O2: bir molekül, içeriden dışarı -->
   <g id="o2Molecules">
-    <circle class="o2-particle" cx="350" cy="585" r="6"/>
-    <circle class="o2-particle" cx="410" cy="585" r="6"/>
+    <path d="M370 500 L390 500"
+          stroke="#8beaff" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="370" cy="500" r="8" fill="#48bde8"/>
+    <circle cx="390" cy="500" r="8" fill="#48bde8"/>
   </g>
 </g>
+
 
         <!-- Işık ışınları -->
         <g id="lightBeams">
