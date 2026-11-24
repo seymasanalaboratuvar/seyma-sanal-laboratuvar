@@ -83,6 +83,31 @@ h1{font-size:clamp(27px,4vw,43px);margin:9px 0}
 .chloro{fill:#72e99b;stroke:#c3ffd1;stroke-width:1.5}
 .grana{stroke:#d3ffb0;stroke-width:3;stroke-linecap:round}
 .vein{fill:none;stroke:#a8edaa;stroke-width:8;stroke-opacity:.55}
+
+.co2-particle{
+  fill:#ffad45;
+  stroke:#fff0c9;
+  stroke-width:1.5;
+  filter:drop-shadow(0 0 7px #ff9b32);
+  animation:co2Enter 2.8s infinite ease-in;
+}
+.o2-particle{
+  fill:#75e7ff;
+  stroke:#d5f8ff;
+  stroke-width:1.5;
+  filter:drop-shadow(0 0 7px #65dfff);
+  animation:o2Exit 2.5s infinite ease-out;
+}
+@keyframes co2Enter{
+  0%{transform:translateY(0);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateY(-75px);opacity:0}
+}
+@keyframes o2Exit{
+  0%{transform:translateY(0);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateY(-65px);opacity:0}
+}
 .bubble{
   fill:#a9f7ff;
   filter:drop-shadow(0 0 7px #a9f7ff);
@@ -352,12 +377,41 @@ button:hover{background:#a2f5c2}
           <path d="M510 485 Q575 450 630 490 L625 560 Q565 590 505 550Z"/>
         </g>
 
-        <!-- Stoma ve gaz hareketleri -->
-        <path d="M315 615 Q380 570 445 615" stroke="#d4f5b6" stroke-width="5" fill="none"/>
-        <ellipse cx="350" cy="605" rx="25" ry="12" fill="#7adf98" stroke="#c5f9c5" stroke-width="2"/>
-        <ellipse cx="410" cy="605" rx="25" ry="12" fill="#7adf98" stroke="#c5f9c5" stroke-width="2"/>
-        <path d="M375 602 Q380 615 385 602" fill="#061b17"/>
-        <text x="380" y="640" text-anchor="middle" fill="#d6f8dc" font-size="13">STOMA</text>
+       
+<!-- STOMA VE GAZ ALIŞVERİŞİ -->
+<g id="stomaSystem">
+  <path d="M315 615 Q380 570 445 615"
+        stroke="#d4f5b6" stroke-width="5" fill="none"/>
+
+  <g id="guardLeft">
+    <path d="M370 590 C330 565 320 625 365 620 Q380 610 370 590Z"
+          fill="#70e49a" stroke="#d2ffd9" stroke-width="3"/>
+  </g>
+
+  <g id="guardRight">
+    <path d="M390 590 C430 565 440 625 395 620 Q380 610 390 590Z"
+          fill="#70e49a" stroke="#d2ffd9" stroke-width="3"/>
+  </g>
+
+  <rect id="stomaOpening" x="377" y="592" width="6" height="25"
+        rx="3" fill="#061b17"/>
+
+  <text x="380" y="640" text-anchor="middle"
+        fill="#d6f8dc" font-size="13">STOMA</text>
+
+  <!-- CO2: turuncu moleküller, içeri giriş -->
+  <g id="co2Molecules">
+    <circle class="co2-particle" cx="380" cy="650" r="7"/>
+    <circle class="co2-particle" cx="360" cy="650" r="5"/>
+    <circle class="co2-particle" cx="400" cy="650" r="5"/>
+  </g>
+
+  <!-- O2: mavi moleküller, dışarı çıkış -->
+  <g id="o2Molecules">
+    <circle class="o2-particle" cx="350" cy="585" r="6"/>
+    <circle class="o2-particle" cx="410" cy="585" r="6"/>
+  </g>
+</g>
 
         <!-- Işık ışınları -->
         <g id="lightBeams">
@@ -403,7 +457,7 @@ button:hover{background:#a2f5c2}
           <output id="lightOut">70%</output>
         </div>
         <input id="light" type="range" min="0" max="100" value="70">
-        <div class="range-note"><span>Karanlık</span><span>Çok güçlü</span></div>
+        <div class="range-note"><span>0%</span><span>100%</span></div>
       </div>
 
       <div class="control">
@@ -421,7 +475,7 @@ button:hover{background:#a2f5c2}
           <output id="waterOut">80%</output>
         </div>
         <input id="water" type="range" min="0" max="100" value="80">
-        <div class="range-note"><span>Susuz</span><span>Yeterli</span></div>
+       <div class="range-note"><span>0%</span><span>100%</span></div>
       </div>
 
       <div class="control">
@@ -439,7 +493,7 @@ button:hover{background:#a2f5c2}
           <output id="chlorophyllOut">90%</output>
         </div>
         <input id="chlorophyll" type="range" min="0" max="100" value="90">
-        <div class="range-note"><span>Az</span><span>Çok</span></div>
+        <div class="range-note"><span>0%</span><span>100%</span></div>
       </div>
 
       <div class="results">
@@ -525,6 +579,32 @@ function calculate(){
   bubbleGroup.style.transform="scale("+(0.5+rate/200)+")";
   document.getElementById("lightBeams").style.opacity=Math.max(.05,light/100);
   document.getElementById("chloroplasts").style.opacity=Math.max(.08,chlorophyll/100);
+  
+  // Stoma açıklığı: ışık ve su koşullarına göre değişir
+  const stomatalOpening = Math.round(2 + 20 * (light / 100) * (water / 100));
+
+  document.getElementById("guardLeft").style.transform =
+    "translateX(" + (-stomatalOpening / 2) + "px)";
+
+  document.getElementById("guardRight").style.transform =
+    "translateX(" + (stomatalOpening / 2) + "px)";
+
+  document.getElementById("stomaOpening").setAttribute(
+    "width", stomatalOpening
+  );
+
+  document.getElementById("stomaOpening").setAttribute(
+    "x", 380 - stomatalOpening / 2
+  );
+
+  // CO2 miktarına göre molekül hareketinin görünürlüğü
+  document.getElementById("co2Molecules").style.opacity =
+    Math.max(0.05, co2 / 1200);
+
+  // Oksijen çıkışı fotosentez hızına bağlı
+  document.getElementById("o2Molecules").style.opacity =
+    Math.max(0.05, rate / 100);
+
 }
 
 ids.forEach(id=>controls[id].addEventListener("input",calculate));
