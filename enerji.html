@@ -1463,8 +1463,18 @@ function animate() {
   co2.position.y = -4.25 + travel * 1.65;
   oxygen.position.y = -2.65 - travel * 1.65;
 
-  co2.visible = experiment.opening > 0.08;
-  oxygen.visible = experiment.opening > 0.08;
+ if (experiment.opening > 0.08) {
+  co2.visible = getValue('co2') > 0;
+  oxygen.visible = Number(
+    document.getElementById('rate')?.textContent ?? 0
+  ) > 0;
+} else {
+  co2.visible = false;
+  oxygen.visible = false;
+
+  co2.position.y = -4.35;
+  oxygen.position.y = -2.75;
+}
 
   co2.scale.setScalar(0.85 + Math.sin(t * 2) * 0.04);
   oxygen.scale.setScalar(0.85 + Math.sin(t * 2 + 1) * 0.04);
