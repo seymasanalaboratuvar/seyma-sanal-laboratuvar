@@ -141,6 +141,9 @@ if (grade === "9" && moduleName.includes("Yaşam")) {
 } else if (grade === "10" && moduleName.includes("Enerji")) {
   window.location.href = "enerji.html";
 
+} else if (grade === "10" && moduleName.includes("Ekoloji")) {
+  window.location.href = "ekoloji.html";
+
 } else {
   $('gradeMessage').textContent =
     `${moduleName} etkinliği hazırlanıyor.`;
