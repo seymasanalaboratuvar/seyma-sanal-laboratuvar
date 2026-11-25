@@ -1391,13 +1391,16 @@ function updateExperiment() {
   const rate = Number(document.getElementById('rate')?.textContent ?? 0);
 
   let opening = (light / 100) * 0.55 + (water / 100) * 0.45;
-  if (water < 30) opening *= water / 30;
-  opening = THREE.MathUtils.clamp(opening, 0.04, 1);
 
+if (water < 30) opening *= water / 30;
+
+// Işık yoksa modelde stomalar kapalı kabul edilir.
+if (light === 0) opening = 0;
+
+opening = THREE.MathUtils.clamp(opening, 0, 1);
   leftGuard.position.x = -0.20 - opening * 0.15;
   rightGuard.position.x = 0.20 + opening * 0.15;
-  pore.scale.x = 0.25 + opening * 1.8;
-
+pore.scale.x = opening === 0 ? 0.01 : 0.25 + opening * 1.8;
   co2.visible = co2Value > 0;
   co2.position.set(0, -4.35, 1.1);
   co2.userData.opacity = Math.max(0.12, co2Value / 1200) * opening;
