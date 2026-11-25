@@ -668,35 +668,63 @@ button:hover {
     min-height: 190px;
   }
 }
-/* Kaydırıcı min-max değerleri */
-.range-note {
+/* KAYDIRICI MIN-MAX HİZALAMASI */
+.control {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 145px;
+  align-items: center;
+}
+
+.control-title {
+  grid-row: 1;
+}
+
+.control input[type="range"] {
+  grid-row: 2;
+  grid-column: 1;
+  justify-self: center;
+  align-self: center;
+  height: 125px !important;
+  margin: 0 !important;
+  z-index: 2;
+}
+
+.control .range-note {
+  grid-row: 2;
+  grid-column: 1;
   position: relative;
-  display: block !important;
-  height: 0;
+  align-self: center;
+  justify-self: center;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 125px;
   width: 100%;
   margin: 0;
+ padding: 10px 0;
+  box-sizing: border-box;
+  pointer-events: none;
   font-size: 9px;
+}
+
+.control .range-note span {
+  position: static;
+  transform: none;
+  padding: 2px 5px;
+  border-radius: 8px;
+  background: #173b2e;
+  white-space: nowrap;
+}
+
+.control .range-note span:first-child {
+  order: 2;
   color: #a8cbb9;
 }
 
-.range-note span {
-  position: absolute;
-  white-space: nowrap;
-  padding: 3px 6px;
-  border-radius: 10px;
-  background: #ffffff0b;
-}
-
-.range-note span:first-child {
- top: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.range-note span:last-child {
- top: -145px;
-  left: 50%;
-  transform: translateX(-50%);
+.control .range-note span:last-child {
+  order: 1;
   color: #70efaa;
 }
 </style>
