@@ -1357,27 +1357,53 @@ const co2 = molecule('CO2');
 const oxygen = molecule('O2');
 
 
-/* İNCE, YUMUŞAK GÜNEŞ IŞINLARI */
+/* HACİMLİ VE PARLAK GÜNEŞ HUZMELERİ */
 const beams = [];
 
-for (let i = 0; i < 7; i++) {
-  const beam = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.008, 0.035, 1.5, 16, 1, true),
+for (let i = 0; i < 9; i++) {
+  const group = new THREE.Group();
+
+  // Dıştaki yumuşak ışık halesi
+  const halo = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.025, 0.19, 3.2, 32, 1, true),
     new THREE.MeshBasicMaterial({
-      color: 0xffefb0,
+      color: 0xffd879,
       transparent: true,
-      opacity: 0.09,
+      opacity: 0.06,
       side: THREE.DoubleSide,
-      depthWrite: false
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
     })
   );
 
-  beam.position.set((i - 3) * 1.05, 2.0, 0.65);
-  beam.rotation.z = -0.12;
-  tissue.add(beam);
-  beams.push(beam);
-}
+  // Ortadaki parlak ışık çekirdeği
+  const core = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.006, 0.035, 3.2, 24, 1, true),
+    new THREE.MeshBasicMaterial({
+      color: 0xfff2bd,
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    })
+  );
 
+  group.add(halo);
+  group.add(core);
+
+  group.position.set((i - 4) * 0.82, 1.65, 0.72);
+  group.rotation.z = -0.12 + (i % 3) * 0.08;
+
+  tissue.add(group);
+
+  beams.push({
+    group,
+    halo,
+    core,
+    phase: i * 0.8
+  });
+}
 
 /* KONTROLLERİ DENEY DEĞİŞKENLERİNE BAĞLA */
 const getValue = id => Number(document.getElementById(id)?.value ?? 0);
@@ -1413,10 +1439,12 @@ pore.scale.x = opening === 0 ? 0.01 : 0.25 + opening * 1.8;
     0.08 + (chlorophyllValue / 100) * 0.8;
 
   keyLight.intensity = 0.8 + (light / 100) * 3;
-  beams.forEach(b => {
-    b.visible = light > 0;
-    b.material.opacity = (light / 100) * 0.25;
-  });
+ beams.forEach(({ group, halo, core }) => {
+  group.visible = light > 0;
+
+  halo.material.opacity = (light / 100) * 0.075;
+  core.material.opacity = (light / 100) * 0.28;
+});
 
   fillLight.intensity = 8 + (water / 100) * 25;
 
@@ -1457,6 +1485,10 @@ function animate() {
 
   tissue.rotation.y = Math.sin(t * 0.35) * 0.018;
   tissue.rotation.x = Math.sin(t * 0.22) * 0.008;
+  beams.forEach(({ group, phase }) => {
+  group.rotation.z =
+    -0.12 + Math.sin(t * 0.45 + phase) * 0.025;
+});
 
   const travel = (t * experiment.speed) % 1;
 
