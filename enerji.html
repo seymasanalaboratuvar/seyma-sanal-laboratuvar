@@ -1167,11 +1167,8 @@ function chloroplast(x, y, z) {
   }
 
   group.position.set(x, y, z);
-  tissue.add(group);
-
   return group;
 }
-
 
 /* ÜST EPİDERMİS */
 for (let i = 0; i < 12; i++) {
@@ -1221,9 +1218,10 @@ for (let i = 0; i < 6; i++) {
   ];
 
   positions.forEach(([dx, dy]) => {
-    chloroplasts.push(
-      chloroplast(x + dx, 0.55 + dy, 0.20)
-    );
+    const organelle = chloroplast(dx, dy, 0.30);
+
+palisadeCell.add(organelle);
+chloroplasts.push(organelle);
   });
 }
 
